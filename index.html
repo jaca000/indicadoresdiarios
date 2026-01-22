@@ -9,38 +9,38 @@
 
 <style>
 /* =========================
-   DESIGN SYSTEM (TV SAFE)
+   ORGANIC DESIGN SYSTEM
    ========================= */
 :root{
-  --bg-top:#0E1318;
-  --bg-bottom:#0A0F14;
+  --bg-base:#0E1512;
 
-  --panel:#1E2328;          /* fallback seguro */
-  --panel-border:rgba(255,255,255,.10);
-  --panel-shadow:0 18px 40px rgba(0,0,0,.55);
+  --organic-1:#1E3B2A;
+  --organic-2:#2F6B4A;
+  --organic-3:#5FA777;
 
-  --text:#FFFFFF;
-  --muted:#AEB7B2;
+  --panel:#121C18;
+  --panel-soft:#16231E;
 
-  --accent:#3AFF8F;         /* verde futurista subtil */
+  --text:#F2F5F3;
+  --muted:#9FB6A8;
 
-  --radius:18px;
-  --gap:20px;
+  --radius:20px;
+  --gap:22px;
 }
 
 /* =========================
    BASE
    ========================= */
-*{ box-sizing:border-box; }
-html,body{ height:100%; }
+*{box-sizing:border-box}
+html,body{height:100%}
 
 body{
   margin:0;
   font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
   background:
-    radial-gradient(900px 500px at 20% -10%, rgba(58,255,143,0.10), transparent 40%),
-    radial-gradient(700px 400px at 90% 110%, rgba(58,255,143,0.06), transparent 45%),
-    linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+    radial-gradient(900px 600px at 10% 20%, rgba(95,167,119,0.25), transparent 55%),
+    radial-gradient(700px 500px at 85% 80%, rgba(47,107,74,0.30), transparent 60%),
+    linear-gradient(180deg, #0C1411, #0E1512);
   color:var(--text);
   overflow:hidden;
 }
@@ -61,26 +61,27 @@ header{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:0 28px;
+  padding:0 30px;
 }
 
 .brand img{
-  height:46px;
+  height:44px;
   width:auto;
-  filter:drop-shadow(0 0 8px rgba(58,255,143,.35));
+  filter:drop-shadow(0 0 10px rgba(95,167,119,.35));
 }
 
 .clock{
-  font-size:34px;
+  font-size:32px;
   font-weight:600;
-  letter-spacing:.5px;
+  letter-spacing:.4px;
+  color:#E8F0EB;
 }
 
 /* =========================
    MAIN
    ========================= */
 main{
-  padding:28px;
+  padding:30px;
 }
 
 .grid{
@@ -92,44 +93,35 @@ main{
 }
 
 /* =========================
-   CARD (GLASS FALLBACK)
+   ORGANIC CARD
    ========================= */
 .card{
-  position:relative;
-
-  /* fallback (TVs) */
-  background:var(--panel);
-
-  /* glass real (PCs modernos) */
-  backdrop-filter: blur(18px) saturate(120%);
-  -webkit-backdrop-filter: blur(18px) saturate(120%);
-
+  background:
+    linear-gradient(160deg,
+      rgba(47,107,74,0.35),
+      rgba(18,28,24,0.85)
+    );
   border-radius:var(--radius);
-  padding:18px;
+  padding:20px;
   display:flex;
   flex-direction:column;
-  box-shadow:var(--panel-shadow);
-  border:1px solid var(--panel-border);
-  overflow:hidden;
+  box-shadow:
+    0 20px 50px rgba(0,0,0,.55),
+    inset 0 1px 0 rgba(255,255,255,.06);
 }
 
-/* brilho subtil */
-.card::before{
+/* borda orgânica subtil */
+.card::after{
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(
-    120deg,
-    transparent 25%,
-    rgba(255,255,255,.10),
-    transparent 75%
-  );
-  opacity:.15;
+  border-radius:var(--radius);
+  border:1px solid rgba(95,167,119,.25);
   pointer-events:none;
 }
 
 .card h3{
-  margin:0 0 12px 0;
+  margin:0 0 14px 0;
   font-size:15px;
   font-weight:600;
   color:var(--muted);
@@ -142,27 +134,32 @@ main{
    ========================= */
 .content{
   flex:1;
-  border-radius:12px;
+  border-radius:14px;
+  background:linear-gradient(
+    180deg,
+    rgba(18,28,24,.85),
+    rgba(18,28,24,.55)
+  );
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:12px;
+  padding:14px;
 }
 
 /* NUMBER */
 .number{
-  font-size:64px;
+  font-size:62px;
   font-weight:700;
   line-height:1;
   text-align:center;
-  text-shadow:0 0 14px rgba(58,255,143,.30);
+  color:#F4FFF8;
 }
 
 .number span{
   display:block;
   font-size:18px;
   color:var(--muted);
-  margin-top:6px;
+  margin-top:8px;
 }
 
 /* IMAGE */
@@ -170,12 +167,14 @@ main{
   width:100%;
   height:100%;
   object-fit:contain;
-  filter:drop-shadow(0 8px 18px rgba(0,0,0,.6));
+  filter:
+    drop-shadow(0 12px 22px rgba(0,0,0,.6))
+    saturate(105%);
 }
 
 /* NOTE */
 .note{
-  margin-top:10px;
+  margin-top:12px;
   font-size:14px;
   color:var(--muted);
   text-align:center;
@@ -190,8 +189,8 @@ main{
 footer{
   display:flex;
   align-items:center;
-  padding:0 28px;
-  font-size:18px;
+  padding:0 30px;
+  font-size:17px;
   color:var(--muted);
 }
 </style>
@@ -224,7 +223,7 @@ footer{
 /*
   ITENS DINÂMICOS
   - 0 a 8
-  - só aparecem os active:true
+  - apenas os ativos aparecem
   - número OU imagem
 */
 const items = [
