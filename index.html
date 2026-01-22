@@ -5,30 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Monte do Pasto · Painel</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 /* =========================
-   ORGANIC · BOVINE SYSTEM
+   AGRO MOTION SYSTEM
    ========================= */
 :root{
-  /* Terra / campo */
-  --bg-top:#2A241E;
-  --bg-bottom:#14110E;
+  --bg-dark:#0f1411;
+  --bg-mid:#1b241f;
+  --accent:#6fa87a;     /* verde natural */
+  --accent-soft:#a8c7b0;
 
-  /* Cards */
-  --card:#1C1814;
-  --card-border:#3A332B;
-
-  /* Texto */
-  --text:#F4F2EE;
-  --muted:#B6ADA3;
-
-  /* Destaque */
-  --accent:#8C6B3E; /* tom couro / terra seca */
+  --card:#141b17;
+  --text:#f3f6f4;
+  --muted:#9fb3a6;
 
   --radius:22px;
-  --gap:24px;
+  --gap:26px;
 }
 
 /* =========================
@@ -40,12 +34,41 @@ html,body{height:100%}
 body{
   margin:0;
   font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  background:
-    radial-gradient(1200px 600px at 20% 10%, rgba(140,107,62,0.15), transparent 55%),
-    radial-gradient(900px 500px at 80% 85%, rgba(60,50,40,0.35), transparent 60%),
-    linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
   color:var(--text);
   overflow:hidden;
+  background:linear-gradient(180deg,var(--bg-dark),var(--bg-mid));
+}
+
+/* =========================
+   MOVING BACKGROUND
+   ========================= */
+.bg{
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  overflow:hidden;
+}
+
+.bg::before,
+.bg::after{
+  content:"";
+  position:absolute;
+  width:140%;
+  height:140%;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(111,168,122,.18), transparent 55%),
+    radial-gradient(circle at 70% 70%, rgba(168,199,176,.12), transparent 60%);
+  animation: drift 60s linear infinite;
+}
+
+.bg::after{
+  animation-duration: 90s;
+  animation-direction: reverse;
+}
+
+@keyframes drift{
+  from{ transform: translate(-10%, -10%) rotate(0deg); }
+  to{ transform: translate(-20%, -20%) rotate(360deg); }
 }
 
 /* =========================
@@ -64,77 +87,60 @@ header{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:0 32px;
+  padding:0 36px;
 }
 
 .brand img{
-  height:44px;
-  width:auto;
+  height:42px;
+  opacity:.9;
 }
 
 .clock{
-  font-size:34px;
-  font-weight:700;
-  letter-spacing:.4px;
+  font-size:32px;
+  font-weight:600;
+  color:var(--accent-soft);
 }
 
 /* =========================
    MAIN
    ========================= */
 main{
-  padding:32px;
+  padding:36px;
 }
 
 .grid{
   height:100%;
   display:grid;
   gap:var(--gap);
-  grid-template-columns:repeat(auto-fit, minmax(420px, 1fr));
+  grid-template-columns:repeat(auto-fit,minmax(420px,1fr));
   align-content:center;
 }
 
 /* =========================
-   CARD (ROBUSTO)
+   CARD
    ========================= */
 .card{
-  background:
-    linear-gradient(180deg,
-      rgba(40,34,28,0.95),
-      rgba(20,17,14,0.95)
-    );
+  background:linear-gradient(180deg,#18201c,#111815);
   border-radius:var(--radius);
   padding:22px;
   display:flex;
   flex-direction:column;
-  box-shadow:
-    0 28px 60px rgba(0,0,0,.6),
-    inset 0 1px 0 rgba(255,255,255,.04);
-  border:1px solid var(--card-border);
+  box-shadow:0 30px 70px rgba(0,0,0,.6);
+  animation: breathe 14s ease-in-out infinite;
 }
 
-/* faixa de peso no topo */
-.card::before{
-  content:"";
-  height:6px;
-  width:100%;
-  background:linear-gradient(
-    90deg,
-    transparent,
-    var(--accent),
-    transparent
-  );
-  border-radius:6px;
-  margin-bottom:14px;
-  opacity:.6;
+@keyframes breathe{
+  0%,100%{ transform: scale(1); }
+  50%{ transform: scale(1.015); }
 }
 
 .card h3{
-  margin:0 0 14px 0;
-  font-size:15px;
+  margin:0 0 16px 0;
+  font-size:14px;
   font-weight:600;
-  color:var(--muted);
-  text-transform:uppercase;
   letter-spacing:.6px;
+  text-transform:uppercase;
+  color:var(--muted);
 }
 
 /* =========================
@@ -147,22 +153,26 @@ main{
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:16px;
+  padding:18px;
 }
 
 /* NUMBER */
 .number{
-  font-size:66px;
-  font-weight:800;
-  line-height:1;
-  text-align:center;
+  font-size:64px;
+  font-weight:700;
+  animation: rise 2s ease forwards;
+}
+
+@keyframes rise{
+  from{ opacity:0; transform: translateY(20px); }
+  to{ opacity:1; transform: translateY(0); }
 }
 
 .number span{
   display:block;
   font-size:18px;
-  color:var(--muted);
   margin-top:8px;
+  color:var(--muted);
 }
 
 /* IMAGE */
@@ -170,7 +180,12 @@ main{
   width:100%;
   height:100%;
   object-fit:contain;
-  filter:contrast(105%) saturate(105%);
+  opacity:0;
+  animation: fadein 2s ease forwards;
+}
+
+@keyframes fadein{
+  to{ opacity:1; }
 }
 
 /* NOTE */
@@ -187,7 +202,7 @@ main{
 footer{
   display:flex;
   align-items:center;
-  padding:0 32px;
+  padding:0 36px;
   font-size:16px;
   color:var(--muted);
 }
@@ -195,6 +210,8 @@ footer{
 </head>
 
 <body>
+<div class="bg"></div>
+
 <div class="screen">
 
   <header>
@@ -209,7 +226,7 @@ footer{
   </main>
 
   <footer>
-    Informação interna · Produção pecuária
+    Informação interna · Monte do Pasto
   </footer>
 
 </div>
@@ -239,11 +256,12 @@ items.filter(i=>i.active).slice(0,8).forEach(i=>{
   const card=document.createElement("div");
   card.className="card";
   card.innerHTML=`
-    <h3>${i.title||""}</h3>
+    <h3>${i.title}</h3>
     <div class="content">
-      ${i.type==="image"
+      ${
+        i.type==="image"
         ? `<img src="${i.image}">`
-        : `<div class="number">${i.value}<span>${i.unit||""}</span></div>`
+        : `<div class="number">${i.value}<span>${i.unit}</span></div>`
       }
     </div>
     ${i.note?`<div class="note">${i.note}</div>`:""}
