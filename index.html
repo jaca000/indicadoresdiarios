@@ -1,472 +1,292 @@
 <!doctype html>
 <html lang="pt-PT">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="color-scheme" content="dark" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Monte do Pasto · Painel</title>
 
-  <!-- Google Font: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      /* Base palette */
       --bg: #1F2A24;
-      --surface: #2E3B34;
+      --surface: #2C3832;
       --bar: #18211C;
 
-      /* Text */
       --text: #FFFFFF;
-      --text-2: #C7D1CB;
-      --text-3: #9FB0A6;
+      --muted: #AEBBB4;
 
-      /* Status */
-      --ok: #4CAF50;
-      --warn: #FFC107;
-      --crit: #E53935;
-      --info: #2196F3;
+      --radius: 14px;
+      --shadow: 0 6px 16px rgba(0,0,0,.25);
 
-      /* Layout */
-      --radius: 16px;
-      --shadow: 0 4px 12px rgba(0,0,0,.25);
-      --gap: 22px;
-      --pad: 26px;
-
-      /* Header/Footer heights */
-      --header-h: 120px;
-      --footer-h: 120px;
+      --header-h: 90px;
+      --footer-h: 80px;
+      --gap: 18px;
+      --pad: 20px;
     }
 
     *{ box-sizing: border-box; }
-    html, body { height: 100%; }
+    html,body{ height:100%; }
     body{
       margin:0;
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      overflow: hidden; /* TV mode: no scroll */
+      background:var(--bg);
+      color:var(--text);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      overflow:hidden;
     }
 
-    /* 1920x1080 friendly container (scales if needed) */
     .screen{
-      height: 100vh;
-      width: 100vw;
-      display: grid;
+      height:100vh;
+      display:grid;
       grid-template-rows: var(--header-h) 1fr var(--footer-h);
-      gap: 0;
     }
 
     /* HEADER */
     header{
-      background: var(--bar);
+      background:var(--bar);
       display:flex;
       align-items:center;
-      justify-content: space-between;
-      padding: 16px var(--pad);
-      border-bottom: 1px solid rgba(255,255,255,.06);
+      justify-content:space-between;
+      padding:0 var(--pad);
+      border-bottom:1px solid rgba(255,255,255,.06);
     }
 
     .brand{
       display:flex;
       align-items:center;
-      gap: 14px;
-      min-width: 360px;
+      gap:12px;
     }
 
     .logo{
-      width: 66px;
-      height: 66px;
-      border-radius: 14px;
-      background: rgba(255,255,255,.08);
+      width:52px;
+      height:52px;
+      border-radius:10px;
+      background:rgba(255,255,255,.08);
       display:grid;
       place-items:center;
-      font-weight: 700;
-      letter-spacing: .5px;
-      color: var(--text-2);
-      user-select:none;
-    }
-    .brand-text{
-      display:flex;
-      flex-direction:column;
-      line-height: 1.1;
-    }
-    .brand-text .name{
-      font-size: 22px;
-      font-weight: 600;
-    }
-    .brand-text .sub{
-      font-size: 16px;
-      color: var(--text-3);
-      margin-top: 6px;
+      font-weight:700;
+      color:var(--muted);
     }
 
-    .header-message{
-      flex: 1;
-      display:flex;
-      justify-content:center;
-      padding: 0 20px;
-      text-align:center;
-      font-size: 26px;
-      font-weight: 500;
-      color: var(--text-2);
-      opacity: .95;
+    .brand span{
+      font-size:18px;
+      font-weight:600;
     }
 
     .datetime{
-      min-width: 360px;
-      display:flex;
-      flex-direction:column;
-      align-items:flex-end;
-      line-height: 1;
-    }
-    .time{
-      font-size: 64px;
-      font-weight: 600;
-      letter-spacing: -1px;
-    }
-    .date{
-      margin-top: 10px;
-      font-size: 22px;
-      color: var(--text-2);
-      font-weight: 400;
+      text-align:right;
+      line-height:1;
     }
 
-    /* MAIN KPI AREA */
+    .time{
+      font-size:42px;
+      font-weight:600;
+    }
+
+    .date{
+      margin-top:6px;
+      font-size:16px;
+      color:var(--muted);
+    }
+
+    /* MAIN GRID */
     main{
-      padding: var(--pad);
-      display:flex;
-      flex-direction:column;
-      gap: var(--gap);
+      padding:var(--pad);
     }
 
     .kpi-grid{
-      flex: 1;
+      height:100%;
       display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-auto-rows: 1fr;
-      gap: var(--gap);
-      min-height: 0;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap:var(--gap);
     }
 
-    .kpi-card{
-      background: var(--surface);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 22px 24px;
+    .kpi{
+      background:var(--surface);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:16px;
       display:flex;
       flex-direction:column;
-      position: relative;
       overflow:hidden;
-      border: 1px solid rgba(255,255,255,.06);
     }
 
     .kpi-title{
-      font-size: 22px;
-      font-weight: 600;
-      letter-spacing: .3px;
-      color: var(--text-2);
-      text-transform: uppercase;
+      font-size:16px;
+      font-weight:600;
+      color:var(--muted);
+      margin-bottom:10px;
+      text-transform:uppercase;
+      letter-spacing:.4px;
     }
 
-    .kpi-value{
-      margin-top: 18px;
-      font-size: 72px;
-      font-weight: 700;
-      letter-spacing: -1px;
+    .kpi-content{
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#111;
+      border-radius:10px;
+      padding:10px;
+    }
+
+    /* NUMBER MODE */
+    .kpi-number{
+      font-size:56px;
+      font-weight:700;
+      line-height:1;
+      text-align:center;
     }
 
     .kpi-unit{
-      margin-top: 6px;
-      font-size: 20px;
-      color: var(--text-3);
+      display:block;
+      font-size:18px;
+      font-weight:400;
+      color:var(--muted);
+      margin-top:6px;
     }
 
-    .kpi-footer{
-      margin-top: auto;
-      display:flex;
-      align-items:center;
-      justify-content: space-between;
-      gap: 12px;
+    /* IMAGE MODE */
+    .kpi-content img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
     }
 
     .kpi-note{
-      font-size: 16px;
-      color: var(--text-3);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .status-dot{
-      width: 12px;
-      height: 12px;
-      border-radius: 999px;
-      background: var(--info);
-      box-shadow: 0 0 0 4px rgba(255,255,255,.06);
-      flex: 0 0 auto;
-    }
-
-    .status-bar{
-      position:absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: 8px;
-      background: var(--info);
-      opacity: .9;
-    }
-
-    /* Footer / News ticker */
-    footer{
-      background: var(--bar);
-      border-top: 1px solid rgba(255,255,255,.06);
-      display:flex;
-      align-items:center;
-      padding: 0 var(--pad);
-    }
-
-    .ticker{
-      width: 100%;
-      display:flex;
-      align-items:center;
-      gap: 14px;
-      min-height: 100%;
-    }
-
-    .ticker-icon{
-      font-size: 28px;
-      width: 36px;
+      margin-top:10px;
+      font-size:14px;
+      color:var(--muted);
       text-align:center;
-      opacity: .95;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
 
-    .ticker-text{
-      font-size: 28px;
-      font-weight: 500;
-      color: var(--text);
-      line-height: 1.1;
-      flex: 1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    /* FOOTER */
+    footer{
+      background:var(--bar);
+      display:flex;
+      align-items:center;
+      padding:0 var(--pad);
+      border-top:1px solid rgba(255,255,255,.06);
+      font-size:20px;
     }
 
-    .ticker-tag{
-      font-size: 16px;
-      color: var(--text-3);
-      border: 1px solid rgba(255,255,255,.12);
-      padding: 8px 10px;
-      border-radius: 999px;
-      white-space: nowrap;
-    }
-
-    /* Subtle fade for rotating text */
-    .fade{
-      transition: opacity .35s ease-in-out;
-      opacity: 1;
-    }
-    .fade.out{ opacity: 0; }
-
-    /* Responsiveness: keep proportions on smaller screens */
-    @media (max-width: 1400px){
-      .time{ font-size: 52px; }
-      .kpi-value{ font-size: 60px; }
-      .ticker-text{ font-size: 22px; }
+    /* Responsive fallback */
+    @media(max-width:1400px){
+      .kpi-number{ font-size:44px; }
+      .time{ font-size:34px; }
     }
   </style>
 </head>
 
 <body>
-  <div class="screen">
-    <header>
-      <div class="brand">
-        <!-- Trocar isto por <img src="logo.png"> quando tiveres o ficheiro -->
-        <div class="logo" aria-label="Logo">MP</div>
-        <div class="brand-text">
-          <div class="name">Monte do Pasto</div>
-          <div class="sub">Informação interna · Colaboradores</div>
-        </div>
-      </div>
+<div class="screen">
 
-      <div class="header-message fade" id="headerMessage">Segurança em primeiro lugar</div>
+  <!-- HEADER -->
+  <header>
+    <div class="brand">
+      <div class="logo">MP</div>
+      <span>Monte do Pasto</span>
+    </div>
+    <div class="datetime">
+      <div class="time" id="time">--:--</div>
+      <div class="date" id="date">---</div>
+    </div>
+  </header>
 
-      <div class="datetime">
-        <div class="time" id="time">--:--</div>
-        <div class="date" id="date">---</div>
-      </div>
-    </header>
+  <!-- KPIs -->
+  <main>
+    <div class="kpi-grid" id="kpiGrid"></div>
+  </main>
 
-    <main>
-      <section class="kpi-grid" aria-label="Indicadores">
-        <!-- KPI 1 -->
-        <article class="kpi-card" data-status="ok">
-          <div class="kpi-title">Produção hoje</div>
-          <div class="kpi-value">1280</div>
-          <div class="kpi-unit">kg</div>
-          <div class="kpi-footer">
-            <div class="kpi-note">Atualizado às 10:30</div>
-            <div class="status-dot"></div>
-          </div>
-          <div class="status-bar"></div>
-        </article>
+  <!-- FOOTER -->
+  <footer id="ticker">
+    🔔 Informação interna para colaboradores
+  </footer>
 
-        <!-- KPI 2 -->
-        <article class="kpi-card" data-status="info">
-          <div class="kpi-title">Dias sem incidentes</div>
-          <div class="kpi-value">64</div>
-          <div class="kpi-unit">dias</div>
-          <div class="kpi-footer">
-            <div class="kpi-note">Último: há 64 dias</div>
-            <div class="status-dot"></div>
-          </div>
-          <div class="status-bar"></div>
-        </article>
+</div>
 
-        <!-- KPI 3 -->
-        <article class="kpi-card" data-status="ok">
-          <div class="kpi-title">Incidentes (30 dias)</div>
-          <div class="kpi-value">0</div>
-          <div class="kpi-unit">&nbsp;</div>
-          <div class="kpi-footer">
-            <div class="kpi-note">Objetivo: 0</div>
-            <div class="status-dot"></div>
-          </div>
-          <div class="status-bar"></div>
-        </article>
-
-        <!-- KPI 4 -->
-        <article class="kpi-card" data-status="warn">
-          <div class="kpi-title">Meta do mês</div>
-          <div class="kpi-value">82%</div>
-          <div class="kpi-unit">progresso</div>
-          <div class="kpi-footer">
-            <div class="kpi-note">Faltam 18%</div>
-            <div class="status-dot"></div>
-          </div>
-          <div class="status-bar"></div>
-        </article>
-
-        <!-- KPI 5 -->
-        <article class="kpi-card" data-status="ok">
-          <div class="kpi-title">Eficiência</div>
-          <div class="kpi-value">94%</div>
-          <div class="kpi-unit">média semanal</div>
-          <div class="kpi-footer">
-            <div class="kpi-note">Objetivo: 90%</div>
-            <div class="status-dot"></div>
-          </div>
-          <div class="status-bar"></div>
-        </article>
-
-        <!-- KPI 6 (opcional) -->
-        <article class="kpi-card" data-status="info">
-          <div class="kpi-title">Qualidade</div>
-          <div class="kpi-value">A+</div>
-          <div class="kpi-unit">lote atual</div>
-          <div class="kpi-footer">
-            <div class="kpi-note">Sem não conformidades</div>
-            <div class="status-dot"></div>
-          </div>
-          <div class="status-bar"></div>
-        </article>
-      </section>
-    </main>
-
-    <footer>
-      <div class="ticker">
-        <div class="ticker-icon" id="tickerIcon">🔔</div>
-        <div class="ticker-text fade" id="tickerText">Manutenção programada sexta-feira às 14h.</div>
-        <div class="ticker-tag" id="tickerTag">NOTÍCIA</div>
-      </div>
-    </footer>
-  </div>
-
-  <script>
-    // --- Helpers
-    const statusColors = {
-      ok: getComputedStyle(document.documentElement).getPropertyValue('--ok').trim(),
-      warn: getComputedStyle(document.documentElement).getPropertyValue('--warn').trim(),
-      crit: getComputedStyle(document.documentElement).getPropertyValue('--crit').trim(),
-      info: getComputedStyle(document.documentElement).getPropertyValue('--info').trim()
-    };
-
-    // Apply status color to cards (dot + bar)
-    document.querySelectorAll('.kpi-card').forEach(card => {
-      const s = card.getAttribute('data-status') || 'info';
-      const color = statusColors[s] || statusColors.info;
-      card.querySelector('.status-dot').style.background = color;
-      card.querySelector('.status-bar').style.background = color;
-    });
-
-    // Date/time (Europe/Lisbon)
-    const timeEl = document.getElementById('time');
-    const dateEl = document.getElementById('date');
-
-    function tickClock(){
-      const now = new Date();
-      const timeFmt = new Intl.DateTimeFormat('pt-PT', { hour: '2-digit', minute: '2-digit' });
-      const dateFmt = new Intl.DateTimeFormat('pt-PT', { weekday: 'short', day: '2-digit', month: 'short' });
-      timeEl.textContent = timeFmt.format(now);
-      // Capitalizar primeira letra (alguns browsers dão "qui.")
-      const d = dateFmt.format(now);
-      dateEl.textContent = d.charAt(0).toUpperCase() + d.slice(1);
+<script>
+  /* ===== CONFIGURAÇÃO DOS KPIs ===== */
+  const kpis = [
+    {
+      title: "Produção diária",
+      type: "number",
+      value: "1280",
+      unit: "kg",
+      note: "Turno da manhã"
+    },
+    {
+      title: "Produção semanal",
+      type: "image",
+      image: "assets/kpis/producao-semanal.png",
+      note: "Últimos 7 dias"
+    },
+    {
+      title: "Segurança",
+      type: "number",
+      value: "64",
+      unit: "dias",
+      note: "Sem incidentes"
+    },
+    {
+      title: "Qualidade",
+      type: "image",
+      image: "assets/kpis/qualidade.png",
+      note: "Lote atual"
+    },
+    {
+      title: "Eficiência",
+      type: "number",
+      value: "94",
+      unit: "%",
+      note: "Média semanal"
     }
-    tickClock();
-    setInterval(tickClock, 1000 * 15);
+    // até 8 KPIs
+  ];
 
-    // Rotating header message
-    const headerMessageEl = document.getElementById('headerMessage');
-    const headerMessages = [
-      "Segurança em primeiro lugar",
-      "Qualidade é responsabilidade de todos",
-      "Bom trabalho, equipa 💪",
-      "Comunicação clara evita problemas",
-      "Orgulho no que fazemos"
-    ];
-    let headerIdx = 0;
+  const grid = document.getElementById("kpiGrid");
 
-    function rotateHeader(){
-      headerMessageEl.classList.add('out');
-      setTimeout(() => {
-        headerIdx = (headerIdx + 1) % headerMessages.length;
-        headerMessageEl.textContent = headerMessages[headerIdx];
-        headerMessageEl.classList.remove('out');
-      }, 350);
-    }
-    setInterval(rotateHeader, 1000 * 45);
+  kpis.slice(0,8).forEach(kpi => {
+    const card = document.createElement("div");
+    card.className = "kpi";
 
-    // Rotating ticker items
-    const tickerIconEl = document.getElementById('tickerIcon');
-    const tickerTextEl = document.getElementById('tickerText');
-    const tickerTagEl  = document.getElementById('tickerTag');
+    card.innerHTML = `
+      <div class="kpi-title">${kpi.title}</div>
+      <div class="kpi-content">
+        ${
+          kpi.type === "image"
+          ? `<img src="${kpi.image}" alt="${kpi.title}">`
+          : `<div class="kpi-number">
+               ${kpi.value}
+               ${kpi.unit ? `<span class="kpi-unit">${kpi.unit}</span>` : ``}
+             </div>`
+        }
+      </div>
+      <div class="kpi-note">${kpi.note || ""}</div>
+    `;
 
-    const tickerItems = [
-      { icon: "🔔", tag: "NOTÍCIA", text: "Manutenção programada sexta-feira às 14h." },
-      { icon: "ℹ️", tag: "INFO",   text: "Uso obrigatório de EPI na zona X." },
-      { icon: "📢", tag: "AVISO",  text: "Reunião geral dia 25 às 09:00." },
-      { icon: "✅", tag: "BOAS NOTÍCIAS", text: "0 incidentes nos últimos 30 dias. Continua assim!" }
-    ];
-    let tickerIdx = 0;
+    grid.appendChild(card);
+  });
 
-    function rotateTicker(){
-      tickerTextEl.classList.add('out');
-      setTimeout(() => {
-        tickerIdx = (tickerIdx + 1) % tickerItems.length;
-        const item = tickerItems[tickerIdx];
-        tickerIconEl.textContent = item.icon;
-        tickerTagEl.textContent  = item.tag;
-        tickerTextEl.textContent = item.text;
-        tickerTextEl.classList.remove('out');
-      }, 350);
-    }
-    setInterval(rotateTicker, 1000 * 10);
+  /* ===== DATA / HORA ===== */
+  function tick(){
+    const now = new Date();
+    const t = new Intl.DateTimeFormat("pt-PT",{hour:"2-digit",minute:"2-digit"}).format(now);
+    const d = new Intl.DateTimeFormat("pt-PT",{weekday:"short",day:"2-digit",month:"short"}).format(now);
+    document.getElementById("time").textContent = t;
+    document.getElementById("date").textContent = d.charAt(0).toUpperCase()+d.slice(1);
+  }
+  tick();
+  setInterval(tick, 30000);
 
-    // Auto-refresh safety net (TV stability)
-    // Refresh a cada 30 min para evitar "browser drift"
-    setTimeout(() => location.reload(), 1000 * 60 * 30);
-  </script>
+  /* Auto refresh (TV safe) */
+  setTimeout(()=>location.reload(), 1000*60*30);
+</script>
 </body>
 </html>
