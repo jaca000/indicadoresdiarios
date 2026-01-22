@@ -3,21 +3,29 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Monte do Pasto · Painel Interno</title>
+<title>Monte do Pasto · Painel</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
+/* =========================
+   GLASS DESIGN SYSTEM
+   ========================= */
 :root{
-  /* Paleta Monte do Pasto */
-  --bg:#F3F1EC;
-  --surface:#FFFFFF;
-  --bar:#2F5D3A;
-  --text:#1F2A24;
-  --muted:#5E6E65;
+  --bg-1:#0B0F14;
+  --bg-2:#0E1A14;
 
-  --radius:14px;
-  --gap:18px;
+  --glass-bg:rgba(255,255,255,0.08);
+  --glass-border:rgba(255,255,255,0.18);
+  --glass-shadow:0 20px 40px rgba(0,0,0,.45);
+
+  --text:#FFFFFF;
+  --muted:#AEB7B2;
+
+  --accent:#3AFF8F; /* verde glow subtil */
+
+  --radius:18px;
+  --gap:20px;
 }
 
 *{box-sizing:border-box}
@@ -26,46 +34,50 @@ html,body{height:100%}
 body{
   margin:0;
   font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  background:var(--bg);
+  background:
+    radial-gradient(1200px 600px at 20% -10%, rgba(58,255,143,0.12), transparent 40%),
+    radial-gradient(800px 500px at 90% 110%, rgba(58,255,143,0.08), transparent 45%),
+    linear-gradient(180deg, var(--bg-1), var(--bg-2));
   color:var(--text);
   overflow:hidden;
 }
 
-/* Estrutura geral */
+/* =========================
+   LAYOUT
+   ========================= */
 .screen{
   height:100vh;
   display:grid;
-  grid-template-rows:80px 1fr 70px;
+  grid-template-rows:90px 1fr 70px;
 }
 
-/* HEADER */
+/* =========================
+   HEADER
+   ========================= */
 header{
-  background:var(--bar);
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:0 24px;
-  color:#fff;
-}
-
-.brand{
-  display:flex;
-  align-items:center;
+  padding:0 28px;
 }
 
 .brand img{
-  height:52px;
+  height:46px;
   width:auto;
+  filter:drop-shadow(0 0 6px rgba(58,255,143,.25));
 }
 
 .clock{
   font-size:34px;
   font-weight:600;
+  letter-spacing:.5px;
 }
 
-/* MAIN */
+/* =========================
+   MAIN GRID
+   ========================= */
 main{
-  padding:24px;
+  padding:28px;
 }
 
 .grid{
@@ -76,41 +88,66 @@ main{
   align-content:center;
 }
 
-/* CARD */
+/* =========================
+   GLASS CARD
+   ========================= */
 .card{
-  background:var(--surface);
+  position:relative;
+  background:var(--glass-bg);
+  backdrop-filter:blur(18px) saturate(120%);
+  -webkit-backdrop-filter:blur(18px) saturate(120%);
   border-radius:var(--radius);
-  padding:16px;
+  padding:18px;
   display:flex;
   flex-direction:column;
-  box-shadow:0 6px 16px rgba(0,0,0,.15);
+  box-shadow:var(--glass-shadow);
+  border:1px solid var(--glass-border);
+  overflow:hidden;
+}
+
+/* brilho subtil */
+.card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    120deg,
+    transparent 20%,
+    rgba(255,255,255,.15),
+    transparent 80%
+  );
+  opacity:.15;
+  pointer-events:none;
 }
 
 .card h3{
-  margin:0 0 10px 0;
-  font-size:16px;
+  margin:0 0 12px 0;
+  font-size:15px;
   font-weight:600;
   color:var(--muted);
   text-transform:uppercase;
-  letter-spacing:.4px;
+  letter-spacing:.5px;
 }
 
+/* =========================
+   CONTENT
+   ========================= */
 .content{
   flex:1;
-  background:#F7F7F5;
-  border-radius:10px;
+  border-radius:12px;
   display:flex;
   align-items:center;
   justify-content:center;
   padding:12px;
 }
 
-/* Número */
+/* NUMBER MODE */
 .number{
   font-size:64px;
   font-weight:700;
-  line-height:1;
   text-align:center;
+  line-height:1;
+  text-shadow:0 0 14px rgba(58,255,143,.25);
 }
 
 .number span{
@@ -120,16 +157,17 @@ main{
   margin-top:6px;
 }
 
-/* Imagem */
+/* IMAGE MODE */
 .content img{
   width:100%;
   height:100%;
   object-fit:contain;
+  filter:drop-shadow(0 8px 18px rgba(0,0,0,.6));
 }
 
-/* Nota */
+/* NOTE */
 .note{
-  margin-top:8px;
+  margin-top:10px;
   font-size:14px;
   color:var(--muted);
   text-align:center;
@@ -138,14 +176,15 @@ main{
   text-overflow:ellipsis;
 }
 
-/* FOOTER */
+/* =========================
+   FOOTER
+   ========================= */
 footer{
-  background:var(--bar);
-  color:#fff;
   display:flex;
   align-items:center;
-  padding:0 24px;
-  font-size:20px;
+  padding:0 28px;
+  font-size:18px;
+  color:var(--muted);
 }
 </style>
 </head>
@@ -161,14 +200,14 @@ footer{
     <div class="clock" id="clock">--:--</div>
   </header>
 
-  <!-- CONTEÚDO DINÂMICO -->
+  <!-- DYNAMIC CONTENT -->
   <main>
     <div class="grid" id="grid"></div>
   </main>
 
   <!-- FOOTER -->
   <footer>
-    🔔 Informação interna para colaboradores
+    Informação interna · Monte do Pasto
   </footer>
 
 </div>
@@ -176,9 +215,9 @@ footer{
 <script>
 /*
   ITENS DINÂMICOS
-  - não são KPIs fixos
-  - só aparecem os que estão active:true
-  - máximo 8
+  - aparecem apenas os ativos
+  - até 8
+  - número OU imagem
 */
 const items = [
   {
@@ -195,9 +234,6 @@ const items = [
     type:"image",
     image:"assets/kpis/producao-semanal.png",
     note:"Últimos 7 dias"
-  },
-  {
-    active:false
   }
 ];
 
@@ -228,7 +264,7 @@ items
     grid.appendChild(card);
   });
 
-/* Relógio */
+/* CLOCK */
 function tick(){
   document.getElementById("clock").textContent =
     new Intl.DateTimeFormat("pt-PT",{hour:"2-digit",minute:"2-digit"}).format(new Date());
@@ -236,8 +272,8 @@ function tick(){
 tick();
 setInterval(tick, 30000);
 
-/* Auto-refresh para TV */
-setTimeout(() => location.reload(), 1000 * 60 * 30);
+/* AUTO REFRESH (TV SAFE) */
+setTimeout(()=>location.reload(),1000*60*30);
 </script>
 </body>
 </html>
