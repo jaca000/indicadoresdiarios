@@ -20,56 +20,60 @@ body{
 }
 
 /* =========================
-   CAMADA DE EFEITOS
+   FX FUNDO (chuva já existente)
    ========================= */
-#fx{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:0;
-}
-
-/* ---------- CHUVA ---------- */
+#fx{position:fixed;inset:0;pointer-events:none;z-index:0}
 .drop{
-  position:absolute;
-  width:2px;
-  height:18px;
+  position:absolute;width:2px;height:18px;
   background:rgba(255,255,255,.45);
   border-radius:50%;
   animation:fall linear infinite;
 }
 @keyframes fall{
-  from{transform:translateY(-100px) translateX(0);}
-  to{transform:translateY(110vh) translateX(40px);}
+  from{transform:translateY(-100px)}
+  to{transform:translateY(110vh)}
 }
 
-/* ---------- SOL ---------- */
-.sun{
-  position:absolute;
+/* =========================
+   ÍCONES DO TEMPO
+   ========================= */
+.weather-icon{
+  width:42px;height:42px;
+  position:relative;
+}
+
+.sun-icon{
   border-radius:50%;
-  background:radial-gradient(circle,
-    rgba(255,220,140,.95),
-    rgba(255,220,140,.45),
-    transparent 65%);
-  animation:sunpulse 8s ease-in-out infinite;
+  background:radial-gradient(circle, #ffd27d, #ffb347);
+  animation:sunPulse 6s ease-in-out infinite;
 }
-@keyframes sunpulse{
-  0%,100%{opacity:.7}
-  50%{opacity:1}
+@keyframes sunPulse{
+  0%,100%{transform:scale(.9);opacity:.8}
+  50%{transform:scale(1);opacity:1}
 }
 
-/* ---------- NEVOEIRO ---------- */
-.fog{
-  position:absolute;
-  inset:-20%;
-  background:
-    radial-gradient(circle at 30% 50%, rgba(255,255,255,.18), transparent 55%),
-    radial-gradient(circle at 70% 60%, rgba(255,255,255,.15), transparent 60%);
-  animation:fogmove 120s linear infinite;
+.cloud-icon{
+  background:#ccc;
+  border-radius:20px;
+  opacity:.8;
+  animation:cloudMove 12s ease-in-out infinite;
 }
-@keyframes fogmove{
-  from{transform:translateX(0)}
-  to{transform:translateX(-15%)}
+@keyframes cloudMove{
+  0%,100%{transform:translateX(0)}
+  50%{transform:translateX(6px)}
+}
+
+.rain-icon::after{
+  content:"";
+  position:absolute;
+  bottom:-10px;left:50%;
+  width:2px;height:10px;
+  background:#9fd3ff;
+  animation:rainDrop 1s linear infinite;
+}
+@keyframes rainDrop{
+  from{transform:translate(-50%,0);opacity:1}
+  to{transform:translate(-50%,10px);opacity:0}
 }
 
 /* =========================
@@ -80,68 +84,79 @@ body{
   z-index:1;
   height:100vh;
   display:grid;
-  grid-template-rows:90px 1fr 80px;
+  grid-template-rows:80px 1fr 70px;
 }
 
+/* HEADER */
 header{
-  padding:0 40px;
+  padding:0 32px;
   display:flex;
   align-items:center;
   justify-content:space-between;
 }
-header img{height:42px}
-.clock{font-size:34px;font-weight:600}
 
+.header-left{
+  display:flex;
+  align-items:center;
+  gap:18px;
+}
+
+.header-weather{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-size:22px;
+  font-weight:600;
+}
+
+.clock{font-size:30px;font-weight:600}
+
+/* MAIN */
 main{
-  padding:40px;
+  padding:32px;
   display:grid;
   grid-template-columns:1fr 1fr;
   grid-template-rows:1fr 1fr;
-  gap:32px;
+  gap:28px;
 }
 
 .card{
   background:rgba(0,0,0,.45);
-  border-radius:28px;
-  padding:28px;
-  box-shadow:0 35px 80px rgba(0,0,0,.65);
+  border-radius:26px;
+  padding:26px;
 }
 
 .card h3{
-  margin:0 0 16px;
-  font-size:14px;
-  text-transform:uppercase;
+  margin:0 0 14px;
+  font-size:13px;
   letter-spacing:.8px;
-  opacity:.75;
+  text-transform:uppercase;
+  opacity:.7;
 }
 
-.temp{font-size:72px;font-weight:700}
-.condition{opacity:.8}
+.row{display:flex;gap:16px}
 
-.row{display:flex;gap:14px}
 .box{
   background:rgba(255,255,255,.08);
-  border-radius:16px;
-  padding:12px;
+  border-radius:14px;
+  padding:10px;
   min-width:90px;
   text-align:center;
+  font-size:18px;
 }
 
-.kpi{font-size:64px;font-weight:700}
+.day{font-size:14px;opacity:.7}
+
+/* KPI */
+.kpi{font-size:60px;font-weight:700}
 .kpi span{font-size:18px;opacity:.7}
 
+/* FOOTER */
 footer{
-  padding:0 40px;
+  padding:0 32px;
   display:flex;
   align-items:center;
   opacity:.6;
-}
-
-/* =========================
-   VISIBILIDADE EM TV
-   ========================= */
-@media (min-width:1200px){
-  .drop{height:22px}
 }
 </style>
 </head>
@@ -153,17 +168,17 @@ footer{
 <div class="app">
 
 <header>
-  <img src="assets/logo-monte-do-pasto.png" alt="Monte do Pasto">
+  <div class="header-left">
+    <img src="assets/logo-monte-do-pasto.png" height="38">
+    <div class="header-weather">
+      <div id="headerIcon" class="weather-icon cloud-icon"></div>
+      <div><span id="headerTemp">--°C</span> · <span id="headerCond">---</span></div>
+    </div>
+  </div>
   <div class="clock" id="clock">--:--</div>
 </header>
 
 <main>
-
-  <div class="card">
-    <h3>Tempo atual</h3>
-    <div class="temp" id="temp">--°C</div>
-    <div class="condition" id="condition">---</div>
-  </div>
 
   <div class="card">
     <h3>Próximas horas</h3>
@@ -180,6 +195,11 @@ footer{
     <div class="kpi">1280<span> kg</span></div>
   </div>
 
+  <div class="card">
+    <h3>Estado</h3>
+    <p>Ambiente monitorizado em tempo real</p>
+  </div>
+
 </main>
 
 <footer>Informação interna · Monte do Pasto</footer>
@@ -187,96 +207,44 @@ footer{
 </div>
 
 <script>
-/* =========================
-   RELÓGIO
-   ========================= */
-function tick(){
-  document.getElementById("clock").textContent =
-    new Intl.DateTimeFormat("pt-PT",{hour:"2-digit",minute:"2-digit"}).format(new Date());
-}
-tick();
-setInterval(tick,30000);
+/* RELÓGIO */
+setInterval(()=>{
+  clock.textContent=new Intl.DateTimeFormat("pt-PT",{hour:"2-digit",minute:"2-digit"}).format(new Date());
+},1000);
 
-/* =========================
-   BASELINE — ANIMAÇÕES SEMPRE ATIVAS
-   ========================= */
-const fx = document.getElementById("fx");
-
-/* baseline chuva leve */
-function baselineRain(count){
-  for(let i=0;i<count;i++){
-    const d=document.createElement("div");
-    d.className="drop";
-    d.style.left=Math.random()*100+"%";
-    d.style.animationDuration=0.8+Math.random()*1.2+"s";
-    d.style.opacity=0.4+Math.random()*0.3;
-    fx.appendChild(d);
-  }
+/* CHUVA BASE */
+for(let i=0;i<40;i++){
+  const d=document.createElement("div");
+  d.className="drop";
+  d.style.left=Math.random()*100+"%";
+  d.style.animationDuration=1+Math.random()+"s";
+  fx.appendChild(d);
 }
 
-/* baseline sol leve */
-function baselineSun(size){
-  const s=document.createElement("div");
-  s.className="sun";
-  s.style.width=s.style.height=size+"px";
-  s.style.top="12%";
-  s.style.right="15%";
-  fx.appendChild(s);
-}
-
-/* baseline nevoeiro leve */
-function baselineFog(){
-  const f=document.createElement("div");
-  f.className="fog";
-  fx.appendChild(f);
-}
-
-/* baseline sempre ativo */
-baselineRain(25);
-baselineSun(180);
-baselineFog();
-
-/* =========================
-   TEMPO REAL (ESCALA)
-   ========================= */
-fetch("https://api.open-meteo.com/v1/forecast?latitude=38.219&longitude=-7.887&hourly=temperature_2m,precipitation,cloudcover,shortwave_radiation&daily=temperature_2m_max,temperature_2m_min&current_weather=true&timezone=auto")
+/* TEMPO */
+fetch("https://api.open-meteo.com/v1/forecast?latitude=38.219&longitude=-7.887&hourly=temperature_2m&daily=temperature_2m_max,temperature_2m_min&current_weather=true&timezone=auto")
 .then(r=>r.json())
 .then(d=>{
-  /* TEMP */
-  document.getElementById("temp").textContent =
-    Math.round(d.current_weather.temperature)+"°C";
+  headerTemp.textContent=Math.round(d.current_weather.temperature)+"°C";
+  headerCond.textContent="Nublado";
 
-  /* HORAS */
   for(let i=1;i<=4;i++){
-    hours.innerHTML+=`<div class="box">${Math.round(d.hourly.temperature_2m[i])}°</div>`;
+    hours.innerHTML+=`
+      <div class="box">
+        <div class="weather-icon cloud-icon"></div>
+        ${Math.round(d.hourly.temperature_2m[i])}°
+      </div>`;
   }
 
-  /* DIAS */
+  const dias=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
   for(let i=1;i<=4;i++){
-    days.innerHTML+=`<div class="box">${Math.round(d.daily.temperature_2m_max[i])}° / ${Math.round(d.daily.temperature_2m_min[i])}°</div>`;
-  }
-
-  /* INTENSIDADES */
-  const rain=d.hourly.precipitation[0];
-  const sun=d.hourly.shortwave_radiation[0];
-  const cloud=d.hourly.cloudcover[0];
-
-  /* CHUVA PROPORCIONAL */
-  if(rain>0){
-    baselineRain(Math.min(250,Math.floor(rain*60)));
-    condition.textContent="Chuva";
-  }
-
-  /* SOL PROPORCIONAL */
-  if(sun>150){
-    baselineSun(Math.min(320,150+sun/2));
-    condition.textContent="Sol";
-  }
-
-  /* NEVOEIRO PROPORCIONAL */
-  if(cloud>60){
-    baselineFog();
-    condition.textContent="Nublado";
+    const date=new Date(d.daily.time[i]);
+    days.innerHTML+=`
+      <div class="box">
+        <div class="day">${dias[date.getDay()]}</div>
+        <div class="weather-icon cloud-icon"></div>
+        ${Math.round(d.daily.temperature_2m_max[i])}° / ${Math.round(d.daily.temperature_2m_min[i])}°
+      </div>`;
   }
 });
 </script>
