@@ -3,132 +3,232 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Monte do Pasto · Painel</title>
+<title>Monte do Pasto · Painel Vivo</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-:root{
-  --bg-1:#0f1411;
-  --bg-2:#1b241f;
-  --accent:#6fa87a;
-  --text:#f3f6f4;
-  --muted:#9fb3a6;
-}
+/* =========================
+   BASE
+   ========================= */
+*{box-sizing:border-box}
+html,body{height:100%}
 
 body{
   margin:0;
-  font-family:Inter,system-ui;
-  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  color:#f3f6f4;
   overflow:hidden;
-  background:linear-gradient(180deg,var(--bg-1),var(--bg-2));
-  transition: background 3s ease;
+  background:#000;
 }
 
-/* WEATHER MOODS */
-body.sunny{
-  --bg-1:#3a2f20;
-  --bg-2:#6b5330;
-  --accent:#e0b46c;
+/* =========================
+   WEATHER BACKGROUND
+   ========================= */
+.weather-bg{
+  position:fixed;
+  inset:0;
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+  transition:background-image 2s ease;
+  z-index:-5;
 }
 
-body.cloudy{
-  --bg-1:#2b2e2c;
-  --bg-2:#404543;
-  --accent:#aeb7b2;
+/* contraste */
+.weather-overlay{
+  position:fixed;
+  inset:0;
+  background:linear-gradient(
+    180deg,
+    rgba(0,0,0,.35),
+    rgba(0,0,0,.65)
+  );
+  transition:background 2s ease;
+  z-index:-4;
 }
 
-body.rain{
-  --bg-1:#10161a;
-  --bg-2:#1b2328;
-  --accent:#7fa1b8;
+/* =========================
+   GRAFISMOS (ativados por estado)
+   ========================= */
+
+/* SOL */
+.sun-motion{
+  position:fixed;
+  inset:-20%;
+  background:
+    radial-gradient(circle at 30% 50%, rgba(255,255,255,.08), transparent 55%),
+    radial-gradient(circle at 70% 55%, rgba(255,255,255,.06), transparent 60%);
+  animation:sun-drift 120s linear infinite;
+  z-index:-3;
+}
+@keyframes sun-drift{
+  from{transform:translateX(0);}
+  to{transform:translateX(-15%);}
 }
 
-body.wind{
-  --bg-1:#1a2420;
-  --bg-2:#2e3b34;
-  --accent:#8fc1a9;
+/* NUBLADO */
+.cloud-motion{
+  position:fixed;
+  inset:-15%;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(255,255,255,.06), transparent 55%),
+    radial-gradient(circle at 70% 60%, rgba(255,255,255,.05), transparent 60%);
+  animation:cloud-drift 140s linear infinite;
+  opacity:.35;
+  z-index:-3;
+}
+@keyframes cloud-drift{
+  from{transform:translateX(0);}
+  to{transform:translateX(-8%);}
 }
 
-body.night{
-  --bg-1:#0b0f0d;
-  --bg-2:#121615;
-  --accent:#4f6b5c;
+/* CHUVA */
+.rain-motion{
+  position:fixed;
+  inset:-10%;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,.06) 0px,
+      rgba(255,255,255,.06) 1px,
+      transparent 1px,
+      transparent 22px
+    );
+  animation:rain-fall 35s linear infinite;
+  opacity:.25;
+  z-index:-3;
+}
+@keyframes rain-fall{
+  from{transform:translateY(0);}
+  to{transform:translateY(20%);}
 }
 
-/* BASIC LAYOUT (resumido) */
+/* =========================
+   LAYOUT
+   ========================= */
 .screen{
   height:100vh;
   display:grid;
   grid-template-rows:90px 1fr 70px;
 }
 
-header, footer{
-  padding:0 36px;
+/* HEADER */
+header{
   display:flex;
   align-items:center;
   justify-content:space-between;
+  padding:0 44px;
 }
 
-main{ padding:36px; }
+header img{ height:42px; }
+.clock{ font-size:32px; font-weight:600; }
 
-/* EXEMPLO SIMPLES */
+/* MAIN */
+main{ padding:44px; }
+
 .grid{
   height:100%;
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(420px,1fr));
-  gap:26px;
   align-content:center;
 }
 
+/* cards base */
 .card{
-  background:rgba(0,0,0,.35);
-  border-radius:22px;
-  padding:24px;
-  box-shadow:0 30px 60px rgba(0,0,0,.5);
-  animation: breathe 18s ease-in-out infinite;
+  background:rgba(0,0,0,.45);
+  border-radius:26px;
+  padding:26px;
+  display:flex;
+  flex-direction:column;
+  box-shadow:0 35px 80px rgba(0,0,0,.6);
+  animation:breathe 18s ease-in-out infinite;
 }
-
 @keyframes breathe{
-  0%,100%{ transform:scale(1); }
-  50%{ transform:scale(1.02); }
+  0%,100%{transform:scale(1);}
+  50%{transform:scale(1.02);}
 }
 
-h3{ margin:0 0 16px; color:var(--muted); }
+.card h3{
+  margin:0 0 18px 0;
+  font-size:14px;
+  letter-spacing:.7px;
+  text-transform:uppercase;
+  opacity:.75;
+}
 
-/* clock */
-.clock{
-  font-size:32px;
-  font-weight:600;
+.content{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.number{
+  font-size:68px;
+  font-weight:700;
+}
+.number span{
+  display:block;
+  font-size:18px;
+  opacity:.7;
+  margin-top:8px;
+}
+
+/* FOOTER */
+footer{
+  padding:0 44px;
+  display:flex;
+  align-items:center;
+  font-size:16px;
+  opacity:.7;
 }
 </style>
 </head>
 
 <body>
+
+<div class="weather-bg" id="weatherBg"></div>
+<div class="weather-overlay" id="overlay"></div>
+
+<!-- grafismos (ativados por JS) -->
+<div id="sunFx" class="sun-motion" hidden></div>
+<div id="cloudFx" class="cloud-motion" hidden></div>
+<div id="rainFx" class="rain-motion" hidden></div>
+
 <div class="screen">
 
-<header>
-  <img src="assets/logo-monte-do-pasto.png" height="42">
-  <div class="clock" id="clock">--:--</div>
-</header>
+  <header>
+    <img src="assets/logo-monte-do-pasto.png" alt="Monte do Pasto">
+    <div class="clock" id="clock">--:--</div>
+  </header>
 
-<main>
-  <div class="grid">
-    <div class="card">
-      <h3>Produção diária</h3>
-      <div style="font-size:64px;font-weight:700;">1280 kg</div>
+  <main>
+    <div class="grid">
+      <div class="card">
+        <h3>Produção diária</h3>
+        <div class="content">
+          <div class="number">1280<span>kg</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Peso médio</h3>
+        <div class="content">
+          <div class="number">412<span>kg</span></div>
+        </div>
+      </div>
     </div>
-  </div>
-</main>
+  </main>
 
-<footer>
-  Informação interna · Monte do Pasto
-</footer>
+  <footer>
+    Informação interna · Monte do Pasto
+  </footer>
 
 </div>
 
 <script>
-// CLOCK
+/* CLOCK */
 function tick(){
   document.getElementById("clock").textContent =
     new Intl.DateTimeFormat("pt-PT",{hour:"2-digit",minute:"2-digit"}).format(new Date());
@@ -136,24 +236,63 @@ function tick(){
 tick();
 setInterval(tick,30000);
 
-// WEATHER
+/* WEATHER SYSTEM */
+const bg = document.getElementById("weatherBg");
+const overlay = document.getElementById("overlay");
+const sunFx = document.getElementById("sunFx");
+const cloudFx = document.getElementById("cloudFx");
+const rainFx = document.getElementById("rainFx");
+
+function resetFx(){
+  sunFx.hidden = true;
+  cloudFx.hidden = true;
+  rainFx.hidden = true;
+}
+
 fetch("https://api.open-meteo.com/v1/forecast?latitude=38.219&longitude=-7.887&current_weather=true")
   .then(r=>r.json())
   .then(data=>{
-    const w = data.current_weather.weathercode;
+    const code = data.current_weather.weathercode;
     const hour = new Date().getHours();
-    let mood = "cloudy";
+    let state = "cloudy";
 
-    if(hour >= 21 || hour < 6) mood = "night";
-    else if(w === 0) mood = "sunny";
-    else if([1,2,3].includes(w)) mood = "cloudy";
-    else if(w >= 51 && w <= 67) mood = "rain";
-    else if(w >= 80) mood = "rain";
-    else if(w >= 95) mood = "wind";
+    if(hour >= 21 || hour < 6) state = "night";
+    else if(code === 0) state = "sunny";
+    else if([1,2,3].includes(code)) state = "cloudy";
+    else if(code >= 45 && code <= 48) state = "cloudy";
+    else if(code >= 51) state = "rain";
 
-    document.body.classList.add(mood);
+    resetFx();
+
+    if(state === "sunny"){
+      bg.style.backgroundImage = "url(assets/weather/sunny.jpg)";
+      sunFx.hidden = false;
+      overlay.style.background = "linear-gradient(180deg,rgba(0,0,0,.30),rgba(0,0,0,.55))";
+    }
+
+    if(state === "cloudy"){
+      bg.style.backgroundImage = "url(assets/weather/cloudy.jpg)";
+      cloudFx.hidden = false;
+      overlay.style.background = "linear-gradient(180deg,rgba(0,0,0,.40),rgba(0,0,0,.60))";
+    }
+
+    if(state === "rain"){
+      bg.style.backgroundImage = "url(assets/weather/rain.jpg)";
+      rainFx.hidden = false;
+      overlay.style.background = "linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.75))";
+    }
+
+    if(state === "night"){
+      bg.style.backgroundImage = "url(assets/weather/night.jpg)";
+      cloudFx.hidden = false;
+      overlay.style.background = "linear-gradient(180deg,rgba(0,0,0,.65),rgba(0,0,0,.85))";
+    }
   })
-  .catch(()=>document.body.classList.add("cloudy"));
+  .catch(()=>{
+    bg.style.backgroundImage = "url(assets/weather/cloudy.jpg)";
+    cloudFx.hidden = false;
+  });
 </script>
+
 </body>
 </html>
