@@ -4,21 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Monte do Pasto · Painel Vivo</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-/* ======================================================
-   BASE
-   ====================================================== */
+/* =====================================================
+   BASE + VARIÁVEIS (ALTERADAS PELO MOOD)
+   ===================================================== */
 *{box-sizing:border-box}
 html,body{height:100%}
 
 :root{
-  /* valores base – vão ser alterados pelo mood */
-  --g1:#4f8f6b;
-  --g2:#2f6b4f;
-  --g3:#3f7f5f;
-  --b1:#7b6445;
+  --g1:#4f8f6b;   /* verde claro */
+  --g2:#2f6b4f;   /* verde base */
+  --b1:#7b6445;   /* terra */
 
   --glass:rgba(255,255,255,.18);
   --glass2:rgba(0,0,0,.10);
@@ -42,13 +41,15 @@ body{
     linear-gradient(135deg,var(--g1),var(--g2) 55%,var(--b1));
 }
 
-/* ======================================================
-   FX
-   ====================================================== */
+/* =====================================================
+   FX FUNDO
+   ===================================================== */
 #fx{position:fixed;inset:0;pointer-events:none;z-index:0}
 
+/* chuva */
 .drop{
-  position:absolute;width:2px;height:18px;
+  position:absolute;
+  width:2px;height:18px;
   background:rgba(230,245,255,.6);
   border-radius:999px;
   animation:fall linear infinite;
@@ -58,6 +59,7 @@ body{
   to{transform:translateY(110vh)}
 }
 
+/* nevoeiro */
 .fog{
   position:absolute;inset:-20%;
   background:
@@ -65,8 +67,12 @@ body{
     radial-gradient(circle at 70% 60%, rgba(255,255,255,.16), transparent 60%);
   animation:fogmove 120s linear infinite;
 }
-@keyframes fogmove{from{transform:translateX(0)}to{transform:translateX(-14%)}}
+@keyframes fogmove{
+  from{transform:translateX(0)}
+  to{transform:translateX(-14%)}
+}
 
+/* sol */
 .sunGlow{
   position:absolute;top:10%;right:12%;
   border-radius:50%;
@@ -81,23 +87,31 @@ body{
   50%{transform:scale(1.03);opacity:1}
 }
 
-/* ======================================================
+/* =====================================================
    LAYOUT
-   ====================================================== */
+   ===================================================== */
 .app{
   position:relative;z-index:1;
   height:100vh;
   display:grid;
-  grid-template-rows:90px 1fr 56px;
+  grid-template-rows:100px 1fr 56px;
 }
 
+/* HEADER */
 header{
   padding:0 28px;
   display:flex;align-items:center;gap:16px;
 }
 
-.header-left{display:flex;align-items:center;gap:14px;min-width:300px}
-.logo{height:38px}
+.header-left{
+  display:flex;align-items:center;gap:16px;
+  min-width:340px;
+}
+
+.logo{
+  height:48px; /* 🔥 LOGO MAIOR */
+  filter:drop-shadow(0 8px 14px rgba(0,0,0,.25));
+}
 
 .now{
   display:flex;gap:10px;align-items:center;
@@ -142,6 +156,7 @@ header{
   font-size:30px;font-weight:800;
 }
 
+/* MAIN */
 main{
   padding:24px 28px;
   display:grid;grid-template-columns:1fr 1fr;
@@ -171,9 +186,9 @@ footer{
   color:var(--t2);font-size:14px;
 }
 
-/* ======================================================
-   ÍCONES
-   ====================================================== */
+/* =====================================================
+   ÍCONES TEMPO
+   ===================================================== */
 .icon{width:26px;height:26px;position:relative}
 
 .icon.sun::before{
@@ -182,7 +197,8 @@ footer{
   animation:sunMini 4s ease-in-out infinite;
 }
 @keyframes sunMini{
-  0%,100%{transform:scale(.92)}50%{transform:scale(1.05)}
+  0%,100%{transform:scale(.92)}
+  50%{transform:scale(1.05)}
 }
 
 .icon.cloud::before{
@@ -195,17 +211,19 @@ footer{
   box-shadow:10px -2px 0 #fff;
 }
 
-.icon.rain::before{content:"";position:absolute;left:3px;right:3px;bottom:10px;height:10px;background:#fff;border-radius:12px}
+.icon.rain::before{
+  content:"";position:absolute;left:3px;right:3px;bottom:10px;height:10px;
+  background:#fff;border-radius:12px;
+}
 .icon.rain::after{
   content:"";position:absolute;left:9px;top:15px;width:8px;height:8px;
   background:radial-gradient(circle,#9fdcff 2px,transparent 3px);
   animation:rainMini 1s linear infinite;
 }
-@keyframes rainMini{from{transform:translateY(-2px)}to{transform:translateY(4px)}}
-
-/* ======================================================
-   SCRIPT
-   ====================================================== */
+@keyframes rainMini{
+  from{transform:translateY(-2px)}
+  to{transform:translateY(4px)}
+}
 </style>
 </head>
 
@@ -260,13 +278,14 @@ function tick(){
 }
 tick(); setInterval(tick,30000);
 
-/* ================= HELPERS ================= */
+/* ================= CONFIG ================= */
 const LAT=38.219, LON=-7.887;
-const RAIN=new Set([51,53,55,61,63,65,80,81,82,95,96,99]);
+const RAIN_CODES=[51,53,55,61,63,65,80,81,82,95,96,99];
 
+/* ================= HELPERS ================= */
 function iconFrom(code,temp){
   if(temp<=1) return "snow";
-  if(RAIN.has(code)) return "rain";
+  if(RAIN_CODES.includes(code)) return "rain";
   if(code===0) return "sun";
   return "cloud";
 }
@@ -274,16 +293,20 @@ function iconFrom(code,temp){
 /* ================= MOOD ================= */
 function applyMood({sun,rain,cloud,hour}){
   let mood=50;
-  mood+=sun*0.4;
-  mood-=rain*40;
+  mood+=sun*40;
+  mood-=rain*30;
   mood-=cloud*20;
   if(hour<8||hour>18) mood-=10;
   mood=Math.max(0,Math.min(100,mood));
 
   let g1,g2,b1;
-  if(mood>70){ g1="#7fae4f"; g2="#4f7f3f"; b1="#6b5a3e"; }
-  else if(mood>40){ g1="#4f8f6b"; g2="#2f6b4f"; b1="#7b6445"; }
-  else{ g1="#3f6f5a"; g2="#2f5b45"; b1="#5c472f"; }
+  if(mood>70){
+    g1="#7fae4f"; g2="#4f7f3f"; b1="#6b5a3e";
+  }else if(mood>40){
+    g1="#4f8f6b"; g2="#2f6b4f"; b1="#7b6445";
+  }else{
+    g1="#3f6f5a"; g2="#2f5b45"; b1="#5c472f";
+  }
 
   const r=document.documentElement.style;
   r.setProperty("--g1",g1);
@@ -292,11 +315,12 @@ function applyMood({sun,rain,cloud,hour}){
 }
 
 /* ================= FX ================= */
+const fx=document.getElementById("fx");
 function clearFX(){fx.innerHTML=""}
 function addFog(){const f=document.createElement("div");f.className="fog";fx.appendChild(f)}
 function addSun(){const s=document.createElement("div");s.className="sunGlow";s.style.width=s.style.height="320px";fx.appendChild(s)}
-function addRain(n){
-  for(let i=0;i<n;i++){
+function addRain(count){
+  for(let i=0;i<count;i++){
     const d=document.createElement("div");
     d.className="drop";
     d.style.left=Math.random()*100+"%";
@@ -318,26 +342,45 @@ function updatePanel(){
     nowDesc.textContent=iconFrom(code,temp)==="sun"?"Sol":iconFrom(code,temp)==="rain"?"Chuva":"Nublado";
     nowIcon.className="icon "+iconFrom(code,temp);
 
+    /* horas */
     hoursPills.innerHTML="";
     for(let i=1;i<=4;i++){
       const t=Math.round(d.hourly.temperature_2m[i]);
       const h=new Date(d.hourly.time[i]).getHours().toString().padStart(2,"0")+"h";
-      hoursPills.innerHTML+=`<div class="pill"><div class="icon ${iconFrom(d.hourly.weathercode[i],t)}"></div><div><div class="small">${t}°</div><div class="sub">${h}</div></div></div>`;
+      hoursPills.innerHTML+=`
+        <div class="pill">
+          <div class="icon ${iconFrom(d.hourly.weathercode[i],t)}"></div>
+          <div><div class="small">${t}°</div><div class="sub">${h}</div></div>
+        </div>`;
     }
 
-    daysPills.innerHTML="";
+    /* dias */
     const dias=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+    daysPills.innerHTML="";
     for(let i=1;i<=4;i++){
       const tmax=Math.round(d.daily.temperature_2m_max[i]);
       const tmin=Math.round(d.daily.temperature_2m_min[i]);
       const wd=dias[new Date(d.daily.time[i]).getDay()];
-      daysPills.innerHTML+=`<div class="pill"><div class="icon ${iconFrom(d.daily.weathercode[i],tmin)}"></div><div><div class="small">${tmax}°/${tmin}°</div><div class="sub">${wd}</div></div></div>`;
+      daysPills.innerHTML+=`
+        <div class="pill">
+          <div class="icon ${iconFrom(d.daily.weathercode[i],tmin)}"></div>
+          <div><div class="small">${tmax}°/${tmin}°</div><div class="sub">${wd}</div></div>
+        </div>`;
     }
 
-    clearFX(); addFog();
+    /* FX */
+    clearFX();
+    addFog();
+
     const rain=d.hourly.precipitation[0]||0;
     const sun=d.hourly.shortwave_radiation[0]||0;
-    if(rain>0.2) addRain(Math.min(300,40+rain*60));
+    const isRain=RAIN_CODES.includes(code);
+
+    if(isRain){
+      const intensity=Math.max(0.15,Math.min(1,rain/4));
+      const drops=Math.floor(60+intensity*260);
+      addRain(drops);
+    }
     if(code===0) addSun();
 
     applyMood({
@@ -351,7 +394,6 @@ function updatePanel(){
 
 /* ================= SCHEDULER ================= */
 updatePanel();
-
 function scheduleHourly(){
   const now=new Date();
   const ms=(60-now.getMinutes())*60000-now.getSeconds()*1000;
