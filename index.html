@@ -16,214 +16,186 @@ html,body{height:100%}
 
 body{
   margin:0;
-  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  font-family:Inter,system-ui;
   color:#f3f6f4;
+  background:#0c0f0d;
   overflow:hidden;
-  background:#000;
 }
 
 /* =========================
-   WEATHER BACKGROUND
+   WEATHER FX LAYER
    ========================= */
-.weather-bg{
+.weather-fx{
   position:fixed;
   inset:0;
-  background-size:cover;
-  background-position:center;
-  background-repeat:no-repeat;
-  transition:background-image 2s ease;
-  z-index:-5;
+  pointer-events:none;
+  z-index:0;
 }
 
-/* contraste */
-.weather-overlay{
-  position:fixed;
-  inset:0;
-  background:linear-gradient(
-    180deg,
-    rgba(0,0,0,.35),
-    rgba(0,0,0,.65)
-  );
-  transition:background 2s ease;
-  z-index:-4;
-}
-
-/* =========================
-   GRAFISMOS (ativados por estado)
-   ========================= */
-
-/* SOL */
-.sun-motion{
-  position:fixed;
-  inset:-20%;
-  background:
-    radial-gradient(circle at 30% 50%, rgba(255,255,255,.08), transparent 55%),
-    radial-gradient(circle at 70% 55%, rgba(255,255,255,.06), transparent 60%);
-  animation:sun-drift 120s linear infinite;
-  z-index:-3;
-}
-@keyframes sun-drift{
-  from{transform:translateX(0);}
-  to{transform:translateX(-15%);}
-}
-
-/* NUBLADO */
-.cloud-motion{
-  position:fixed;
-  inset:-15%;
-  background:
-    radial-gradient(circle at 30% 40%, rgba(255,255,255,.06), transparent 55%),
-    radial-gradient(circle at 70% 60%, rgba(255,255,255,.05), transparent 60%);
-  animation:cloud-drift 140s linear infinite;
-  opacity:.35;
-  z-index:-3;
-}
-@keyframes cloud-drift{
-  from{transform:translateX(0);}
-  to{transform:translateX(-8%);}
-}
-
-/* CHUVA */
-.rain-motion{
-  position:fixed;
-  inset:-10%;
+/* RAIN */
+.rain{
   background:
     repeating-linear-gradient(
       90deg,
-      rgba(255,255,255,.06) 0px,
-      rgba(255,255,255,.06) 1px,
+      rgba(255,255,255,.15) 0px,
+      rgba(255,255,255,.15) 1px,
       transparent 1px,
-      transparent 22px
+      transparent 18px
     );
-  animation:rain-fall 35s linear infinite;
-  opacity:.25;
-  z-index:-3;
+  animation: rain-fall 25s linear infinite;
 }
 @keyframes rain-fall{
-  from{transform:translateY(0);}
+  from{transform:translateY(-20%);}
+  to{transform:translateY(20%);}
+}
+
+/* SUN */
+.sun{
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255,200,80,.35), transparent 45%);
+  animation: sun-pulse 8s ease-in-out infinite;
+}
+@keyframes sun-pulse{
+  0%,100%{opacity:.7;}
+  50%{opacity:1;}
+}
+
+/* CLOUD / FOG */
+.fog{
+  background:
+    radial-gradient(circle at 30% 50%, rgba(255,255,255,.08), transparent 55%),
+    radial-gradient(circle at 70% 60%, rgba(255,255,255,.06), transparent 60%);
+  animation: fog-drift 120s linear infinite;
+}
+@keyframes fog-drift{
+  from{transform:translateX(0);}
+  to{transform:translateX(-10%);}
+}
+
+/* SNOW */
+.snow{
+  background:
+    radial-gradient(circle, rgba(255,255,255,.8) 2px, transparent 3px);
+  background-size:40px 40px;
+  animation: snow-fall 40s linear infinite;
+}
+@keyframes snow-fall{
+  from{transform:translateY(-10%);}
   to{transform:translateY(20%);}
 }
 
 /* =========================
    LAYOUT
    ========================= */
-.screen{
+.app{
+  position:relative;
+  z-index:1;
   height:100vh;
   display:grid;
-  grid-template-rows:90px 1fr 70px;
+  grid-template-rows:90px 1fr 80px;
 }
 
 /* HEADER */
 header{
+  padding:0 40px;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:0 44px;
 }
 
-header img{ height:42px; }
-.clock{ font-size:32px; font-weight:600; }
+header img{height:42px}
+
+.clock{
+  font-size:34px;
+  font-weight:600;
+}
 
 /* MAIN */
-main{ padding:44px; }
-
-.grid{
-  height:100%;
+main{
+  padding:40px;
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(420px,1fr));
-  align-content:center;
+  grid-template-columns:1fr 1fr;
+  gap:32px;
 }
 
-/* cards base */
+/* CARDS */
 .card{
   background:rgba(0,0,0,.45);
   border-radius:26px;
   padding:26px;
-  display:flex;
-  flex-direction:column;
-  box-shadow:0 35px 80px rgba(0,0,0,.6);
-  animation:breathe 18s ease-in-out infinite;
-}
-@keyframes breathe{
-  0%,100%{transform:scale(1);}
-  50%{transform:scale(1.02);}
+  box-shadow:0 30px 70px rgba(0,0,0,.6);
 }
 
 .card h3{
-  margin:0 0 18px 0;
+  margin:0 0 16px;
   font-size:14px;
-  letter-spacing:.7px;
   text-transform:uppercase;
-  opacity:.75;
+  letter-spacing:.7px;
+  opacity:.7;
 }
 
-.content{
-  flex:1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.number{
-  font-size:68px;
+/* WEATHER INFO */
+.temp{
+  font-size:72px;
   font-weight:700;
 }
-.number span{
-  display:block;
-  font-size:18px;
+.meta{
   opacity:.7;
-  margin-top:8px;
+  margin-top:6px;
+}
+
+/* FORECAST */
+.forecast{
+  display:flex;
+  gap:18px;
+}
+.forecast div{
+  background:rgba(255,255,255,.05);
+  border-radius:16px;
+  padding:14px;
+  text-align:center;
+  min-width:90px;
 }
 
 /* FOOTER */
 footer{
-  padding:0 44px;
+  padding:0 40px;
   display:flex;
   align-items:center;
-  font-size:16px;
-  opacity:.7;
+  opacity:.6;
 }
 </style>
 </head>
 
 <body>
 
-<div class="weather-bg" id="weatherBg"></div>
-<div class="weather-overlay" id="overlay"></div>
+<div class="weather-fx" id="fx"></div>
 
-<!-- grafismos (ativados por JS) -->
-<div id="sunFx" class="sun-motion" hidden></div>
-<div id="cloudFx" class="cloud-motion" hidden></div>
-<div id="rainFx" class="rain-motion" hidden></div>
+<div class="app">
 
-<div class="screen">
+<header>
+  <img src="assets/logo-monte-do-pasto.png">
+  <div class="clock" id="clock">--:--</div>
+</header>
 
-  <header>
-    <img src="assets/logo-monte-do-pasto.png" alt="Monte do Pasto">
-    <div class="clock" id="clock">--:--</div>
-  </header>
+<main>
 
-  <main>
-    <div class="grid">
-      <div class="card">
-        <h3>Produção diária</h3>
-        <div class="content">
-          <div class="number">1280<span>kg</span></div>
-        </div>
-      </div>
+  <div class="card">
+    <h3>Tempo atual</h3>
+    <div class="temp" id="temp">--°</div>
+    <div class="meta" id="condition">---</div>
+  </div>
 
-      <div class="card">
-        <h3>Peso médio</h3>
-        <div class="content">
-          <div class="number">412<span>kg</span></div>
-        </div>
-      </div>
-    </div>
-  </main>
+  <div class="card">
+    <h3>Próximas horas</h3>
+    <div class="forecast" id="hourly"></div>
+  </div>
 
-  <footer>
-    Informação interna · Monte do Pasto
-  </footer>
+</main>
+
+<footer>
+  Informação interna · Monte do Pasto
+</footer>
 
 </div>
 
@@ -236,61 +208,30 @@ function tick(){
 tick();
 setInterval(tick,30000);
 
-/* WEATHER SYSTEM */
-const bg = document.getElementById("weatherBg");
-const overlay = document.getElementById("overlay");
-const sunFx = document.getElementById("sunFx");
-const cloudFx = document.getElementById("cloudFx");
-const rainFx = document.getElementById("rainFx");
+/* WEATHER */
+const fx = document.getElementById("fx");
 
-function resetFx(){
-  sunFx.hidden = true;
-  cloudFx.hidden = true;
-  rainFx.hidden = true;
-}
-
-fetch("https://api.open-meteo.com/v1/forecast?latitude=38.219&longitude=-7.887&current_weather=true")
+fetch("https://api.open-meteo.com/v1/forecast?latitude=38.219&longitude=-7.887&current_weather=true&hourly=temperature_2m")
   .then(r=>r.json())
   .then(data=>{
-    const code = data.current_weather.weathercode;
-    const hour = new Date().getHours();
-    let state = "cloudy";
+    const w = data.current_weather;
+    const temp = Math.round(w.temperature);
+    document.getElementById("temp").textContent = temp+"°C";
 
-    if(hour >= 21 || hour < 6) state = "night";
-    else if(code === 0) state = "sunny";
-    else if([1,2,3].includes(code)) state = "cloudy";
-    else if(code >= 45 && code <= 48) state = "cloudy";
-    else if(code >= 51) state = "rain";
+    let type="fog", label="Nublado";
 
-    resetFx();
+    if(w.weathercode===0){ type="sun"; label="Sol"; }
+    else if(w.weathercode>=51){ type="rain"; label="Chuva"; }
+    else if(temp<=2){ type="snow"; label="Frio"; }
 
-    if(state === "sunny"){
-      bg.style.backgroundImage = "url(assets/weather/sunny.jpg)";
-      sunFx.hidden = false;
-      overlay.style.background = "linear-gradient(180deg,rgba(0,0,0,.30),rgba(0,0,0,.55))";
+    fx.className = "weather-fx "+type;
+    document.getElementById("condition").textContent = label;
+
+    const hourly = document.getElementById("hourly");
+    hourly.innerHTML="";
+    for(let i=1;i<=4;i++){
+      hourly.innerHTML += `<div>${Math.round(data.hourly.temperature_2m[i])}°</div>`;
     }
-
-    if(state === "cloudy"){
-      bg.style.backgroundImage = "url(assets/weather/cloudy.jpg)";
-      cloudFx.hidden = false;
-      overlay.style.background = "linear-gradient(180deg,rgba(0,0,0,.40),rgba(0,0,0,.60))";
-    }
-
-    if(state === "rain"){
-      bg.style.backgroundImage = "url(assets/weather/rain.jpg)";
-      rainFx.hidden = false;
-      overlay.style.background = "linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.75))";
-    }
-
-    if(state === "night"){
-      bg.style.backgroundImage = "url(assets/weather/night.jpg)";
-      cloudFx.hidden = false;
-      overlay.style.background = "linear-gradient(180deg,rgba(0,0,0,.65),rgba(0,0,0,.85))";
-    }
-  })
-  .catch(()=>{
-    bg.style.backgroundImage = "url(assets/weather/cloudy.jpg)";
-    cloudFx.hidden = false;
   });
 </script>
 
