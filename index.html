@@ -1,140 +1,74 @@
 <!doctype html>
 <html lang="pt-PT">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Monte do Pasto · Painel</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monte do Pasto · Painel Vivo</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-/* =========================================================
-   BASE + PALETA (VERDE CLARO + CASTANHO)
-   ========================================================= */
-*{ box-sizing:border-box }
-html,body{ height:100% }
+/* ======================================================
+   BASE
+   ====================================================== */
+*{box-sizing:border-box}
+html,body{height:100%}
 
 :root{
-  /* Verdes (mais claros, alinhados com logo) */
-  --g-1:#4f8f6b;     /* folha/pastagem clara */
-  --g-2:#2f6b4f;     /* verde principal */
-  --g-3:#3f7f5f;     /* verde vivo */
+  /* valores base – vão ser alterados pelo mood */
+  --g1:#4f8f6b;
+  --g2:#2f6b4f;
+  --g3:#3f7f5f;
+  --b1:#7b6445;
 
-  /* Castanhos (terra/cortiça) */
-  --b-1:#7b6445;     /* terra clara */
-  --b-2:#5c472f;     /* cortiça */
-  --b-3:#3f2f1e;     /* terra escura (nunca preto) */
+  --glass:rgba(255,255,255,.18);
+  --glass2:rgba(0,0,0,.10);
+  --stroke:rgba(255,255,255,.20);
 
-  /* Superfícies */
-  --glass-1: rgba(255,255,255,.18);
-  --glass-2: rgba(0,0,0,.10);
-  --stroke:  rgba(255,255,255,.20);
-  --stroke2: rgba(255,255,255,.14);
-
-  /* Texto */
-  --t-1:#f4f6f3;
-  --t-2:rgba(244,246,243,.78);
-  --t-3:rgba(244,246,243,.62);
-
-  /* Pills */
-  --pill: rgba(255,255,255,.22);
-  --pillStroke: rgba(255,255,255,.18);
-
-  /* Sombra */
-  --shadow: rgba(0,0,0,.22);
-
-  /* Tuning TV */
-  --radius-1: 18px;
-  --radius-2: 26px;
+  --t1:#f4f6f3;
+  --t2:rgba(244,246,243,.78);
 }
 
 body{
   margin:0;
-  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  color:var(--t-1);
+  font-family:Inter,system-ui;
+  color:var(--t1);
   overflow:hidden;
+  transition:background 12s ease;
 
-  /* FUNDO: NUNCA PRETO. Verde claro + castanho */
   background:
-    radial-gradient(1100px 680px at 18% 16%, rgba(255,255,255,.22), transparent 58%),
-    radial-gradient(900px 620px at 82% 24%, rgba(200,160,110,.20), transparent 60%),
-    radial-gradient(1100px 820px at 62% 92%, rgba(140,220,180,.25), transparent 66%),
-    linear-gradient(135deg, var(--g-1), var(--g-2) 52%, var(--b-1));
+    radial-gradient(1100px 700px at 20% 15%, rgba(255,255,255,.22), transparent 58%),
+    radial-gradient(900px 600px at 80% 25%, rgba(200,160,110,.20), transparent 60%),
+    radial-gradient(1100px 800px at 60% 90%, rgba(140,220,180,.25), transparent 66%),
+    linear-gradient(135deg,var(--g1),var(--g2) 55%,var(--b1));
 }
 
-/* grain/texture suave para evitar “plano” */
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  opacity:.10;
-  background:
-    repeating-linear-gradient(0deg,
-      rgba(255,255,255,.06) 0px,
-      rgba(255,255,255,.06) 1px,
-      transparent 1px,
-      transparent 7px
-    );
-  mix-blend-mode: overlay;
-}
+/* ======================================================
+   FX
+   ====================================================== */
+#fx{position:fixed;inset:0;pointer-events:none;z-index:0}
 
-/* =========================================================
-   CAMADA FX (chuva/sol/nevoeiro/neve)
-   ========================================================= */
-#fx{
-  position:fixed;
-  inset:0;
-  z-index:0;
-  pointer-events:none;
-}
-
-/* chuva */
 .drop{
-  position:absolute;
-  width:2px;
-  height:18px;
-  background:rgba(230,245,255,.62);
+  position:absolute;width:2px;height:18px;
+  background:rgba(230,245,255,.6);
   border-radius:999px;
   animation:fall linear infinite;
 }
 @keyframes fall{
-  from{ transform:translateY(-120px) translateX(0) }
-  to{ transform:translateY(110vh) translateX(36px) }
+  from{transform:translateY(-120px)}
+  to{transform:translateY(110vh)}
 }
 
-/* neve */
-.flake{
-  position:absolute;
-  width:4px;
-  height:4px;
-  border-radius:50%;
-  background:rgba(245,252,255,.90);
-  animation:snow linear infinite;
-}
-@keyframes snow{
-  from{ transform:translateY(-50px) translateX(0) }
-  to{ transform:translateY(110vh) translateX(60px) }
-}
-
-/* nevoeiro */
 .fog{
-  position:absolute;
-  inset:-20%;
+  position:absolute;inset:-20%;
   background:
-    radial-gradient(circle at 28% 52%, rgba(255,255,255,.20), transparent 55%),
-    radial-gradient(circle at 70% 62%, rgba(255,255,255,.16), transparent 60%);
-  animation:fogmove 110s linear infinite;
+    radial-gradient(circle at 30% 50%, rgba(255,255,255,.20), transparent 55%),
+    radial-gradient(circle at 70% 60%, rgba(255,255,255,.16), transparent 60%);
+  animation:fogmove 120s linear infinite;
 }
-@keyframes fogmove{
-  from{ transform:translateX(0) }
-  to{ transform:translateX(-14%) }
-}
+@keyframes fogmove{from{transform:translateX(0)}to{transform:translateX(-14%)}}
 
-/* brilho sol */
 .sunGlow{
-  position:absolute;
-  top:10%;
-  right:12%;
+  position:absolute;top:10%;right:12%;
   border-radius:50%;
   background:radial-gradient(circle,
     rgba(255,230,170,.95),
@@ -143,270 +77,135 @@ body::before{
   animation:sunpulse 7s ease-in-out infinite;
 }
 @keyframes sunpulse{
-  0%,100%{ transform:scale(.95); opacity:.80 }
-  50%{ transform:scale(1.03); opacity:1 }
+  0%,100%{transform:scale(.95);opacity:.8}
+  50%{transform:scale(1.03);opacity:1}
 }
 
-/* =========================================================
-   APP LAYOUT
-   ========================================================= */
+/* ======================================================
+   LAYOUT
+   ====================================================== */
 .app{
-  position:relative;
-  z-index:1;
+  position:relative;z-index:1;
   height:100vh;
   display:grid;
-  grid-template-rows: 92px 1fr 56px;
+  grid-template-rows:90px 1fr 56px;
 }
 
-/* HEADER */
 header{
   padding:0 28px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:16px;
+  display:flex;align-items:center;gap:16px;
 }
 
-.header-left{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  min-width: 290px;
-}
-
-.logo{
-  height:38px;
-  filter: drop-shadow(0 10px 18px rgba(0,0,0,.18));
-}
+.header-left{display:flex;align-items:center;gap:14px;min-width:300px}
+.logo{height:38px}
 
 .now{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:10px 14px;
-  border-radius: var(--radius-1);
-  background: linear-gradient(180deg, var(--glass-1), var(--glass-2));
+  display:flex;gap:10px;align-items:center;
+  padding:10px 14px;border-radius:18px;
+  background:linear-gradient(180deg,var(--glass),var(--glass2));
   border:1px solid var(--stroke);
-  backdrop-filter: blur(10px);
+  backdrop-filter:blur(10px);
 }
-
-.now .temp{ font-size:20px; font-weight:800; line-height:1.1; }
-.now .desc{ font-size:14px; color:var(--t-2); }
+.now .temp{font-size:20px;font-weight:800}
+.now .desc{font-size:14px;color:var(--t2)}
 
 .header-mid{
-  flex:1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:14px;
+  flex:1;display:flex;justify-content:center;gap:14px;
 }
 
 .group{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:10px 14px;
-  border-radius: var(--radius-1);
-  background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(0,0,0,.10));
-  border:1px solid var(--stroke2);
-  backdrop-filter: blur(10px);
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border-radius:18px;
+  background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(0,0,0,.10));
+  border:1px solid var(--stroke);
+  backdrop-filter:blur(10px);
 }
 
 .group .title{
-  font-size:12px;
-  letter-spacing:.9px;
-  text-transform:uppercase;
-  color:var(--t-2);
-  white-space:nowrap;
+  font-size:12px;text-transform:uppercase;
+  letter-spacing:.8px;color:var(--t2);
 }
 
-.pills{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
+.pills{display:flex;gap:10px}
 .pill{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:8px 10px;
-  border-radius: 14px;
-  background: var(--pill);
-  border: 1px solid var(--pillStroke);
-  min-width: 104px; /* TV readability */
+  display:flex;gap:8px;align-items:center;
+  padding:8px 10px;border-radius:14px;
+  background:rgba(255,255,255,.22);
+  border:1px solid rgba(255,255,255,.18);
+  min-width:100px;
 }
-
-.pill .small{ font-size:14px; font-weight:800; line-height:1.1; }
-.pill .sub{ font-size:12px; color:var(--t-3); }
+.small{font-size:14px;font-weight:800}
+.sub{font-size:12px;color:var(--t2)}
 
 .clock{
-  min-width:92px;
-  text-align:right;
-  font-size:30px;
-  font-weight:800;
-  text-shadow: 0 10px 18px rgba(0,0,0,.18);
+  min-width:90px;text-align:right;
+  font-size:30px;font-weight:800;
 }
 
-/* MAIN */
 main{
-  padding:24px 28px 18px;
-  display:grid;
-  grid-template-columns: 1fr 1fr;
+  padding:24px 28px;
+  display:grid;grid-template-columns:1fr 1fr;
   gap:22px;
 }
 
 .card{
-  background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(0,0,0,.10));
-  border: 1px solid rgba(255,255,255,.16);
-  border-radius: var(--radius-2);
+  background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(0,0,0,.10));
+  border:1px solid var(--stroke);
+  border-radius:26px;
   padding:22px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 26px 70px var(--shadow);
-  min-height: 280px;
+  backdrop-filter:blur(10px);
 }
 
 .card h3{
   margin:0 0 14px;
-  font-size:13px;
-  letter-spacing:.9px;
-  text-transform:uppercase;
-  color:var(--t-2);
+  font-size:13px;text-transform:uppercase;
+  letter-spacing:.8px;color:var(--t2);
 }
 
-.kpi{
-  font-size:72px;
-  font-weight:900;
-  letter-spacing:-1px;
-}
-.kpi span{
-  font-size:18px;
-  font-weight:700;
-  color:var(--t-2);
-}
+.kpi{font-size:72px;font-weight:900}
+.kpi span{font-size:18px;color:var(--t2)}
 
-.notice{
-  font-size:22px;
-  line-height:1.35;
-  color:rgba(244,246,243,.92);
-}
-
-/* FOOTER */
 footer{
   padding:0 28px;
-  display:flex;
-  align-items:center;
-  color:var(--t-3);
-  font-size:14px;
+  display:flex;align-items:center;
+  color:var(--t2);font-size:14px;
 }
 
-/* =========================================================
-   ÍCONES CSS (reais + animados)
-   ========================================================= */
-.icon{
-  position:relative;
-  width:26px;
-  height:26px;
-  flex:0 0 26px;
-}
+/* ======================================================
+   ÍCONES
+   ====================================================== */
+.icon{width:26px;height:26px;position:relative}
 
-/* sol */
 .icon.sun::before{
-  content:"";
-  position:absolute;
-  inset:5px;
-  border-radius:50%;
-  background: radial-gradient(circle, rgba(255,235,180,1), rgba(255,195,120,1));
-  box-shadow: 0 0 18px rgba(255,230,170,.35);
-  animation:sunMini 3.8s ease-in-out infinite;
+  content:"";position:absolute;inset:5px;border-radius:50%;
+  background:radial-gradient(circle,#ffe6b4,#ffc36e);
+  animation:sunMini 4s ease-in-out infinite;
 }
 @keyframes sunMini{
-  0%,100%{ transform:scale(.92); opacity:.85 }
-  50%{ transform:scale(1.03); opacity:1 }
+  0%,100%{transform:scale(.92)}50%{transform:scale(1.05)}
 }
 
-/* nuvem */
 .icon.cloud::before{
-  content:"";
-  position:absolute;
-  left:3px; right:3px;
-  bottom:6px;
-  height:12px;
-  background: rgba(255,255,255,.90);
-  border-radius: 12px;
-  opacity:.88;
+  content:"";position:absolute;left:3px;right:3px;bottom:6px;height:12px;
+  background:#fff;border-radius:12px;opacity:.9;
 }
 .icon.cloud::after{
-  content:"";
-  position:absolute;
-  left:6px;
-  bottom:10px;
-  width:12px; height:12px;
-  background: rgba(255,255,255,.90);
-  border-radius:50%;
-  box-shadow: 10px -2px 0 rgba(255,255,255,.90);
-  animation:cloudMini 6s ease-in-out infinite;
-}
-@keyframes cloudMini{
-  0%,100%{ transform:translateX(0) }
-  50%{ transform:translateX(4px) }
+  content:"";position:absolute;left:6px;bottom:10px;width:12px;height:12px;
+  background:#fff;border-radius:50%;
+  box-shadow:10px -2px 0 #fff;
 }
 
-/* chuva */
-.icon.rain::before{
-  content:"";
-  position:absolute;
-  left:3px; right:3px;
-  bottom:10px;
-  height:10px;
-  background: rgba(255,255,255,.92);
-  border-radius:12px;
-  opacity:.88;
-}
+.icon.rain::before{content:"";position:absolute;left:3px;right:3px;bottom:10px;height:10px;background:#fff;border-radius:12px}
 .icon.rain::after{
-  content:"";
-  position:absolute;
-  left:7px;
-  top:15px;
-  width:12px; height:10px;
-  background:
-    radial-gradient(circle, rgba(160,220,255,.95) 2px, transparent 3px);
-  background-size: 6px 6px;
-  animation:rainMini 1.0s linear infinite;
-  opacity:.95;
+  content:"";position:absolute;left:9px;top:15px;width:8px;height:8px;
+  background:radial-gradient(circle,#9fdcff 2px,transparent 3px);
+  animation:rainMini 1s linear infinite;
 }
-@keyframes rainMini{
-  from{ transform:translateY(-2px); opacity:.95 }
-  to{ transform:translateY(4px); opacity:.55 }
-}
+@keyframes rainMini{from{transform:translateY(-2px)}to{transform:translateY(4px)}}
 
-/* neve */
-.icon.snow::before{
-  content:"";
-  position:absolute;
-  left:3px; right:3px;
-  bottom:10px;
-  height:10px;
-  background: rgba(255,255,255,.92);
-  border-radius:12px;
-  opacity:.88;
-}
-.icon.snow::after{
-  content:"";
-  position:absolute;
-  left:7px;
-  top:15px;
-  width:12px; height:10px;
-  background:
-    radial-gradient(circle, rgba(245,252,255,.98) 2px, transparent 3px);
-  background-size: 6px 6px;
-  animation:snowMini 2.0s linear infinite;
-  opacity:.95;
-}
-@keyframes snowMini{
-  from{ transform:translateY(-2px) }
-  to{ transform:translateY(5px) }
-}
+/* ======================================================
+   SCRIPT
+   ====================================================== */
 </style>
 </head>
 
@@ -414,280 +213,154 @@ footer{
 <div id="fx"></div>
 
 <div class="app">
-
-  <header>
-    <div class="header-left">
-      <img class="logo" src="assets/logo-monte-do-pasto.png" alt="Monte do Pasto">
-      <div class="now">
-        <div id="nowIcon" class="icon cloud"></div>
-        <div>
-          <div class="temp"><span id="nowTemp">--°C</span></div>
-          <div class="desc" id="nowDesc">---</div>
-        </div>
+<header>
+  <div class="header-left">
+    <img class="logo" src="assets/logo-monte-do-pasto.png">
+    <div class="now">
+      <div id="nowIcon" class="icon cloud"></div>
+      <div>
+        <div class="temp" id="nowTemp">--°C</div>
+        <div class="desc" id="nowDesc">---</div>
       </div>
     </div>
+  </div>
 
-    <div class="header-mid">
-      <div class="group">
-        <div class="title">Próx. horas</div>
-        <div class="pills" id="hoursPills"></div>
-      </div>
-
-      <div class="group">
-        <div class="title">Próx. dias</div>
-        <div class="pills" id="daysPills"></div>
-      </div>
+  <div class="header-mid">
+    <div class="group">
+      <div class="title">Próx. horas</div>
+      <div class="pills" id="hoursPills"></div>
     </div>
-
-    <div class="clock" id="clock">--:--</div>
-  </header>
-
-  <main>
-    <div class="card">
-      <h3>Indicador</h3>
-      <div class="kpi" id="kpiValue">1280 <span>kg</span></div>
+    <div class="group">
+      <div class="title">Próx. dias</div>
+      <div class="pills" id="daysPills"></div>
     </div>
+  </div>
 
-    <div class="card">
-      <h3>Avisos</h3>
-      <div class="notice" id="notice">Ambiente monitorizado em tempo real</div>
-    </div>
-  </main>
+  <div class="clock" id="clock">--:--</div>
+</header>
 
-  <footer>Informação interna · Monte do Pasto</footer>
+<main>
+  <div class="card">
+    <h3>Indicador</h3>
+    <div class="kpi">1280 <span>kg</span></div>
+  </div>
+  <div class="card">
+    <h3>Avisos</h3>
+    <div>Ambiente monitorizado em tempo real</div>
+  </div>
+</main>
+
+<footer>Informação interna · Monte do Pasto</footer>
 </div>
 
 <script>
-/* =========================================================
-   RELÓGIO
-   ========================================================= */
+/* ================= RELÓGIO ================= */
 function tick(){
-  const s = new Intl.DateTimeFormat("pt-PT",{hour:"2-digit",minute:"2-digit"}).format(new Date());
-  document.getElementById("clock").textContent = s;
+  clock.textContent=new Intl.DateTimeFormat("pt-PT",{hour:"2-digit",minute:"2-digit"}).format(new Date());
 }
-tick();
-setInterval(tick, 30000);
+tick(); setInterval(tick,30000);
 
-/* =========================================================
-   HELPERS: estados + intensidade
-   ========================================================= */
-const PT_DIAS = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
-const RAIN_CODES = new Set([51,53,55,61,63,65,80,81,82,95,96,99]);
-const FOG_CODES  = new Set([45,48]);
+/* ================= HELPERS ================= */
+const LAT=38.219, LON=-7.887;
+const RAIN=new Set([51,53,55,61,63,65,80,81,82,95,96,99]);
 
-function clamp01(x){ return Math.max(0, Math.min(1, x)); }
-
-/**
- * Mapeia weathercode/temperatura para classe de ícone.
- * (simplicado e robusto)
- */
-function iconClassFrom(code, tempC){
-  if (tempC <= 1) return "snow";
-  if (RAIN_CODES.has(code)) return "rain";
-  if (code === 0) return "sun";
+function iconFrom(code,temp){
+  if(temp<=1) return "snow";
+  if(RAIN.has(code)) return "rain";
+  if(code===0) return "sun";
   return "cloud";
 }
 
-function descFrom(code, tempC){
-  if (tempC <= 1) return "Frio";
-  if (RAIN_CODES.has(code)) return "Chuva";
-  if (FOG_CODES.has(code)) return "Nevoeiro";
-  if (code === 0) return "Sol";
-  return "Nublado";
+/* ================= MOOD ================= */
+function applyMood({sun,rain,cloud,hour}){
+  let mood=50;
+  mood+=sun*0.4;
+  mood-=rain*40;
+  mood-=cloud*20;
+  if(hour<8||hour>18) mood-=10;
+  mood=Math.max(0,Math.min(100,mood));
+
+  let g1,g2,b1;
+  if(mood>70){ g1="#7fae4f"; g2="#4f7f3f"; b1="#6b5a3e"; }
+  else if(mood>40){ g1="#4f8f6b"; g2="#2f6b4f"; b1="#7b6445"; }
+  else{ g1="#3f6f5a"; g2="#2f5b45"; b1="#5c472f"; }
+
+  const r=document.documentElement.style;
+  r.setProperty("--g1",g1);
+  r.setProperty("--g2",g2);
+  r.setProperty("--b1",b1);
 }
 
-/* =========================================================
-   FX: construir camada conforme intensidades
-   ========================================================= */
-const fx = document.getElementById("fx");
-
-function clearFX(){ fx.innerHTML = ""; }
-
-function addFog(intensity){
-  const f = document.createElement("div");
-  f.className = "fog";
-  f.style.opacity = String(0.25 + intensity * 0.55);
-  fx.appendChild(f);
-}
-
-function addSun(intensity){
-  const s = document.createElement("div");
-  s.className = "sunGlow";
-  const size = 240 + intensity * 220;
-  s.style.width = s.style.height = size + "px";
-  s.style.opacity = String(0.25 + intensity * 0.60);
-  fx.appendChild(s);
-}
-
-function addRain(intensity){
-  // intensidade 0..1 => 40..320 gotas
-  const drops = Math.floor(40 + intensity * 280);
-  for(let i=0;i<drops;i++){
-    const d = document.createElement("div");
-    d.className = "drop";
-    d.style.left = (Math.random()*100)+"%";
-    d.style.animationDuration = (0.55 + Math.random()*1.2 - intensity*0.25) + "s";
-    d.style.opacity = (0.25 + Math.random()*0.55);
-    d.style.height = (12 + Math.random()*18 + intensity*10) + "px";
+/* ================= FX ================= */
+function clearFX(){fx.innerHTML=""}
+function addFog(){const f=document.createElement("div");f.className="fog";fx.appendChild(f)}
+function addSun(){const s=document.createElement("div");s.className="sunGlow";s.style.width=s.style.height="320px";fx.appendChild(s)}
+function addRain(n){
+  for(let i=0;i<n;i++){
+    const d=document.createElement("div");
+    d.className="drop";
+    d.style.left=Math.random()*100+"%";
+    d.style.animationDuration=(0.6+Math.random()*1.2)+"s";
     fx.appendChild(d);
   }
 }
 
-function addSnow(intensity){
-  const flakes = Math.floor(18 + intensity * 140);
-  for(let i=0;i<flakes;i++){
-    const f = document.createElement("div");
-    f.className = "flake";
-    f.style.left = (Math.random()*100)+"%";
-    f.style.animationDuration = (2.6 + Math.random()*4.2 - intensity*1.0) + "s";
-    f.style.opacity = (0.25 + Math.random()*0.65);
-    const sz = 2 + Math.random()*4;
-    f.style.width = f.style.height = sz + "px";
-    fx.appendChild(f);
-  }
-}
+/* ================= UPDATE ================= */
+const URL=`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current_weather=true&hourly=temperature_2m,precipitation,weathercode,cloudcover,shortwave_radiation&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto`;
 
-/* baseline de “vida” — mesmo com céu limpo */
-function baselineLife(){
-  addFog(0.25);
-}
-
-/* =========================================================
-   DADOS METEO (Cuba, Alentejo)
-   ========================================================= */
-const LAT = 38.219;
-const LON = -7.887;
-
-const URL =
-  "https://api.open-meteo.com/v1/forecast"
-  + `?latitude=${LAT}&longitude=${LON}`
-  + "&current_weather=true"
-  + "&hourly=temperature_2m,precipitation,weathercode,cloudcover,shortwave_radiation"
-  + "&daily=temperature_2m_max,temperature_2m_min,weathercode"
-  + "&timezone=auto";
-
-function renderPillsHours(d){
-  const el = document.getElementById("hoursPills");
-  el.innerHTML = "";
-
-  for(let i=1;i<=4;i++){
-    const t = Math.round(d.hourly.temperature_2m[i]);
-    const code = d.hourly.weathercode[i];
-    const dt = new Date(d.hourly.time[i]);
-    const hh = dt.getHours().toString().padStart(2,"0")+"h";
-    const ic = iconClassFrom(code, t);
-
-    el.insertAdjacentHTML("beforeend", `
-      <div class="pill">
-        <div class="icon ${ic}"></div>
-        <div>
-          <div class="small">${t}°</div>
-          <div class="sub">${hh}</div>
-        </div>
-      </div>
-    `);
-  }
-}
-
-function renderPillsDays(d){
-  const el = document.getElementById("daysPills");
-  el.innerHTML = "";
-
-  for(let i=1;i<=4;i++){
-    const tmax = Math.round(d.daily.temperature_2m_max[i]);
-    const tmin = Math.round(d.daily.temperature_2m_min[i]);
-    const code = d.daily.weathercode[i];
-    const date = new Date(d.daily.time[i]);
-    const wd = PT_DIAS[date.getDay()];
-    const ic = iconClassFrom(code, tmin);
-
-    el.insertAdjacentHTML("beforeend", `
-      <div class="pill">
-        <div class="icon ${ic}"></div>
-        <div>
-          <div class="small">${tmax}°/${tmin}°</div>
-          <div class="sub">${wd}</div>
-        </div>
-      </div>
-    `);
-  }
-}
-
-function renderNow(d){
-  const cw = d.current_weather;
-  const temp = Math.round(cw.temperature);
-  const code = cw.weathercode;
-
-  document.getElementById("nowTemp").textContent = temp + "°C";
-  document.getElementById("nowDesc").textContent = descFrom(code, temp);
-  document.getElementById("nowIcon").className = "icon " + iconClassFrom(code, temp);
-}
-
-function applyFX(d){
-  // Usar precipitação/radiação/nuvens da hora 0 (agora)
-  const rain = (d.hourly.precipitation?.[0] ?? 0);           // mm/h
-  const cloud = (d.hourly.cloudcover?.[0] ?? 50);            // %
-  const sun = (d.hourly.shortwave_radiation?.[0] ?? 0);      // W/m²
-  const temp = Math.round(d.current_weather.temperature);
-  const code = d.current_weather.weathercode;
-
-  clearFX();
-  baselineLife();
-
-  const ic = iconClassFrom(code, temp);
-
-  // Intensidades normalizadas
-  const rainI = clamp01(rain / 4);        // 0..4mm/h
-  const cloudI = clamp01(cloud / 100);
-  const sunI = clamp01((sun - 100) / 600); // ~100..700
-
-  if (ic === "rain"){
-    addFog(0.35 + cloudI*0.35);
-    addRain(rainI);
-  } else if (ic === "sun"){
-    addSun(sunI);
-    addFog(0.18 + cloudI*0.22);
-  } else if (ic === "snow"){
-    addFog(0.40 + cloudI*0.30);
-    addSnow(0.65);
-  } else {
-    // cloud
-    addFog(0.45 + cloudI*0.35);
-    // se houver um bocadinho de chuva mesmo com cloud
-    if (rain > 0.2) addRain(clamp01(rain/6));
-  }
-}
-
-/* =========================================================
-   BOOT
-   ========================================================= */
-fetch(URL)
-  .then(r => r.json())
-  .then(d => {
-    renderNow(d);
-    renderPillsHours(d);
-    renderPillsDays(d);
-    applyFX(d);
-  })
-  .catch(() => {
-    // fallback: não deixar “morto”
-    document.getElementById("nowTemp").textContent = "--°C";
-    document.getElementById("nowDesc").textContent = "Sem dados";
-    document.getElementById("nowIcon").className = "icon cloud";
-    clearFX();
-    baselineLife();
-    addFog(0.55);
-  });
-
-/* Recarregar dados (TV) de 15 em 15 min */
-setInterval(() => {
+function updatePanel(){
   fetch(URL).then(r=>r.json()).then(d=>{
-    renderNow(d);
-    renderPillsHours(d);
-    renderPillsDays(d);
-    applyFX(d);
-  }).catch(()=>{});
-}, 15 * 60 * 1000);
+    const cw=d.current_weather;
+    const temp=Math.round(cw.temperature);
+    const code=cw.weathercode;
+
+    nowTemp.textContent=temp+"°C";
+    nowDesc.textContent=iconFrom(code,temp)==="sun"?"Sol":iconFrom(code,temp)==="rain"?"Chuva":"Nublado";
+    nowIcon.className="icon "+iconFrom(code,temp);
+
+    hoursPills.innerHTML="";
+    for(let i=1;i<=4;i++){
+      const t=Math.round(d.hourly.temperature_2m[i]);
+      const h=new Date(d.hourly.time[i]).getHours().toString().padStart(2,"0")+"h";
+      hoursPills.innerHTML+=`<div class="pill"><div class="icon ${iconFrom(d.hourly.weathercode[i],t)}"></div><div><div class="small">${t}°</div><div class="sub">${h}</div></div></div>`;
+    }
+
+    daysPills.innerHTML="";
+    const dias=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+    for(let i=1;i<=4;i++){
+      const tmax=Math.round(d.daily.temperature_2m_max[i]);
+      const tmin=Math.round(d.daily.temperature_2m_min[i]);
+      const wd=dias[new Date(d.daily.time[i]).getDay()];
+      daysPills.innerHTML+=`<div class="pill"><div class="icon ${iconFrom(d.daily.weathercode[i],tmin)}"></div><div><div class="small">${tmax}°/${tmin}°</div><div class="sub">${wd}</div></div></div>`;
+    }
+
+    clearFX(); addFog();
+    const rain=d.hourly.precipitation[0]||0;
+    const sun=d.hourly.shortwave_radiation[0]||0;
+    if(rain>0.2) addRain(Math.min(300,40+rain*60));
+    if(code===0) addSun();
+
+    applyMood({
+      sun:sun/700,
+      rain:rain,
+      cloud:(d.hourly.cloudcover[0]||50)/100,
+      hour:new Date().getHours()
+    });
+  });
+}
+
+/* ================= SCHEDULER ================= */
+updatePanel();
+
+function scheduleHourly(){
+  const now=new Date();
+  const ms=(60-now.getMinutes())*60000-now.getSeconds()*1000;
+  setTimeout(()=>{
+    updatePanel();
+    setInterval(updatePanel,60*60*1000);
+  },ms);
+}
+scheduleHourly();
 </script>
 </body>
 </html>
