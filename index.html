@@ -19,35 +19,38 @@ body{
   overflow:hidden;
 }
 
-/* ================= WEATHER FX ================= */
-.weather-fx{
+/* =========================
+   CAMADA DE EFEITOS
+   ========================= */
+#fx{
   position:fixed;
   inset:0;
   pointer-events:none;
   z-index:0;
 }
 
-/* RAIN */
+/* ---------- CHUVA ---------- */
 .drop{
   position:absolute;
   width:2px;
   height:18px;
-  background:rgba(255,255,255,.4);
+  background:rgba(255,255,255,.45);
   border-radius:50%;
-  animation: fall linear infinite;
+  animation:fall linear infinite;
 }
 @keyframes fall{
   from{transform:translateY(-100px) translateX(0);}
   to{transform:translateY(110vh) translateX(40px);}
 }
 
-/* SUN */
+/* ---------- SOL ---------- */
 .sun{
   position:absolute;
-  top:10%;
-  right:15%;
   border-radius:50%;
-  background:radial-gradient(circle, rgba(255,210,120,.9), rgba(255,210,120,.3), transparent);
+  background:radial-gradient(circle,
+    rgba(255,220,140,.95),
+    rgba(255,220,140,.45),
+    transparent 65%);
   animation:sunpulse 8s ease-in-out infinite;
 }
 @keyframes sunpulse{
@@ -55,13 +58,13 @@ body{
   50%{opacity:1}
 }
 
-/* FOG */
+/* ---------- NEVOEIRO ---------- */
 .fog{
   position:absolute;
   inset:-20%;
   background:
-    radial-gradient(circle at 30% 50%, rgba(255,255,255,.15), transparent 55%),
-    radial-gradient(circle at 70% 60%, rgba(255,255,255,.12), transparent 60%);
+    radial-gradient(circle at 30% 50%, rgba(255,255,255,.18), transparent 55%),
+    radial-gradient(circle at 70% 60%, rgba(255,255,255,.15), transparent 60%);
   animation:fogmove 120s linear infinite;
 }
 @keyframes fogmove{
@@ -69,7 +72,9 @@ body{
   to{transform:translateX(-15%)}
 }
 
-/* ================= LAYOUT ================= */
+/* =========================
+   LAYOUT
+   ========================= */
 .app{
   position:relative;
   z-index:1;
@@ -113,14 +118,17 @@ main{
 .temp{font-size:72px;font-weight:700}
 .condition{opacity:.8}
 
-.forecast, .days{display:flex;gap:14px}
+.row{display:flex;gap:14px}
 .box{
   background:rgba(255,255,255,.08);
   border-radius:16px;
   padding:12px;
-  min-width:80px;
+  min-width:90px;
   text-align:center;
 }
+
+.kpi{font-size:64px;font-weight:700}
+.kpi span{font-size:18px;opacity:.7}
 
 footer{
   padding:0 40px;
@@ -129,23 +137,28 @@ footer{
   opacity:.6;
 }
 
-/* KPI */
-.kpi{font-size:64px;font-weight:700}
-.kpi span{font-size:18px;opacity:.7}
+/* =========================
+   VISIBILIDADE EM TV
+   ========================= */
+@media (min-width:1200px){
+  .drop{height:22px}
+}
 </style>
 </head>
 
 <body>
 
-<div class="weather-fx" id="fx"></div>
+<div id="fx"></div>
 
 <div class="app">
+
 <header>
-  <img src="assets/logo-monte-do-pasto.png">
+  <img src="assets/logo-monte-do-pasto.png" alt="Monte do Pasto">
   <div class="clock" id="clock">--:--</div>
 </header>
 
 <main>
+
   <div class="card">
     <h3>Tempo atual</h3>
     <div class="temp" id="temp">--°C</div>
@@ -154,82 +167,115 @@ footer{
 
   <div class="card">
     <h3>Próximas horas</h3>
-    <div class="forecast" id="hours"></div>
+    <div class="row" id="hours"></div>
   </div>
 
   <div class="card">
     <h3>Próximos dias</h3>
-    <div class="days" id="days"></div>
+    <div class="row" id="days"></div>
   </div>
 
   <div class="card">
     <h3>Indicador</h3>
     <div class="kpi">1280<span> kg</span></div>
   </div>
+
 </main>
 
 <footer>Informação interna · Monte do Pasto</footer>
+
 </div>
 
 <script>
-/* CLOCK */
-setInterval(()=> {
+/* =========================
+   RELÓGIO
+   ========================= */
+function tick(){
   document.getElementById("clock").textContent =
     new Intl.DateTimeFormat("pt-PT",{hour:"2-digit",minute:"2-digit"}).format(new Date());
-},1000);
+}
+tick();
+setInterval(tick,30000);
 
-/* WEATHER DATA */
+/* =========================
+   BASELINE — ANIMAÇÕES SEMPRE ATIVAS
+   ========================= */
+const fx = document.getElementById("fx");
+
+/* baseline chuva leve */
+function baselineRain(count){
+  for(let i=0;i<count;i++){
+    const d=document.createElement("div");
+    d.className="drop";
+    d.style.left=Math.random()*100+"%";
+    d.style.animationDuration=0.8+Math.random()*1.2+"s";
+    d.style.opacity=0.4+Math.random()*0.3;
+    fx.appendChild(d);
+  }
+}
+
+/* baseline sol leve */
+function baselineSun(size){
+  const s=document.createElement("div");
+  s.className="sun";
+  s.style.width=s.style.height=size+"px";
+  s.style.top="12%";
+  s.style.right="15%";
+  fx.appendChild(s);
+}
+
+/* baseline nevoeiro leve */
+function baselineFog(){
+  const f=document.createElement("div");
+  f.className="fog";
+  fx.appendChild(f);
+}
+
+/* baseline sempre ativo */
+baselineRain(25);
+baselineSun(180);
+baselineFog();
+
+/* =========================
+   TEMPO REAL (ESCALA)
+   ========================= */
 fetch("https://api.open-meteo.com/v1/forecast?latitude=38.219&longitude=-7.887&hourly=temperature_2m,precipitation,cloudcover,shortwave_radiation&daily=temperature_2m_max,temperature_2m_min&current_weather=true&timezone=auto")
 .then(r=>r.json())
 .then(d=>{
-  const fx=document.getElementById("fx");
-
   /* TEMP */
-  document.getElementById("temp").textContent=Math.round(d.current_weather.temperature)+"°C";
+  document.getElementById("temp").textContent =
+    Math.round(d.current_weather.temperature)+"°C";
 
-  /* HOURS */
+  /* HORAS */
   for(let i=1;i<=4;i++){
     hours.innerHTML+=`<div class="box">${Math.round(d.hourly.temperature_2m[i])}°</div>`;
   }
 
-  /* DAYS */
+  /* DIAS */
   for(let i=1;i<=4;i++){
     days.innerHTML+=`<div class="box">${Math.round(d.daily.temperature_2m_max[i])}° / ${Math.round(d.daily.temperature_2m_min[i])}°</div>`;
   }
 
-  /* INTENSITY */
+  /* INTENSIDADES */
   const rain=d.hourly.precipitation[0];
   const sun=d.hourly.shortwave_radiation[0];
   const cloud=d.hourly.cloudcover[0];
 
-  /* RAIN DROPS */
-  if(rain>0.1){
-    const drops=Math.min(200,Math.floor(rain*40));
-    for(let i=0;i<drops;i++){
-      const dr=document.createElement("div");
-      dr.className="drop";
-      dr.style.left=Math.random()*100+"%";
-      dr.style.animationDuration=0.6+Math.random()+"s";
-      fx.appendChild(dr);
-    }
+  /* CHUVA PROPORCIONAL */
+  if(rain>0){
+    baselineRain(Math.min(250,Math.floor(rain*60)));
     condition.textContent="Chuva";
   }
 
-  /* SUN */
-  if(sun>200){
-    const s=document.createElement("div");
-    s.className="sun";
-    const size=Math.min(300,sun/3);
-    s.style.width=s.style.height=size+"px";
-    fx.appendChild(s);
+  /* SOL PROPORCIONAL */
+  if(sun>150){
+    baselineSun(Math.min(320,150+sun/2));
     condition.textContent="Sol";
   }
 
-  /* FOG */
-  if(cloud>70){
-    const f=document.createElement("div");
-    f.className="fog";
-    fx.appendChild(f);
+  /* NEVOEIRO PROPORCIONAL */
+  if(cloud>60){
+    baselineFog();
     condition.textContent="Nublado";
   }
 });
