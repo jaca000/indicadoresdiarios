@@ -149,13 +149,18 @@
     }
 
     .now{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      padding:10px 14px;
-    }
-    .now .temp{ font-size: 20px; font-weight: 900; line-height: 1; }
-    .now .desc{ font-size: 13px; color: var(--t2); margin-top: 2px; }
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 10px;
+}
+.now .temp{
+  font-size:16px;     /* ↓ */
+  font-weight:800;
+}
+.now .desc{
+  font-size:11px;     /* ↓ */
+}
 
     /* Centro: permite scroll horizontal se necessário (TVs variam) */
     .header-mid{
