@@ -39,15 +39,24 @@ body{
     linear-gradient(135deg,var(--g1),var(--g2) 55%,var(--b1));
 }
 
-/* FX */
-#fx{position:fixed;inset:0;pointer-events:none;z-index:0}
+/* ========= FX LAYER (sempre visível) ========= */
+#fx{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:2; /* acima do fundo */
+}
+
 .drop{
-  position:absolute;width:2px;height:18px;
-  background:rgba(230,245,255,.60);
+  position:absolute;
+  width:2px;
+  height:20px;
+  background:rgba(220,245,255,.85);
   border-radius:999px;
   animation:fall linear infinite;
 }
-@keyframes fall{from{transform:translateY(-120px)}to{transform:translateY(110vh)}}
+@keyframes fall{from{transform:translateY(-140px)}to{transform:translateY(110vh)}}
+
 .fog{
   position:absolute;inset:-20%;
   background:
@@ -57,8 +66,9 @@ body{
   opacity:.35;
 }
 @keyframes fogmove{from{transform:translateX(0)}to{transform:translateX(-14%)}}
+
 .sunGlow{
-  position:absolute;top:8%;right:12%;
+  position:absolute;top:6%;right:10%;
   width:260px;height:260px;border-radius:50%;
   background:radial-gradient(circle,
     rgba(255,230,170,.85),
@@ -67,18 +77,18 @@ body{
   animation:sunpulse 7s ease-in-out infinite;
   opacity:.75;
 }
-@keyframes sunpulse{0%,100%{transform:scale(.95)}50%{transform:scale(1.03)}}
+@keyframes sunpulse{0%,100%{transform:scale(.95)}50%{transform:scale(1.04)}}
 
-/* App */
+/* ========= APP ========= */
 .app{
   position:relative;
-  z-index:1;
+  z-index:3; /* acima dos FX */
   height:100vh;
   display:grid;
   grid-template-rows:90px 1fr 48px;
 }
 
-/* Header */
+/* ========= HEADER ========= */
 header{
   padding:0 24px;
   display:flex;
@@ -119,6 +129,7 @@ header{
   align-items:center;
   justify-content:center;
   gap:14px;
+  min-width:0; /* evita esmagar o relógio */
 }
 
 .group{
@@ -130,6 +141,8 @@ header{
   background:linear-gradient(180deg,var(--glass),var(--glass2));
   border:1px solid var(--stroke);
   backdrop-filter: blur(10px);
+  max-width:46vw;
+  overflow:hidden;
 }
 
 .group-title{
@@ -142,6 +155,7 @@ header{
 
 .pills{display:flex;gap:10px}
 
+/* micro movimento só para “vida” */
 .pill{
   display:flex;
   align-items:center;
@@ -151,12 +165,20 @@ header{
   background:rgba(255,255,255,.22);
   border:1px solid rgba(255,255,255,.18);
   min-width:108px;
+  animation:float 6s ease-in-out infinite;
 }
+.pill:nth-child(2){animation-delay:.6s}
+.pill:nth-child(3){animation-delay:1.2s}
+.pill:nth-child(4){animation-delay:1.8s}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 
 .pill .big{font-size:15px;font-weight:900;line-height:1}
 .pill .sub{font-size:11px;color:var(--t3);margin-top:2px}
 
+/* 🔥 relógio garantido */
 .clock{
+  flex:0 0 auto;
+  flex-shrink:0;
   min-width:120px;
   text-align:right;
   font-size:28px;
@@ -165,7 +187,7 @@ header{
   text-shadow:0 10px 18px rgba(0,0,0,.18);
 }
 
-/* Weather icons */
+/* ========= Weather icons (CSS puro) ========= */
 .icon{
   width:26px;height:26px;position:relative;flex:0 0 26px;
   filter:drop-shadow(0 8px 14px rgba(0,0,0,.18));
@@ -198,7 +220,7 @@ header{
   background-repeat:no-repeat;
 }
 
-/* KPIs */
+/* ========= KPIs ========= */
 main{
   padding:22px 28px;
   display:grid;
@@ -248,7 +270,7 @@ main{
   background:rgba(0,0,0,.10);
 }
 
-/* Footer */
+/* ========= Footer ========= */
 footer{
   padding:0 28px;
   display:flex;
@@ -297,15 +319,17 @@ footer{
 /* ================= CONFIG ================= */
 var LAT = 38.219, LON = -7.887;
 
-var MAX_VISIBLE = 6;     // mostra até 6 KPIs de cada vez
-var ROTATE_MS = 15000;   // muda de página de KPIs a cada 15s
+var MAX_VISIBLE = 6;
+var ROTATE_MS = 15000;
 
 var SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRcoOLTXvKf6K_4aejdyA7ZK6PObIzqyiLBBOPSehdSkKlxj9_ms0EqJOjT7u2lN11j5DaYIAkcqoy7/pub?output=csv";
 
 var WEATHER_URL =
   "https://api.open-meteo.com/v1/forecast?latitude="+LAT+"&longitude="+LON+
-  "&current_weather=true&hourly=temperature_2m,precipitation,weathercode"+
-  "&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto";
+  "&current_weather=true"+
+  "&hourly=temperature_2m,precipitation,weathercode"+
+  "&daily=temperature_2m_max,temperature_2m_min,weathercode"+
+  "&timezone=auto";
 
 /* ================= CLOCK ================= */
 function tick(){
@@ -351,13 +375,13 @@ function addRainDrops(count){
     d.className = "drop";
     d.style.left = (Math.random()*100)+"%";
     d.style.animationDuration = (0.55 + Math.random()*1.2)+"s";
-    d.style.opacity = (0.22 + Math.random()*0.55);
-    d.style.height = (12 + Math.random()*18)+"px";
+    d.style.opacity = (0.30 + Math.random()*0.55);
+    d.style.height = (14 + Math.random()*20)+"px";
     fx.appendChild(d);
   }
 }
 
-/* ================= WEATHER (widgets) ================= */
+/* ================= WEATHER (widgets + FX) ================= */
 function updateWeather(){
   fetch(WEATHER_URL)
     .then(function(r){ return r.json(); })
@@ -370,7 +394,7 @@ function updateWeather(){
       document.getElementById("nowDesc").textContent = descFrom(code);
       document.getElementById("nowIcon").className = "icon " + iconClass(code);
 
-      // Próximas horas (4)
+      /* próximas 4 horas */
       var hoursEl = document.getElementById("hours");
       hoursEl.innerHTML = "";
 
@@ -381,7 +405,6 @@ function updateWeather(){
       for (var i=1;i<=4;i++){
         var t = Math.round(hTemps[i] || 0);
         var c = (hCodes[i]!==undefined ? hCodes[i] : 3);
-
         var hh = "--h";
         if (hTimes[i]){
           var dt = new Date(hTimes[i]);
@@ -398,7 +421,7 @@ function updateWeather(){
           "</div>";
       }
 
-      // Próximos dias (4)
+      /* próximos 4 dias */
       var daysEl = document.getElementById("days");
       daysEl.innerHTML = "";
 
@@ -430,28 +453,25 @@ function updateWeather(){
           "</div>";
       }
 
-      // FX (sempre com nevoeiro leve; chuva conforme intensidade; sol se céu limpo)
+      /* FX: fog sempre; chuva depende de precipitação; sol se limpo */
       clearFX();
       addFog();
 
       if (isRainCode(code)){
-        // intensidade: usamos precipitação horária atual (se houver)
         var prec = 0;
         if (d.hourly && d.hourly.precipitation && d.hourly.precipitation[0]!==undefined){
           prec = Number(d.hourly.precipitation[0]) || 0; // mm/h
         }
-        var intensity = prec / 4; // normalização simples
-        if (intensity < 0.15) intensity = 0.15;
+        var intensity = prec / 4;
+        if (intensity < 0.20) intensity = 0.20;
         if (intensity > 1) intensity = 1;
-        var drops = Math.floor(70 + intensity * 260);
+        var drops = Math.floor(120 + intensity * 320);
         addRainDrops(drops);
       } else if (code === 0){
         addSun();
       }
     })
-    .catch(function(){
-      // se falhar, não rebenta o layout
-    });
+    .catch(function(){});
 }
 
 /* ================= CSV PARSER (TV-safe) ================= */
@@ -503,7 +523,6 @@ function rotate(){
   var totalPages = Math.ceil(cards.length / MAX_VISIBLE);
   page = (page + 1) % (totalPages || 1);
 }
-
 function startRotation(){
   if (rotateTimer) clearInterval(rotateTimer);
   page = 0;
@@ -579,19 +598,15 @@ function loadKPIs(){
       cards = Array.prototype.slice.call(document.querySelectorAll(".kpi-card"));
       startRotation();
     })
-    .catch(function(){
-      // se falhar, não rebenta tudo
-    });
+    .catch(function(){});
 }
 
-/* ================= HOURLY REFRESH (alinhado à hora cheia) ================= */
+/* ================= HOURLY REFRESH (alinhado) ================= */
 function scheduleHourly(fn){
   fn();
-
   var now = new Date();
   var msToNextHour =
     (60 - now.getMinutes())*60*1000 - now.getSeconds()*1000 - now.getMilliseconds();
-
   if (msToNextHour < 1000) msToNextHour = 1000;
 
   setTimeout(function(){
