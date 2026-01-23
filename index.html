@@ -5,45 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Monte do Pasto · Painel Vivo</title>
 
-  <!-- Tipografia -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
-    /* =========================================================
-       BASE / RESET
-    ========================================================= */
     * { box-sizing: border-box; }
     html, body { height: 100%; margin: 0; }
-    body { overflow: hidden; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial; }
-
-    /* =========================================================
-       THEME (verde + castanho) — nunca fundo preto
-    ========================================================= */
-    :root{
-      --g1:#6fa98c;   /* verde claro */
-      --g2:#4f7f63;   /* verde médio */
-      --b1:#7b6445;   /* castanho */
-
-      --glass: rgba(255,255,255,.18);
-      --glass2: rgba(0,0,0,.10);
-      --stroke: rgba(255,255,255,.24);
-
-      --t1:#f4f6f3;
-      --t2: rgba(244,246,243,.80);
-      --t3: rgba(244,246,243,.60);
-
-      --r1: 18px;
-      --r2: 26px;
-
-      /* ajustes de escala */
-      --headerH: 92px;
-      --footerH: 48px;
-    }
-
     body{
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       color: var(--t1);
+      overflow: hidden;
       background:
         radial-gradient(1200px 800px at 20% 10%, rgba(255,255,255,.20), transparent 60%),
         radial-gradient(900px 700px at 80% 20%, rgba(200,160,110,.18), transparent 60%),
@@ -51,10 +23,31 @@
         linear-gradient(135deg, var(--g1), var(--g2) 55%, var(--b1));
     }
 
+    :root{
+      /* Base Monte do Pasto (verde + castanho) */
+      --g1:#6fa98c;
+      --g2:#4f7f63;
+      --b1:#7b6445;
+
+      --glass: rgba(255,255,255,.18);
+      --glass2: rgba(0,0,0,.10);
+      --stroke: rgba(255,255,255,.24);
+
+      --t1:#f4f6f3;
+      --t2: rgba(244,246,243,.82);
+      --t3: rgba(244,246,243,.62);
+
+      --r1: 18px;
+      --r2: 26px;
+
+      --headerMinH: 92px;
+      --footerH: 48px;
+    }
+
     /* =========================================================
-       FX LAYER (chuva / nevoeiro / sol) — sempre por cima do fundo
+       FX LAYER
     ========================================================= */
-    #fx {
+    #fx{
       position: fixed;
       inset: 0;
       pointer-events: none;
@@ -62,48 +55,45 @@
       overflow: hidden;
     }
 
-    /* nevoeiro */
-    .fog {
-      position: absolute;
-      inset: -20%;
+    .fog{
+      position:absolute;
+      inset:-20%;
       background:
-        radial-gradient(circle at 30% 50%, rgba(255,255,255,.16), transparent 55%),
+        radial-gradient(circle at 30% 50%, rgba(255,255,255,.18), transparent 55%),
         radial-gradient(circle at 70% 60%, rgba(255,255,255,.12), transparent 60%),
-        radial-gradient(circle at 50% 35%, rgba(255,255,255,.10), transparent 62%);
-      opacity: .35;
-      animation: fogMove 110s linear infinite;
-      filter: blur(0.5px);
+        radial-gradient(circle at 55% 35%, rgba(255,255,255,.10), transparent 62%);
+      opacity:.38;
+      animation:fogMove 110s linear infinite;
+      filter: blur(0.6px);
     }
-    @keyframes fogMove {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-14%); }
+    @keyframes fogMove{
+      from{ transform: translateX(0); }
+      to{ transform: translateX(-14%); }
     }
 
-    /* sol */
     .sunGlow{
-      position: absolute;
-      top: 6%;
+      position:absolute;
+      top: 5%;
       right: 10%;
-      width: 260px;
-      height: 260px;
+      width: 280px;
+      height: 280px;
       border-radius: 50%;
       background: radial-gradient(circle,
-        rgba(255,230,170,.88),
-        rgba(255,210,150,.32),
+        rgba(255,230,170,.90),
+        rgba(255,210,150,.30),
         transparent 66%);
-      opacity: .75;
+      opacity: .78;
       animation: sunPulse 7s ease-in-out infinite;
     }
-    @keyframes sunPulse {
+    @keyframes sunPulse{
       0%,100%{ transform: scale(.96); }
-      50%    { transform: scale(1.04); }
+      50%{ transform: scale(1.04); }
     }
 
-    /* gotas de chuva */
-    .drop {
-      position: absolute;
-      width: 2px;
-      height: 18px;
+    .drop{
+      position:absolute;
+      width:2px;
+      height:18px;
       background: rgba(220,245,255,.86);
       border-radius: 999px;
       animation-name: fall;
@@ -111,27 +101,28 @@
       animation-iteration-count: infinite;
       will-change: transform;
     }
-    @keyframes fall {
-      from { transform: translateY(-140px); }
-      to   { transform: translateY(110vh); }
+    @keyframes fall{
+      from{ transform: translateY(-140px); }
+      to{ transform: translateY(110vh); }
     }
 
     /* =========================================================
        APP LAYER
     ========================================================= */
-    .app {
+    .app{
       position: relative;
       z-index: 3; /* acima dos FX */
       height: 100vh;
       display: grid;
-      grid-template-rows: var(--headerH) 1fr var(--footerH);
+      grid-template-rows: auto 1fr var(--footerH);
     }
 
     /* =========================================================
-       HEADER — GRID (relógio nunca desaparece)
+       HEADER (GRID) — não corta, faz scroll inteligente
     ========================================================= */
     header{
-      padding: 0 24px;
+      padding: 14px 24px;
+      min-height: var(--headerMinH);
       display: grid;
       grid-template-columns: auto 1fr auto;
       align-items: center;
@@ -142,48 +133,52 @@
       display:flex;
       align-items:center;
       gap:14px;
-      min-width: 420px;
+      min-width: 360px;
     }
 
     .logo{
-      height: 60px; /* ligeiramente maior (pedido anterior) */
+      height: 62px;
       filter: drop-shadow(0 10px 18px rgba(0,0,0,.18));
+    }
+
+    .glass{
+      background: linear-gradient(180deg, var(--glass), var(--glass2));
+      border: 1px solid var(--stroke);
+      border-radius: var(--r1);
+      backdrop-filter: blur(10px);
     }
 
     .now{
       display:flex;
       align-items:center;
       gap:12px;
-      padding: 10px 14px;
-      border-radius: var(--r1);
-      background: linear-gradient(180deg, var(--glass), var(--glass2));
-      border: 1px solid var(--stroke);
-      backdrop-filter: blur(10px);
+      padding:10px 14px;
     }
     .now .temp{ font-size: 20px; font-weight: 900; line-height: 1; }
     .now .desc{ font-size: 13px; color: var(--t2); margin-top: 2px; }
 
+    /* Centro: permite scroll horizontal se necessário (TVs variam) */
     .header-mid{
       display:flex;
       justify-content:center;
       align-items:center;
       gap: 14px;
       min-width: 0;
-      overflow: hidden;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 2px;
     }
+    .header-mid::-webkit-scrollbar{ display:none; }
 
     .group{
       display:flex;
       align-items:center;
-      gap: 12px;
-      padding: 10px 14px;
-      border-radius: var(--r1);
-      background: linear-gradient(180deg, var(--glass), var(--glass2));
-      border: 1px solid var(--stroke);
-      backdrop-filter: blur(10px);
-      max-width: 46vw;
-      overflow: hidden;
+      gap:12px;
+      padding:10px 14px;
+      flex-shrink: 0;
+      max-width: 920px;
     }
+
     .group-title{
       font-size: 11px;
       text-transform: uppercase;
@@ -194,30 +189,33 @@
 
     .pills{
       display:flex;
-      gap: 10px;
+      gap:10px;
       min-width: 0;
-      overflow: hidden;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 2px;
     }
+    .pills::-webkit-scrollbar{ display:none; }
 
-    /* pills com micro-movimento (vida) */
     .pill{
       display:flex;
       align-items:center;
-      gap: 10px;
-      padding: 8px 12px;
+      gap:10px;
+      padding:8px 12px;
       border-radius: 16px;
       background: rgba(255,255,255,.22);
       border: 1px solid rgba(255,255,255,.18);
-      min-width: 112px;
+      min-width: 118px;
       animation: float 6s ease-in-out infinite;
       will-change: transform;
+      flex-shrink: 0;
     }
     .pill:nth-child(2){ animation-delay: .6s; }
     .pill:nth-child(3){ animation-delay: 1.2s; }
     .pill:nth-child(4){ animation-delay: 1.8s; }
-    @keyframes float {
-      0%,100% { transform: translateY(0); }
-      50%     { transform: translateY(-3px); }
+    @keyframes float{
+      0%,100%{ transform: translateY(0); }
+      50%{ transform: translateY(-3px); }
     }
     .pill .big{ font-size: 15px; font-weight: 900; line-height: 1; }
     .pill .sub{ font-size: 11px; color: var(--t3); margin-top: 2px; }
@@ -232,7 +230,7 @@
     }
 
     /* =========================================================
-       ICONS (CSS puro)
+       ICONS (CSS puro + micro-vida)
     ========================================================= */
     .icon{
       width: 26px;
@@ -247,7 +245,15 @@
       inset:6px;
       border-radius:50%;
       background: radial-gradient(circle, #ffe6b4, #ffc36e);
+      animation: sunSpin 10s linear infinite;
+      transform-origin: center;
     }
+    @keyframes sunSpin{
+      from{ transform: rotate(0deg) scale(1); }
+      50%{ transform: rotate(180deg) scale(1.02); }
+      to{ transform: rotate(360deg) scale(1); }
+    }
+
     .icon.cloud:before{
       content:"";
       position:absolute;
@@ -263,12 +269,19 @@
       position:absolute;
       left:6px;
       bottom:11px;
-      width:12px; height:12px;
+      width:12px;
+      height:12px;
       background:#fff;
       border-radius:50%;
       box-shadow:10px -2px 0 #fff;
       opacity:.98;
+      animation: cloudBob 4.8s ease-in-out infinite;
     }
+    @keyframes cloudBob{
+      0%,100%{ transform: translateY(0); }
+      50%{ transform: translateY(-1.5px); }
+    }
+
     .icon.rain:before{
       content:"";
       position:absolute;
@@ -284,7 +297,8 @@
       position:absolute;
       left:9px;
       top:16px;
-      width:10px; height:10px;
+      width:10px;
+      height:10px;
       background:
         radial-gradient(circle, rgba(170,230,255,.95) 2px, transparent 3px),
         radial-gradient(circle, rgba(170,230,255,.85) 2px, transparent 3px),
@@ -292,11 +306,16 @@
       background-position:0 0, 8px 2px, 4px 8px;
       background-size:10px 10px;
       background-repeat:no-repeat;
-      opacity:.9;
+      opacity:.95;
+      animation: rainIcon 0.9s linear infinite;
+    }
+    @keyframes rainIcon{
+      from{ transform: translateY(0); opacity:.95; }
+      to{ transform: translateY(2px); opacity:.75; }
     }
 
     /* =========================================================
-       MAIN / KPIs — adaptativo ao conteúdo
+       MAIN / KPIs — adaptam ao conteúdo (sem “janelas gigantes”)
     ========================================================= */
     main{
       padding: 22px 28px;
@@ -313,11 +332,12 @@
       border-radius: var(--r2);
       padding: clamp(14px, 1.6vw, 18px) clamp(16px, 1.8vw, 20px);
       backdrop-filter: blur(10px);
-      align-self: start;            /* altura só do conteúdo */
+      align-self: start;
+      max-width: 560px;          /* impede “tapetes” */
+      width: 100%;
       transition: opacity .35s, transform .35s;
     }
 
-    /* usado na rotação (em vez de display none, usamos hidden para transição) */
     .card.hidden{
       opacity: 0;
       transform: translateY(10px);
@@ -357,9 +377,7 @@
     }
 
     /* KPI do sistema (fixo) — visual igual aos outros */
-    .system-kpi {
-      /* sem regras especiais de largura/altura */
-    }
+    .system-kpi{ }
 
     /* =========================================================
        FOOTER
@@ -370,22 +388,21 @@
       align-items:center;
       color: var(--t2);
       font-size: 14px;
+      opacity: .9;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- FX layer -->
   <div id="fx"></div>
 
-  <!-- APP -->
   <div class="app">
-
     <header>
       <div class="header-left">
         <img class="logo" src="assets/logo-monte-do-pasto.png" alt="Monte do Pasto">
-        <div class="now">
+
+        <div class="now glass">
           <div id="nowIcon" class="icon cloud" aria-hidden="true"></div>
           <div>
             <div id="nowTemp" class="temp">--°C</div>
@@ -395,12 +412,12 @@
       </div>
 
       <div class="header-mid">
-        <div class="group">
+        <div class="group glass">
           <div class="group-title">Próx. horas</div>
           <div id="hours" class="pills"></div>
         </div>
 
-        <div class="group">
+        <div class="group glass">
           <div class="group-title">Próx. dias</div>
           <div id="days" class="pills"></div>
         </div>
@@ -410,28 +427,22 @@
     </header>
 
     <main id="kpis"></main>
-
     <footer>Informação interna · Monte do Pasto</footer>
   </div>
 
 <script>
 /* =========================================================
    CONFIG
-   - Cuba, Alentejo (aprox): latitude/longitude
-   - Google Sheet (CSV publicado)
 ========================================================= */
-var LAT = 38.219;
+var LAT = 38.219;   // Cuba (aprox.)
 var LON = -7.887;
 
-// KPIs vindos da SHEET: máximo 6 visíveis; rotação a cada 15s
-var MAX_VISIBLE = 6;
-var ROTATE_MS = 15000;
+var MAX_VISIBLE = 6;       // KPIs da Sheet por página
+var ROTATE_MS  = 15000;    // rotação KPIs da Sheet
 
-// CSV publicado
 var SHEET_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vRcoOLTXvKf6K_4aejdyA7ZK6PObIzqyiLBBOPSehdSkKlxj9_ms0EqJOjT7u2lN11j5DaYIAkcqoy7/pub?output=csv";
 
-// Forecast (agora + horas + dias + precipitação horária para intensidade FX)
 var FORECAST_URL =
   "https://api.open-meteo.com/v1/forecast?latitude=" + LAT + "&longitude=" + LON +
   "&current_weather=true" +
@@ -439,25 +450,36 @@ var FORECAST_URL =
   "&daily=temperature_2m_max,temperature_2m_min,weathercode" +
   "&timezone=auto";
 
-// Archive (histórico) — para KPI acumulado comparável (estável)
 var ARCHIVE_BASE =
   "https://archive-api.open-meteo.com/v1/archive?latitude=" + LAT + "&longitude=" + LON +
   "&daily=precipitation_sum&timezone=auto";
 
 /* =========================================================
-   RELÓGIO (header)
+   ELEMENTOS
+========================================================= */
+var fx = document.getElementById("fx");
+var nowIcon = document.getElementById("nowIcon");
+var nowTemp = document.getElementById("nowTemp");
+var nowDesc = document.getElementById("nowDesc");
+var hoursEl = document.getElementById("hours");
+var daysEl  = document.getElementById("days");
+var kpisEl  = document.getElementById("kpis");
+var clockEl = document.getElementById("clock");
+
+/* =========================================================
+   CLOCK
 ========================================================= */
 function tickClock(){
   var d = new Date();
-  var hh = ("0" + d.getHours()).slice(-2);
-  var mm = ("0" + d.getMinutes()).slice(-2);
-  document.getElementById("clock").textContent = hh + ":" + mm;
+  var hh = ("0"+d.getHours()).slice(-2);
+  var mm = ("0"+d.getMinutes()).slice(-2);
+  clockEl.textContent = hh + ":" + mm;
 }
 tickClock();
 setInterval(tickClock, 30000);
 
 /* =========================================================
-   HELPERS: datas / csv / números
+   HELPERS
 ========================================================= */
 function pad2(n){ return (n < 10 ? "0"+n : ""+n); }
 function fmtDate(d){
@@ -471,25 +493,6 @@ function addDays(date, days){
 }
 function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
 
-function parseCSV(text){
-  text = (text || "").replace(/\r/g, "").trim();
-  if (!text) return [];
-  var lines = text.split("\n");
-  var headers = lines.shift().split(",");
-  for (var i=0;i<headers.length;i++) headers[i] = (headers[i]||"").trim();
-
-  var out = [];
-  for (var l=0; l<lines.length; l++){
-    if (!lines[l]) continue;
-    var cols = lines[l].split(",");
-    var row = {};
-    for (var c=0;c<headers.length;c++){
-      row[headers[c]] = (cols[c]||"").trim();
-    }
-    out.push(row);
-  }
-  return out;
-}
 function asBool(v){
   v = (v||"").toString().trim().toLowerCase();
   return (v==="true" || v==="1" || v==="sim" || v==="yes");
@@ -501,11 +504,51 @@ function asNum(v){
   return (isFinite(n) ? n : NaN);
 }
 
+/* CSV robusto (suporta aspas e vírgulas em campos) */
+function parseCSV(text){
+  text = (text || "").replace(/\r/g, "");
+  if (!text.trim()) return [];
+  var rows = [];
+  var row = [];
+  var cur = "";
+  var inQuotes = false;
+
+  for (var i=0;i<text.length;i++){
+    var ch = text[i];
+    if (ch === '"'){
+      if (inQuotes && text[i+1] === '"'){
+        cur += '"'; i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (ch === ',' && !inQuotes){
+      row.push(cur); cur = "";
+    } else if (ch === '\n' && !inQuotes){
+      row.push(cur); rows.push(row); row = []; cur = "";
+    } else {
+      cur += ch;
+    }
+  }
+  row.push(cur);
+  rows.push(row);
+
+  var headers = rows.shift().map(function(h){ return (h||"").trim(); });
+  var out = [];
+  for (var r=0;r<rows.length;r++){
+    if (rows[r].length === 1 && !rows[r][0].trim()) continue;
+    var obj = {};
+    for (var c=0;c<headers.length;c++){
+      obj[headers[c]] = (rows[r][c] || "").trim();
+    }
+    out.push(obj);
+  }
+  return out;
+}
+
 /* =========================================================
-   WEATHER CODE HELPERS
+   WEATHER CODES (Open-Meteo)
 ========================================================= */
 function isRainCode(code){
-  // incluindo trovoada/chuva intensa etc.
   return (code===51||code===53||code===55||code===61||code===63||code===65||code===80||code===81||code===82||code===95||code===96||code===99);
 }
 function iconClass(code){
@@ -520,27 +563,73 @@ function descFrom(code){
 }
 
 /* =========================================================
-   FX ENGINE (cria efeitos conforme estado atual)
-   - fog: sempre
-   - sunGlow: quando sol
-   - rain: quando chuva (intensidade por mm/h)
+   THEME MOOD (verde muda com o tempo)
 ========================================================= */
-function clearFX(){
-  document.getElementById("fx").innerHTML = "";
+function setMood(code, precip){
+  // precip em mm/h (0..)
+  // Mantém sempre verde/castanho, mas “muda o mood”
+  var g1 = "#6fa98c", g2 = "#4f7f63", b1 = "#7b6445";
+
+  if (isRainCode(code)){
+    // mais húmido/escuro quanto mais precip
+    var k = clamp((precip || 0) / 6, 0, 1); // 0..1
+    g1 = mixHex("#7ab79a", "#4f7f63", k);
+    g2 = mixHex("#5a8f73", "#3f6a53", k);
+    b1 = mixHex("#7b6445", "#6a553a", k);
+  } else if (code === 0){
+    // sol mais vivo
+    g1 = "#78b89a";
+    g2 = "#4f8a6c";
+    b1 = "#806443";
+  } else {
+    // nublado: mais suave
+    g1 = "#73ad90";
+    g2 = "#4b7a60";
+    b1 = "#7a6344";
+  }
+
+  document.documentElement.style.setProperty("--g1", g1);
+  document.documentElement.style.setProperty("--g2", g2);
+  document.documentElement.style.setProperty("--b1", b1);
 }
+
+// mistura simples de hex
+function hexToRgb(h){
+  h = h.replace("#","");
+  return {
+    r: parseInt(h.slice(0,2),16),
+    g: parseInt(h.slice(2,4),16),
+    b: parseInt(h.slice(4,6),16)
+  };
+}
+function rgbToHex(r,g,b){
+  function c(n){ var s=n.toString(16); return s.length===1?("0"+s):s; }
+  return "#"+c(r)+c(g)+c(b);
+}
+function mixHex(a,b,t){
+  var A=hexToRgb(a), B=hexToRgb(b);
+  var r = Math.round(A.r + (B.r-A.r)*t);
+  var g = Math.round(A.g + (B.g-A.g)*t);
+  var bb= Math.round(A.b + (B.b-A.b)*t);
+  return rgbToHex(r,g,bb);
+}
+
+/* =========================================================
+   FX ENGINE
+========================================================= */
+function clearFX(){ fx.innerHTML = ""; }
 function addFog(){
   var f = document.createElement("div");
   f.className = "fog";
-  document.getElementById("fx").appendChild(f);
+  fx.appendChild(f);
 }
 function addSun(){
   var s = document.createElement("div");
   s.className = "sunGlow";
-  document.getElementById("fx").appendChild(s);
+  fx.appendChild(s);
 }
 function addRainDrops(count){
-  var fx = document.getElementById("fx");
-  for (var i=0; i<count; i++){
+  for (var i=0;i<count;i++){
     var d = document.createElement("div");
     d.className = "drop";
     d.style.left = (Math.random()*100) + "%";
@@ -551,112 +640,113 @@ function addRainDrops(count){
   }
 }
 
-/* =========================================================
-   WEATHER (header widgets + FX)
-========================================================= */
-function updateWeather(){
-  fetch(FORECAST_URL)
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      var cw = d.current_weather || {};
-      var temp = Math.round(cw.temperature || 0);
-      var code = (cw.weathercode!==undefined ? cw.weathercode : 3);
+function applyFX(code, precipNow){
+  // fog sempre (dá “vida” mesmo sem chuva)
+  clearFX();
+  addFog();
 
-      // now
-      document.getElementById("nowTemp").textContent = temp + "°C";
-      document.getElementById("nowDesc").textContent = descFrom(code);
-      document.getElementById("nowIcon").className = "icon " + iconClass(code);
-
-      // próximas horas (4)
-      var hoursEl = document.getElementById("hours");
-      hoursEl.innerHTML = "";
-
-      var hTemps = (d.hourly && d.hourly.temperature_2m) ? d.hourly.temperature_2m : [];
-      var hCodes = (d.hourly && d.hourly.weathercode) ? d.hourly.weathercode : [];
-      var hTimes = (d.hourly && d.hourly.time) ? d.hourly.time : [];
-      var hPrec  = (d.hourly && d.hourly.precipitation) ? d.hourly.precipitation : [];
-
-      for (var i=1;i<=4;i++){
-        var t = Math.round(hTemps[i] || 0);
-        var c = (hCodes[i]!==undefined ? hCodes[i] : 3);
-        var hh = "--h";
-        if (hTimes[i]){
-          var dt = new Date(hTimes[i]);
-          hh = pad2(dt.getHours()) + "h";
-        }
-
-        hoursEl.innerHTML +=
-          "<div class='pill'>" +
-            "<div class='icon " + iconClass(c) + "'></div>" +
-            "<div>" +
-              "<div class='big'>" + t + "°</div>" +
-              "<div class='sub'>" + hh + "</div>" +
-            "</div>" +
-          "</div>";
-      }
-
-      // próximos dias (4)
-      var daysEl = document.getElementById("days");
-      daysEl.innerHTML = "";
-
-      var dMax = (d.daily && d.daily.temperature_2m_max) ? d.daily.temperature_2m_max : [];
-      var dMin = (d.daily && d.daily.temperature_2m_min) ? d.daily.temperature_2m_min : [];
-      var dCode = (d.daily && d.daily.weathercode) ? d.daily.weathercode : [];
-      var dTime = (d.daily && d.daily.time) ? d.daily.time : [];
-
-      var dias = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
-      for (var j=1;j<=4;j++){
-        var tmax = Math.round(dMax[j] || 0);
-        var tmin = Math.round(dMin[j] || 0);
-        var cc = (dCode[j]!==undefined ? dCode[j] : 3);
-
-        var wd = "---";
-        if (dTime[j]){
-          var dd = new Date(dTime[j]);
-          wd = dias[dd.getDay()];
-        }
-
-        daysEl.innerHTML +=
-          "<div class='pill'>" +
-            "<div class='icon " + iconClass(cc) + "'></div>" +
-            "<div>" +
-              "<div class='big'>" + tmax + "°/" + tmin + "°</div>" +
-              "<div class='sub'>" + wd + "</div>" +
-            "</div>" +
-          "</div>";
-      }
-
-      // FX: fog sempre; sol se limpo; chuva com intensidade
-      clearFX();
-      addFog();
-
-      if (isRainCode(code)){
-        // intensidade: usar precipitação horária "agora" (mm/h)
-        var precNow = 0;
-        if (hPrec && hPrec[0]!==undefined) precNow = Number(hPrec[0]) || 0;
-
-        // mapear mm/h -> densidade de gotas
-        // 0 mm/h -> mínimo (ainda visível se estiver "rain code")
-        // >= 6 mm/h -> muito denso
-        var intensity = clamp(precNow / 6, 0.18, 1); // 0.18..1
-        var drops = Math.floor(140 + intensity * 420); // 140..560
-        addRainDrops(drops);
-      } else if (code === 0){
-        addSun();
-      }
-    })
-    .catch(function(){
-      // se falhar, não rebenta o ecrã
-    });
+  if (isRainCode(code)){
+    var intensity = clamp((precipNow || 0) / 6, 0.18, 1); // 0.18..1
+    var drops = Math.floor(140 + intensity * 520);        // 140..660
+    addRainDrops(drops);
+  } else if (code === 0){
+    addSun();
+  }
 }
 
 /* =========================================================
-   KPI FIXO: Chuva acumulada (desde 1 Jan) vs ano anterior
-   - CÁLCULO CORRETO/ESTÁVEL:
-     Jan 1 -> ONTEM (dias completos)
-     vs Jan 1 -> mesmo dia/mês de ONTEM no ano anterior
+   WEATHER (tempo real + widgets + FX + mood)
 ========================================================= */
-var rainKpiHtmlCache = ""; // evita flicker quando os KPIs da sheet recarregam
+async function updateWeather(){
+  try{
+    var r = await fetch(FORECAST_URL, { cache: "no-store" });
+    var d = await r.json();
+
+    var cw = d.current_weather || {};
+    var temp = Math.round(cw.temperature || 0);
+    var code = (cw.weathercode!==undefined ? cw.weathercode : 3);
+
+    // precipitação "agora": usar hourly[0] (mm/h) se existir
+    var precipNow = 0;
+    if (d.hourly && d.hourly.precipitation && d.hourly.precipitation[0]!==undefined){
+      precipNow = Number(d.hourly.precipitation[0]) || 0;
+    }
+
+    // header now
+    nowTemp.textContent = temp + "°C";
+    nowDesc.textContent = descFrom(code);
+    nowIcon.className = "icon " + iconClass(code);
+
+    // mood + FX
+    setMood(code, precipNow);
+    applyFX(code, precipNow);
+
+    // próximas 4 horas
+    hoursEl.innerHTML = "";
+    var hTemps = (d.hourly && d.hourly.temperature_2m) ? d.hourly.temperature_2m : [];
+    var hCodes = (d.hourly && d.hourly.weathercode) ? d.hourly.weathercode : [];
+    var hTimes = (d.hourly && d.hourly.time) ? d.hourly.time : [];
+
+    for (var i=1;i<=4;i++){
+      var t = Math.round(hTemps[i] || 0);
+      var c = (hCodes[i]!==undefined ? hCodes[i] : 3);
+      var hh = "--h";
+      if (hTimes[i]){
+        var dt = new Date(hTimes[i]);
+        hh = pad2(dt.getHours()) + "h";
+      }
+      hoursEl.innerHTML +=
+        "<div class='pill'>" +
+          "<div class='icon " + iconClass(c) + "'></div>" +
+          "<div>" +
+            "<div class='big'>" + t + "°</div>" +
+            "<div class='sub'>" + hh + "</div>" +
+          "</div>" +
+        "</div>";
+    }
+
+    // próximos 4 dias
+    daysEl.innerHTML = "";
+    var dMax = (d.daily && d.daily.temperature_2m_max) ? d.daily.temperature_2m_max : [];
+    var dMin = (d.daily && d.daily.temperature_2m_min) ? d.daily.temperature_2m_min : [];
+    var dCode = (d.daily && d.daily.weathercode) ? d.daily.weathercode : [];
+    var dTime = (d.daily && d.daily.time) ? d.daily.time : [];
+
+    var dias = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+    for (var j=1;j<=4;j++){
+      var tmax = Math.round(dMax[j] || 0);
+      var tmin = Math.round(dMin[j] || 0);
+      var cc = (dCode[j]!==undefined ? dCode[j] : 3);
+
+      var wd = "---";
+      if (dTime[j]){
+        var dd = new Date(dTime[j]);
+        wd = dias[dd.getDay()];
+      }
+
+      daysEl.innerHTML +=
+        "<div class='pill'>" +
+          "<div class='icon " + iconClass(cc) + "'></div>" +
+          "<div>" +
+            "<div class='big'>" + tmax + "°/" + tmin + "°</div>" +
+            "<div class='sub'>" + wd + "</div>" +
+          "</div>" +
+        "</div>";
+    }
+
+    return { ok:true };
+  } catch(e){
+    // mantém algo visível mesmo sem rede
+    nowDesc.textContent = "Sem ligação";
+    return { ok:false, err:e };
+  }
+}
+
+/* =========================================================
+   KPI FIXO: chuva acumulada (Jan 1 -> ontem) vs ano anterior
+   - mm = L/m²
+========================================================= */
+var rainKpiHtmlCache = "";
 
 function sumArray(arr){
   var s = 0;
@@ -664,82 +754,82 @@ function sumArray(arr){
   return s;
 }
 
-function fetchArchiveRainSum(startDateStr, endDateStr, cb){
+async function fetchArchiveRainSum(startDateStr, endDateStr){
   var url = ARCHIVE_BASE + "&start_date=" + startDateStr + "&end_date=" + endDateStr;
-  fetch(url)
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      var sum = 0;
-      if (d && d.daily && d.daily.precipitation_sum) sum = sumArray(d.daily.precipitation_sum);
-      cb(sum);
-    })
-    .catch(function(){
-      cb(null);
-    });
+  var r = await fetch(url, { cache: "no-store" });
+  var d = await r.json();
+  if (d && d.daily && d.daily.precipitation_sum) return sumArray(d.daily.precipitation_sum);
+  return null;
 }
 
-function updateRainKPI(cbDone){
-  var today = new Date();
-  var endNow = addDays(today, -1); // ontem
-  var yearNow = today.getFullYear();
-  var yearPrev = yearNow - 1;
+async function updateRainKPI(){
+  try{
+    var today = new Date();
+    var endNow = addDays(today, -1);       // ontem (dias completos)
+    var yearNow = today.getFullYear();
+    var yearPrev = yearNow - 1;
 
-  // Se for dia 1 de Janeiro, ontem cai no ano anterior -> acumulado 0
-  if (endNow.getFullYear() !== yearNow){
-    rainKpiHtmlCache =
-      "<div class='card system-kpi' id='kpiRainFixed'>" +
-        "<h3>Chuva acumulada (desde 1 de janeiro)</h3>" +
-        "<div class='kpi'>0 <span>L/m²</span></div>" +
-        "<div class='kpi-sub'>+0 L/m² vs " + yearPrev + "</div>" +
-      "</div>";
-    if (cbDone) cbDone();
-    return;
-  }
-
-  var startNowStr = fmtDate(startOfYear(yearNow));
-  var endNowStr   = fmtDate(endNow);
-
-  // mesmo dia/mês de "ontem" no ano anterior
-  var endPrev = new Date(yearPrev, endNow.getMonth(), endNow.getDate());
-  var startPrevStr = fmtDate(startOfYear(yearPrev));
-  var endPrevStr   = fmtDate(endPrev);
-
-  fetchArchiveRainSum(startNowStr, endNowStr, function(sumNow){
-    fetchArchiveRainSum(startPrevStr, endPrevStr, function(sumPrev){
-      if (sumNow === null || sumPrev === null){
-        rainKpiHtmlCache =
-          "<div class='card system-kpi' id='kpiRainFixed'>" +
-            "<h3>Chuva acumulada (desde 1 de janeiro)</h3>" +
-            "<div class='kpi'>-- <span>L/m²</span></div>" +
-            "<div class='kpi-sub'>Sem dados neste momento</div>" +
-          "</div>";
-        if (cbDone) cbDone();
-        return;
-      }
-
-      var nowRounded = Math.round(sumNow);
-      var prevRounded = Math.round(sumPrev);
-      var diff = nowRounded - prevRounded;
-      var sign = diff >= 0 ? "+" : "−";
-
+    // 1 de janeiro: ontem cai no ano anterior -> 0
+    if (endNow.getFullYear() !== yearNow){
       rainKpiHtmlCache =
         "<div class='card system-kpi' id='kpiRainFixed'>" +
           "<h3>Chuva acumulada (desde 1 de janeiro)</h3>" +
-          "<div class='kpi'>" + nowRounded + " <span>L/m²</span></div>" +
-          "<div class='kpi-sub'>" + sign + Math.abs(diff) + " L/m² vs " + yearPrev + "</div>" +
+          "<div class='kpi'>0 <span>L/m²</span></div>" +
+          "<div class='kpi-sub'>+0 L/m² vs " + yearPrev + "</div>" +
         "</div>";
+      return true;
+    }
 
-      if (cbDone) cbDone();
-    });
-  });
+    var startNowStr = fmtDate(startOfYear(yearNow));
+    var endNowStr   = fmtDate(endNow);
+
+    // mesmo dia/mês de ontem no ano anterior
+    var endPrev = new Date(yearPrev, endNow.getMonth(), endNow.getDate());
+    var startPrevStr = fmtDate(startOfYear(yearPrev));
+    var endPrevStr   = fmtDate(endPrev);
+
+    var sumNow  = await fetchArchiveRainSum(startNowStr, endNowStr);
+    var sumPrev = await fetchArchiveRainSum(startPrevStr, endPrevStr);
+
+    if (sumNow === null || sumPrev === null){
+      rainKpiHtmlCache =
+        "<div class='card system-kpi' id='kpiRainFixed'>" +
+          "<h3>Chuva acumulada (desde 1 de janeiro)</h3>" +
+          "<div class='kpi'>-- <span>L/m²</span></div>" +
+          "<div class='kpi-sub'>Sem dados neste momento</div>" +
+        "</div>";
+      return false;
+    }
+
+    var nowRounded = Math.round(sumNow);
+    var prevRounded = Math.round(sumPrev);
+    var diff = nowRounded - prevRounded;
+    var sign = diff >= 0 ? "+" : "−";
+
+    rainKpiHtmlCache =
+      "<div class='card system-kpi' id='kpiRainFixed'>" +
+        "<h3>Chuva acumulada (desde 1 de janeiro)</h3>" +
+        "<div class='kpi'>" + nowRounded + " <span>L/m²</span></div>" +
+        "<div class='kpi-sub'>" + sign + Math.abs(diff) + " L/m² vs " + yearPrev + "</div>" +
+      "</div>";
+
+    return true;
+  } catch(e){
+    rainKpiHtmlCache =
+      "<div class='card system-kpi' id='kpiRainFixed'>" +
+        "<h3>Chuva acumulada (desde 1 de janeiro)</h3>" +
+        "<div class='kpi'>-- <span>L/m²</span></div>" +
+        "<div class='kpi-sub'>Sem ligação ao histórico</div>" +
+      "</div>";
+    return false;
+  }
 }
 
 /* =========================================================
-   KPIs DA SHEET (dinâmicos) + ROTAÇÃO
-   - Mantemos ILIMITADOS na sheet
-   - Mostra 6 de cada vez (máx)
-   - Roda a cada 15s
-   - O KPI de chuva NÃO entra na rotação (não tem a classe .sheet-kpi)
+   KPIs da SHEET + rotação
+   Campos recomendados na sheet (colunas):
+   id, active, type, title, value, unit, imageUrl, order, extra
+   type: number | text | image
 ========================================================= */
 var page = 0;
 var cards = [];
@@ -771,102 +861,95 @@ function startRotation(){
   }
 }
 
-function loadKPIsFromSheet(cbDone){
-  fetch(SHEET_URL, { cache: "no-store" })
-    .then(function(r){ return r.text(); })
-    .then(function(csvText){
-      var rows = parseCSV(csvText)
-        .map(function(r){
-          return {
-            id: (r.id||"").trim(),
-            active: asBool(r.active),
-            type: (r.type||"").trim().toLowerCase(),   // number | text | image
-            title: (r.title||"").trim(),
-            value: (r.value||"").trim(),
-            unit: (r.unit||"").trim(),
-            imageUrl: (r.imageUrl||"").trim(),
-            order: asNum(r.order),
-            extra: (r.extra||"").trim()
-          };
-        })
-        .filter(function(r){
-          return r.active && r.type && r.title;
-        });
+async function loadKPIsFromSheet(){
+  try{
+    var r = await fetch(SHEET_URL, { cache: "no-store" });
+    var csvText = await r.text();
 
-      rows.sort(function(a,b){
-        var ao = isFinite(a.order) ? a.order : 999999;
-        var bo = isFinite(b.order) ? b.order : 999999;
-        return ao - bo;
+    var rows = parseCSV(csvText)
+      .map(function(rr){
+        return {
+          id: (rr.id||"").trim(),
+          active: asBool(rr.active),
+          type: (rr.type||"").trim().toLowerCase(),
+          title: (rr.title||"").trim(),
+          value: (rr.value||"").trim(),
+          unit: (rr.unit||"").trim(),
+          imageUrl: (rr.imageUrl||"").trim(),
+          order: asNum(rr.order),
+          extra: (rr.extra||"").trim()
+        };
+      })
+      .filter(function(x){
+        return x.active && x.type && x.title;
       });
 
-      // Render: primeiro o KPI FIXO (chuva) + depois os KPIs da sheet
-      var grid = document.getElementById("kpis");
-      grid.innerHTML = (rainKpiHtmlCache || "");
-
-      if (!rows.length){
-        grid.innerHTML +=
-          "<div class='card sheet-kpi'>" +
-            "<h3>Sem KPIs ativos (Sheet)</h3>" +
-            "<div class='kpi-sub'>Liga KPIs na Google Sheet (active=TRUE).</div>" +
-          "</div>";
-      } else {
-        for (var i=0;i<rows.length;i++){
-          var r = rows[i];
-          var body = "";
-
-          if (r.type === "image"){
-            if (r.imageUrl){
-              body = "<div class='kpi-image'><img src='" + r.imageUrl + "' alt=''></div>";
-            } else {
-              body = "<div class='kpi-sub'>Sem imageUrl</div>";
-            }
-          } else if (r.type === "number"){
-            body = "<div class='kpi'>" + (r.value || "--") + " <span>" + (r.unit || "") + "</span></div>";
-          } else if (r.type === "text"){
-            body = "<div class='kpi-sub'>" + (r.value || "") + "</div>";
-          } else {
-            body = "<div class='kpi-sub'>Tipo não suportado: " + r.type + "</div>";
-          }
-
-          grid.innerHTML +=
-            "<div class='card sheet-kpi'>" +
-              "<h3>" + r.title + "</h3>" +
-              body +
-            "</div>";
-        }
-      }
-
-      // Rotação só apanha os KPIs da sheet
-      cards = Array.prototype.slice.call(document.querySelectorAll(".sheet-kpi"));
-      startRotation();
-
-      if (cbDone) cbDone();
-    })
-    .catch(function(){
-      var grid = document.getElementById("kpis");
-      grid.innerHTML = (rainKpiHtmlCache || "") +
-        "<div class='card sheet-kpi'>" +
-          "<h3>Erro a carregar KPIs (Sheet)</h3>" +
-          "<div class='kpi-sub'>Sem ligação à Google Sheet neste momento.</div>" +
-        "</div>";
-
-      cards = Array.prototype.slice.call(document.querySelectorAll(".sheet-kpi"));
-      startRotation();
-
-      if (cbDone) cbDone();
+    rows.sort(function(a,b){
+      var ao = isFinite(a.order) ? a.order : 999999;
+      var bo = isFinite(b.order) ? b.order : 999999;
+      return ao - bo;
     });
+
+    // Render final: KPI fixo + KPIs da sheet
+    kpisEl.innerHTML = (rainKpiHtmlCache || "");
+
+    if (!rows.length){
+      kpisEl.innerHTML +=
+        "<div class='card sheet-kpi'>" +
+          "<h3>Sem KPIs ativos (Sheet)</h3>" +
+          "<div class='kpi-sub'>Liga KPIs na Google Sheet (active=TRUE).</div>" +
+        "</div>";
+    } else {
+      for (var i=0;i<rows.length;i++){
+        var it = rows[i];
+        var body = "";
+
+        if (it.type === "image"){
+          body = it.imageUrl
+            ? "<div class='kpi-image'><img src='" + it.imageUrl + "' alt=''></div>"
+            : "<div class='kpi-sub'>Sem imageUrl</div>";
+        } else if (it.type === "number"){
+          body = "<div class='kpi'>" + (it.value || "--") + " <span>" + (it.unit || "") + "</span></div>";
+        } else if (it.type === "text"){
+          body = "<div class='kpi-sub'>" + (it.value || "") + "</div>";
+        } else {
+          body = "<div class='kpi-sub'>Tipo não suportado: " + it.type + "</div>";
+        }
+
+        kpisEl.innerHTML +=
+          "<div class='card sheet-kpi'>" +
+            "<h3>" + it.title + "</h3>" +
+            body +
+          "</div>";
+      }
+    }
+
+    cards = Array.prototype.slice.call(document.querySelectorAll(".sheet-kpi"));
+    startRotation();
+    return true;
+  } catch(e){
+    kpisEl.innerHTML = (rainKpiHtmlCache || "") +
+      "<div class='card sheet-kpi'>" +
+        "<h3>Erro a carregar KPIs (Sheet)</h3>" +
+        "<div class='kpi-sub'>Sem ligação à Google Sheet neste momento.</div>" +
+      "</div>";
+
+    cards = Array.prototype.slice.call(document.querySelectorAll(".sheet-kpi"));
+    startRotation();
+    return false;
+  }
 }
 
 /* =========================================================
-   REFRESH HORÁRIO — alinhado à hora certa
+   REFRESH HORÁRIO (alinhado à hora cheia)
 ========================================================= */
 function scheduleHourly(fn){
   fn();
 
   var now = new Date();
   var msToNextHour =
-    (60 - now.getMinutes())*60*1000 -
-    now.getSeconds()*1000 -
+    (60 - now.getMinutes()) * 60 * 1000 -
+    now.getSeconds() * 1000 -
     now.getMilliseconds();
 
   if (msToNextHour < 1000) msToNextHour = 1000;
@@ -878,16 +961,12 @@ function scheduleHourly(fn){
 }
 
 /* =========================================================
-   REFRESH GLOBAL (ordem importa):
-   1) Weather (header + FX)
-   2) KPI chuva (cache)
-   3) KPIs da sheet (render + rotação)
+   REFRESH GLOBAL (ordem importa)
 ========================================================= */
-function refreshAll(){
-  updateWeather();
-  updateRainKPI(function(){
-    loadKPIsFromSheet();
-  });
+async function refreshAll(){
+  await updateWeather();
+  await updateRainKPI();
+  await loadKPIsFromSheet();
 }
 
 /* =========================================================
