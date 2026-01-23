@@ -829,7 +829,7 @@ function scheduleHourly(fn){
 
   setTimeout(function(){
     fn();
-    setInterval(fn, 60*60*1000);
+    setInterval(fn, 5*60*1000);
   }, msToNextHour);
 }
 
