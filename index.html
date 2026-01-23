@@ -8,16 +8,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-/* =====================================================
-   BASE + VARIÁVEIS (ALTERADAS PELO MOOD)
-   ===================================================== */
 *{box-sizing:border-box}
 html,body{height:100%}
 
 :root{
-  --g1:#4f8f6b;   /* verde claro */
-  --g2:#2f6b4f;   /* verde base */
-  --b1:#7b6445;   /* terra */
+  --g1:#4f8f6b;
+  --g2:#2f6b4f;
+  --b1:#7b6445;
 
   --glass:rgba(255,255,255,.18);
   --glass2:rgba(0,0,0,.10);
@@ -25,6 +22,8 @@ html,body{height:100%}
 
   --t1:#f4f6f3;
   --t2:rgba(244,246,243,.78);
+  --good:#7fd18c;
+  --bad:#d1b27f;
 }
 
 body{
@@ -41,25 +40,15 @@ body{
     linear-gradient(135deg,var(--g1),var(--g2) 55%,var(--b1));
 }
 
-/* =====================================================
-   FX FUNDO
-   ===================================================== */
+/* FX */
 #fx{position:fixed;inset:0;pointer-events:none;z-index:0}
-
-/* chuva */
 .drop{
-  position:absolute;
-  width:2px;height:18px;
+  position:absolute;width:2px;height:18px;
   background:rgba(230,245,255,.6);
   border-radius:999px;
   animation:fall linear infinite;
 }
-@keyframes fall{
-  from{transform:translateY(-120px)}
-  to{transform:translateY(110vh)}
-}
-
-/* nevoeiro */
+@keyframes fall{from{transform:translateY(-120px)}to{transform:translateY(110vh)}}
 .fog{
   position:absolute;inset:-20%;
   background:
@@ -67,12 +56,7 @@ body{
     radial-gradient(circle at 70% 60%, rgba(255,255,255,.16), transparent 60%);
   animation:fogmove 120s linear infinite;
 }
-@keyframes fogmove{
-  from{transform:translateX(0)}
-  to{transform:translateX(-14%)}
-}
-
-/* sol */
+@keyframes fogmove{from{transform:translateX(0)}to{transform:translateX(-14%)}}
 .sunGlow{
   position:absolute;top:10%;right:12%;
   border-radius:50%;
@@ -82,14 +66,8 @@ body{
     transparent 66%);
   animation:sunpulse 7s ease-in-out infinite;
 }
-@keyframes sunpulse{
-  0%,100%{transform:scale(.95);opacity:.8}
-  50%{transform:scale(1.03);opacity:1}
-}
+@keyframes sunpulse{0%,100%{transform:scale(.95);opacity:.8}50%{transform:scale(1.03);opacity:1}}
 
-/* =====================================================
-   LAYOUT
-   ===================================================== */
 .app{
   position:relative;z-index:1;
   height:100vh;
@@ -97,49 +75,30 @@ body{
   grid-template-rows:100px 1fr 56px;
 }
 
-/* HEADER */
 header{
   padding:0 28px;
   display:flex;align-items:center;gap:16px;
 }
-
-.header-left{
-  display:flex;align-items:center;gap:16px;
-  min-width:340px;
-}
-
-.logo{
-  height:48px; /* 🔥 LOGO MAIOR */
-  filter:drop-shadow(0 8px 14px rgba(0,0,0,.25));
-}
+.header-left{display:flex;align-items:center;gap:16px;min-width:340px}
+.logo{height:48px}
 
 .now{
   display:flex;gap:10px;align-items:center;
   padding:10px 14px;border-radius:18px;
   background:linear-gradient(180deg,var(--glass),var(--glass2));
   border:1px solid var(--stroke);
-  backdrop-filter:blur(10px);
 }
 .now .temp{font-size:20px;font-weight:800}
 .now .desc{font-size:14px;color:var(--t2)}
 
-.header-mid{
-  flex:1;display:flex;justify-content:center;gap:14px;
-}
-
+.header-mid{flex:1;display:flex;justify-content:center;gap:14px}
 .group{
   display:flex;align-items:center;gap:10px;
   padding:10px 14px;border-radius:18px;
   background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(0,0,0,.10));
   border:1px solid var(--stroke);
-  backdrop-filter:blur(10px);
 }
-
-.group .title{
-  font-size:12px;text-transform:uppercase;
-  letter-spacing:.8px;color:var(--t2);
-}
-
+.group .title{font-size:12px;text-transform:uppercase;color:var(--t2)}
 .pills{display:flex;gap:10px}
 .pill{
   display:flex;gap:8px;align-items:center;
@@ -151,15 +110,12 @@ header{
 .small{font-size:14px;font-weight:800}
 .sub{font-size:12px;color:var(--t2)}
 
-.clock{
-  min-width:90px;text-align:right;
-  font-size:30px;font-weight:800;
-}
+.clock{min-width:90px;text-align:right;font-size:30px;font-weight:800}
 
-/* MAIN */
 main{
   padding:24px 28px;
-  display:grid;grid-template-columns:1fr 1fr;
+  display:grid;
+  grid-template-columns:1fr 1fr;
   gap:22px;
 }
 
@@ -168,61 +124,29 @@ main{
   border:1px solid var(--stroke);
   border-radius:26px;
   padding:22px;
-  backdrop-filter:blur(10px);
 }
 
 .card h3{
   margin:0 0 14px;
-  font-size:13px;text-transform:uppercase;
-  letter-spacing:.8px;color:var(--t2);
+  font-size:13px;text-transform:uppercase;color:var(--t2);
 }
 
-.kpi{font-size:72px;font-weight:900}
+.kpi{
+  font-size:64px;font-weight:900;
+}
 .kpi span{font-size:18px;color:var(--t2)}
+
+.kpi-sub{
+  margin-top:8px;
+  font-size:18px;
+}
+.kpi-sub.good{color:var(--good)}
+.kpi-sub.bad{color:var(--bad)}
 
 footer{
   padding:0 28px;
   display:flex;align-items:center;
   color:var(--t2);font-size:14px;
-}
-
-/* =====================================================
-   ÍCONES TEMPO
-   ===================================================== */
-.icon{width:26px;height:26px;position:relative}
-
-.icon.sun::before{
-  content:"";position:absolute;inset:5px;border-radius:50%;
-  background:radial-gradient(circle,#ffe6b4,#ffc36e);
-  animation:sunMini 4s ease-in-out infinite;
-}
-@keyframes sunMini{
-  0%,100%{transform:scale(.92)}
-  50%{transform:scale(1.05)}
-}
-
-.icon.cloud::before{
-  content:"";position:absolute;left:3px;right:3px;bottom:6px;height:12px;
-  background:#fff;border-radius:12px;opacity:.9;
-}
-.icon.cloud::after{
-  content:"";position:absolute;left:6px;bottom:10px;width:12px;height:12px;
-  background:#fff;border-radius:50%;
-  box-shadow:10px -2px 0 #fff;
-}
-
-.icon.rain::before{
-  content:"";position:absolute;left:3px;right:3px;bottom:10px;height:10px;
-  background:#fff;border-radius:12px;
-}
-.icon.rain::after{
-  content:"";position:absolute;left:9px;top:15px;width:8px;height:8px;
-  background:radial-gradient(circle,#9fdcff 2px,transparent 3px);
-  animation:rainMini 1s linear infinite;
-}
-@keyframes rainMini{
-  from{transform:translateY(-2px)}
-  to{transform:translateY(4px)}
 }
 </style>
 </head>
@@ -235,7 +159,6 @@ footer{
   <div class="header-left">
     <img class="logo" src="assets/logo-monte-do-pasto.png">
     <div class="now">
-      <div id="nowIcon" class="icon cloud"></div>
       <div>
         <div class="temp" id="nowTemp">--°C</div>
         <div class="desc" id="nowDesc">---</div>
@@ -259,9 +182,11 @@ footer{
 
 <main>
   <div class="card">
-    <h3>Indicador</h3>
-    <div class="kpi">1280 <span>kg</span></div>
+    <h3>Chuva acumulada desde 1 de Janeiro</h3>
+    <div class="kpi" id="rainNow">-- <span>L/m²</span></div>
+    <div class="kpi-sub" id="rainDiff">--</div>
   </div>
+
   <div class="card">
     <h3>Avisos</h3>
     <div>Ambiente monitorizado em tempo real</div>
@@ -272,137 +197,48 @@ footer{
 </div>
 
 <script>
-/* ================= RELÓGIO ================= */
+/* RELÓGIO */
 function tick(){
   clock.textContent=new Intl.DateTimeFormat("pt-PT",{hour:"2-digit",minute:"2-digit"}).format(new Date());
 }
 tick(); setInterval(tick,30000);
 
-/* ================= CONFIG ================= */
+/* COORDENADAS */
 const LAT=38.219, LON=-7.887;
-const RAIN_CODES=[51,53,55,61,63,65,80,81,82,95,96,99];
 
-/* ================= HELPERS ================= */
-function iconFrom(code,temp){
-  if(temp<=1) return "snow";
-  if(RAIN_CODES.includes(code)) return "rain";
-  if(code===0) return "sun";
-  return "cloud";
+/* === KPI CHUVA ACUMULADA === */
+async function updateRainKPI(){
+  const today=new Date();
+  const yyyy=today.getFullYear();
+  const mm=String(today.getMonth()+1).padStart(2,"0");
+  const dd=String(today.getDate()).padStart(2,"0");
+
+  const startThis=`${yyyy}-01-01`;
+  const startLast=`${yyyy-1}-01-01`;
+  const endToday=`${yyyy}-${mm}-${dd}`;
+  const endLast=`${yyyy-1}-${mm}-${dd}`;
+
+  const url=(s,e)=>`https://archive-api.open-meteo.com/v1/archive?latitude=${LAT}&longitude=${LON}&daily=precipitation_sum&start_date=${s}&end_date=${e}&timezone=auto`;
+
+  const [cur,prev]=await Promise.all([
+    fetch(url(startThis,endToday)).then(r=>r.json()),
+    fetch(url(startLast,endLast)).then(r=>r.json())
+  ]);
+
+  const sum=a=>a.reduce((t,v)=>t+(v||0),0);
+
+  const now=sum(cur.daily.precipitation_sum);
+  const last=sum(prev.daily.precipitation_sum);
+  const diff=now-last;
+
+  rainNow.textContent=`${Math.round(now)} `;
+  rainDiff.textContent=`${diff>=0?"+":""}${Math.round(diff)} L/m² vs ${yyyy-1}`;
+  rainDiff.className="kpi-sub "+(diff>=0?"good":"bad");
 }
 
-/* ================= MOOD ================= */
-function applyMood({sun,rain,cloud,hour}){
-  let mood=50;
-  mood+=sun*40;
-  mood-=rain*30;
-  mood-=cloud*20;
-  if(hour<8||hour>18) mood-=10;
-  mood=Math.max(0,Math.min(100,mood));
-
-  let g1,g2,b1;
-  if(mood>70){
-    g1="#7fae4f"; g2="#4f7f3f"; b1="#6b5a3e";
-  }else if(mood>40){
-    g1="#4f8f6b"; g2="#2f6b4f"; b1="#7b6445";
-  }else{
-    g1="#3f6f5a"; g2="#2f5b45"; b1="#5c472f";
-  }
-
-  const r=document.documentElement.style;
-  r.setProperty("--g1",g1);
-  r.setProperty("--g2",g2);
-  r.setProperty("--b1",b1);
-}
-
-/* ================= FX ================= */
-const fx=document.getElementById("fx");
-function clearFX(){fx.innerHTML=""}
-function addFog(){const f=document.createElement("div");f.className="fog";fx.appendChild(f)}
-function addSun(){const s=document.createElement("div");s.className="sunGlow";s.style.width=s.style.height="320px";fx.appendChild(s)}
-function addRain(count){
-  for(let i=0;i<count;i++){
-    const d=document.createElement("div");
-    d.className="drop";
-    d.style.left=Math.random()*100+"%";
-    d.style.animationDuration=(0.6+Math.random()*1.2)+"s";
-    fx.appendChild(d);
-  }
-}
-
-/* ================= UPDATE ================= */
-const URL=`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current_weather=true&hourly=temperature_2m,precipitation,weathercode,cloudcover,shortwave_radiation&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto`;
-
-function updatePanel(){
-  fetch(URL).then(r=>r.json()).then(d=>{
-    const cw=d.current_weather;
-    const temp=Math.round(cw.temperature);
-    const code=cw.weathercode;
-
-    nowTemp.textContent=temp+"°C";
-    nowDesc.textContent=iconFrom(code,temp)==="sun"?"Sol":iconFrom(code,temp)==="rain"?"Chuva":"Nublado";
-    nowIcon.className="icon "+iconFrom(code,temp);
-
-    /* horas */
-    hoursPills.innerHTML="";
-    for(let i=1;i<=4;i++){
-      const t=Math.round(d.hourly.temperature_2m[i]);
-      const h=new Date(d.hourly.time[i]).getHours().toString().padStart(2,"0")+"h";
-      hoursPills.innerHTML+=`
-        <div class="pill">
-          <div class="icon ${iconFrom(d.hourly.weathercode[i],t)}"></div>
-          <div><div class="small">${t}°</div><div class="sub">${h}</div></div>
-        </div>`;
-    }
-
-    /* dias */
-    const dias=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
-    daysPills.innerHTML="";
-    for(let i=1;i<=4;i++){
-      const tmax=Math.round(d.daily.temperature_2m_max[i]);
-      const tmin=Math.round(d.daily.temperature_2m_min[i]);
-      const wd=dias[new Date(d.daily.time[i]).getDay()];
-      daysPills.innerHTML+=`
-        <div class="pill">
-          <div class="icon ${iconFrom(d.daily.weathercode[i],tmin)}"></div>
-          <div><div class="small">${tmax}°/${tmin}°</div><div class="sub">${wd}</div></div>
-        </div>`;
-    }
-
-    /* FX */
-    clearFX();
-    addFog();
-
-    const rain=d.hourly.precipitation[0]||0;
-    const sun=d.hourly.shortwave_radiation[0]||0;
-    const isRain=RAIN_CODES.includes(code);
-
-    if(isRain){
-      const intensity=Math.max(0.15,Math.min(1,rain/4));
-      const drops=Math.floor(60+intensity*260);
-      addRain(drops);
-    }
-    if(code===0) addSun();
-
-    applyMood({
-      sun:sun/700,
-      rain:rain,
-      cloud:(d.hourly.cloudcover[0]||50)/100,
-      hour:new Date().getHours()
-    });
-  });
-}
-
-/* ================= SCHEDULER ================= */
-updatePanel();
-function scheduleHourly(){
-  const now=new Date();
-  const ms=(60-now.getMinutes())*60000-now.getSeconds()*1000;
-  setTimeout(()=>{
-    updatePanel();
-    setInterval(updatePanel,60*60*1000);
-  },ms);
-}
-scheduleHourly();
+/* ATUALIZAÇÃO HORÁRIA */
+updateRainKPI();
+setInterval(updateRainKPI,60*60*1000);
 </script>
 </body>
 </html>
