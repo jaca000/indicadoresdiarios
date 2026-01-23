@@ -279,18 +279,18 @@ footer{
   font-size:14px;
 }
 
-/* ========= NEWS TICKER (NOVO) ========= */
+/* ========= NEWS TICKER (TV SIZE) ========= */
 .news-bar{
   position:fixed;
   left:0; right:0; bottom:0;
-  height:64px;
+  height:68px;
   z-index:5; /* acima de tudo */
   display:flex;
   align-items:center;
   overflow:hidden;
-  background:linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.55));
-  border-top:1px solid rgba(255,255,255,.22);
-  backdrop-filter: blur(8px);
+  background:linear-gradient(180deg, rgba(0,0,0,.40), rgba(0,0,0,.65));
+  border-top:1px solid rgba(255,255,255,.28);
+  backdrop-filter: blur(10px);
   pointer-events:none; /* TV-safe */
 }
 
@@ -299,15 +299,16 @@ footer{
   white-space:nowrap;
   padding-left:100%;
   animation:news-scroll 45s linear infinite;
-  font-size:22px;
+  font-size:24px;
   font-weight:800;
+  letter-spacing:.4px;
   color:var(--t1);
-  text-shadow:0 8px 14px rgba(0,0,0,.25);
+  text-shadow:0 10px 18px rgba(0,0,0,.35);
 }
 
 .news-item{
   display:inline-block;
-  margin-right:60px;
+  margin-right:100px;
 }
 
 @keyframes news-scroll{
@@ -351,7 +352,7 @@ footer{
   <footer>Informação interna · Monte do Pasto</footer>
 </div>
 
-<!-- NEWS BAR (NOVO) -->
+<!-- NEWS BAR -->
 <div class="news-bar">
   <div class="news-track" id="newsTrack"></div>
 </div>
@@ -365,7 +366,7 @@ var ROTATE_MS = 15000;
 
 var SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRcoOLTXvKf6K_4aejdyA7ZK6PObIzqyiLBBOPSehdSkKlxj9_ms0EqJOjT7u2lN11j5DaYIAkcqoy7/pub?output=csv";
 
-/* ✅ NOVO: Sheet de Notícias (CSV) */
+/* Sheet de Notícias (CSV) */
 var NEWS_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgtnmWS6XFXm8V80ZzxQ1n4QwGxncyWqw4LnljjBu2kG5xWIRBoMLM_ya7cyg9B_Jyi9N2gqjSvVfS/pub?gid=0&single=true&output=csv";
 
 var WEATHER_URL =
@@ -553,6 +554,11 @@ var page = 0;
 var cards = [];
 var rotateTimer = null;
 
+function refreshCardsAndRotation(){
+  cards = Array.prototype.slice.call(document.querySelectorAll(".kpi-card"));
+  startRotation();
+}
+
 function rotate(){
   if (!cards.length) return;
   var start = page * MAX_VISIBLE;
@@ -633,24 +639,27 @@ function loadKPIs(){
 
           grid.innerHTML +=
             "<div class='card kpi-card'>"+
-              "<h3>"+r.title+"</h3>"+
+              "<h3>"+escapeHTML(r.title)+"</h3>"+
               body+
             "</div>";
         }
       }
 
+      // depois de renderizar KPIs, recolhemos cards e iniciamos rotação
       cards = Array.prototype.slice.call(document.querySelectorAll(".kpi-card"));
       startRotation();
+
+      // garante que o KPI de chuva volta a entrar (porque o grid foi limpo)
+      loadRainKPI();
     })
     .catch(function(){});
 }
 
-/* ================= NEWS (Google Sheet) (NOVO) =================
+/* ================= NEWS (Google Sheet) =================
    Sheet colunas: active, order, text
 */
 function loadNews(){
   if (!NEWS_SHEET_URL || NEWS_SHEET_URL.indexOf("http") !== 0){
-    // Se não estiver configurado, não rebenta a app
     document.getElementById("newsTrack").innerHTML =
       "<span class='news-item'>Configura NEWS_SHEET_URL (CSV)</span>";
     return;
@@ -704,6 +713,74 @@ function escapeHTML(s){
     .replace(/'/g,"&#039;");
 }
 
+/* ================= CHUVA YTD (L/m²) vs ano anterior =================
+   1 mm = 1 L/m², portanto podemos apresentar diretamente em L/m²
+*/
+function buildRainURL(start, end){
+  return "https://archive-api.open-meteo.com/v1/archive"
+    + "?latitude=" + LAT
+    + "&longitude=" + LON
+    + "&start_date=" + start
+    + "&end_date=" + end
+    + "&daily=precipitation_sum"
+    + "&timezone=auto";
+}
+
+function getRainSum(startDate, endDate){
+  return fetch(buildRainURL(startDate, endDate))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (!d.daily || !d.daily.precipitation_sum) return 0;
+      return d.daily.precipitation_sum.reduce(function(a,b){ return a + (b||0); }, 0);
+    })
+    .catch(function(){ return 0; });
+}
+
+function loadRainKPI(){
+  var now = new Date();
+  var year = now.getFullYear();
+  var today = now.toISOString().slice(0,10);
+
+  var startThisYear = year + "-01-01";
+  var startLastYear = (year-1) + "-01-01";
+  var sameDayLastYear = (year-1) + today.slice(4);
+
+  Promise.all([
+    getRainSum(startThisYear, today),
+    getRainSum(startLastYear, sameDayLastYear)
+  ]).then(function(values){
+    var rainNow = Math.round(values[0]);   // L/m²
+    var rainLast = Math.round(values[1]);  // L/m²
+    var diff = rainNow - rainLast;
+
+    var diffTxt =
+      diff > 0 ? "(+"+diff+" L/m² vs "+(year-1)+")" :
+      diff < 0 ? "("+diff+" L/m² vs "+(year-1)+")" :
+      "(igual a "+(year-1)+")";
+
+    var grid = document.getElementById("kpis");
+    if (!grid) return;
+
+    // remove o card anterior se existir (para não duplicar)
+    var old = document.getElementById("rainKpiCard");
+    if (old && old.parentNode) old.parentNode.removeChild(old);
+
+    var card = document.createElement("div");
+    card.className = "card kpi-card";
+    card.id = "rainKpiCard";
+    card.innerHTML =
+      "<h3>🌧️ Chuva acumulada (desde 1 Jan)</h3>" +
+      "<div class='kpi'>"+rainNow+" <span>L/m²</span></div>" +
+      "<div class='kpi-sub'>"+diffTxt+"</div>";
+
+    // mete no topo do grid
+    grid.prepend(card);
+
+    // como entrou um KPI novo, refrescamos a rotação
+    refreshCardsAndRotation();
+  });
+}
+
 /* ================= HOURLY REFRESH (alinhado) ================= */
 function scheduleHourly(fn){
   fn();
@@ -720,13 +797,14 @@ function scheduleHourly(fn){
 
 /* ================= INIT ================= */
 updateWeather();
-loadKPIs();
+loadKPIs();   // loadKPIs chama loadRainKPI no fim (porque limpa o grid)
 loadNews();
 
 /* refresh alinhado à hora */
 scheduleHourly(updateWeather);
 scheduleHourly(loadKPIs);
 scheduleHourly(loadNews);
+scheduleHourly(loadRainKPI);
 </script>
 </body>
 </html>
