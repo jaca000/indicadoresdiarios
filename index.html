@@ -350,8 +350,15 @@ const WEATHER_URL =
    RELÓGIO
    ========================================================= */
 function tickClock(){
-  clock.textContent = new Intl.DateTimeFormat("pt-PT",{hour:"2-digit",minute:"2-digit"}).format(new Date());
+  if (!clockEl) clockEl = document.getElementById("clock");
+  if (!clockEl) return;
+
+  var d = new Date();
+  var hh = ("0"+d.getHours()).slice(-2);
+  var mm = ("0"+d.getMinutes()).slice(-2);
+  clockEl.textContent = hh + ":" + mm;
 }
+
 tickClock();
 setInterval(tickClock, 30000);
 
