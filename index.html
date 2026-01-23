@@ -283,14 +283,18 @@ footer{
 .footer-field{
   position:fixed;
   left:0; right:0; bottom:0;
-  height:120px;                 /* ajusta se quiseres 110/130 */
-  z-index:4;                    /* abaixo da news-bar (5) */
+  height:120px;
+  z-index:4;               /* abaixo da news-bar */
   pointer-events:none;
   background:
     linear-gradient(to top, rgba(0,0,0,.35), rgba(0,0,0,0) 70%),
     url("assets/grass.png") repeat-x bottom;
   background-size:auto 120px;
+  transition:filter 2.5s ease;  /* mudança suave */
 }
+.footer-field.dry{filter:saturate(.6) brightness(.9)}
+.footer-field.normal{filter:saturate(1) brightness(1)}
+.footer-field.wet{filter:saturate(1.35) brightness(1.05)}
 
 /* ========= NEWS TICKER (TV SIZE) ========= */
 .news-bar{
@@ -365,7 +369,7 @@ footer{
   <footer>Informação interna · Monte do Pasto</footer>
 </div>
 
-<!-- ERVA (NOVO) -->
+<!-- ERVA -->
 <div class="footer-field" aria-hidden="true"></div>
 
 <!-- NEWS BAR -->
@@ -382,6 +386,7 @@ var ROTATE_MS = 15000;
 
 var SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRcoOLTXvKf6K_4aejdyA7ZK6PObIzqyiLBBOPSehdSkKlxj9_ms0EqJOjT7u2lN11j5DaYIAkcqoy7/pub?output=csv";
 
+/* Sheet de Notícias (CSV) */
 var NEWS_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgtnmWS6XFXm8V80ZzxQ1n4QwGxncyWqw4LnljjBu2kG5xWIRBoMLM_ya7cyg9B_Jyi9N2gqjSvVfS/pub?gid=0&single=true&output=csv";
 
 var WEATHER_URL =
@@ -660,11 +665,10 @@ function loadKPIs(){
         }
       }
 
-      // Recolhe cards e inicia rotação
       cards = Array.prototype.slice.call(document.querySelectorAll(".kpi-card"));
       startRotation();
 
-      // Como o grid foi limpo, voltamos a injetar o KPI de chuva
+      // como o grid foi limpo, volta a inserir o KPI de chuva (e aplica estado à erva)
       loadRainKPI();
     })
     .catch(function(){});
@@ -710,7 +714,6 @@ function loadNews(){
         }
       }
 
-      // reset da animação (TV-safe)
       track.style.animation = "none";
       track.offsetHeight;
       track.style.animation = "";
@@ -726,6 +729,23 @@ function escapeHTML(s){
     .replace(/>/g,"&gt;")
     .replace(/"/g,"&quot;")
     .replace(/'/g,"&#039;");
+}
+
+/* ================= ERVA COM VIDA (NOVO) ================= */
+function updateGrassByRain(rainNow){
+  var grass = document.querySelector(".footer-field");
+  if (!grass) return;
+
+  grass.classList.remove("dry","normal","wet");
+
+  // Ajusta estes thresholds se quiseres (valores em L/m²)
+  if (rainNow < 200){
+    grass.classList.add("dry");
+  } else if (rainNow < 400){
+    grass.classList.add("normal");
+  } else {
+    grass.classList.add("wet");
+  }
 }
 
 /* ================= CHUVA YTD (L/m²) vs ano anterior =================
@@ -767,6 +787,9 @@ function loadRainKPI(){
     var rainNow = Math.round(values[0]);   // L/m²
     var rainLast = Math.round(values[1]);  // L/m²
     var diff = rainNow - rainLast;
+
+    // ✅ aplica "vida" à erva
+    updateGrassByRain(rainNow);
 
     var diffTxt =
       diff > 0 ? "(+"+diff+" L/m² vs "+(year-1)+")" :
