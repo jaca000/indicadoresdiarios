@@ -8,32 +8,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-/* ================= RESET ================= */
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
 
-/* ================= VARS ================= */
 :root{
   --g1:#6fa98c;
   --g2:#4f7f63;
   --b1:#7b6445;
 
-  --glass:rgba(255,255,255,.18);
-  --glass2:rgba(0,0,0,.10);
-  --stroke:rgba(255,255,255,.22);
+  --glass:rgba(255,255,255,.20);
+  --glass2:rgba(0,0,0,.12);
+  --stroke:rgba(255,255,255,.25);
 
   --t1:#f4f6f3;
-  --t2:rgba(244,246,243,.78);
+  --t2:rgba(244,246,243,.80);
   --t3:rgba(244,246,243,.60);
-
-  --good:#7fd18c;
-  --bad:#d1b27f;
 
   --r1:18px;
   --r2:26px;
 }
 
-/* ================= BODY ================= */
 body{
   font-family:Inter,system-ui,Arial;
   color:var(--t1);
@@ -45,47 +39,51 @@ body{
     linear-gradient(135deg,var(--g1),var(--g2) 55%,var(--b1));
 }
 
-/* ================= FX ================= */
+/* FX (chuva/nevoeiro/sol leve) */
 #fx{position:fixed;inset:0;pointer-events:none;z-index:0}
-
 .drop{
   position:absolute;width:2px;height:18px;
-  background:rgba(230,245,255,.6);
+  background:rgba(230,245,255,.60);
+  border-radius:999px;
   animation:fall linear infinite;
 }
-@keyframes fall{from{transform:translateY(-100px)}to{transform:translateY(110vh)}}
-
+@keyframes fall{from{transform:translateY(-120px)}to{transform:translateY(110vh)}}
 .fog{
   position:absolute;inset:-20%;
   background:
-    radial-gradient(circle at 30% 50%, rgba(255,255,255,.18), transparent 55%),
-    radial-gradient(circle at 70% 60%, rgba(255,255,255,.14), transparent 60%);
+    radial-gradient(circle at 30% 50%, rgba(255,255,255,.16), transparent 55%),
+    radial-gradient(circle at 70% 60%, rgba(255,255,255,.12), transparent 60%);
   animation:fogmove 120s linear infinite;
+  opacity:.35;
 }
 @keyframes fogmove{from{transform:translateX(0)}to{transform:translateX(-14%)}}
-
-.sun{
+.sunGlow{
   position:absolute;top:8%;right:12%;
-  width:300px;height:300px;border-radius:50%;
-  background:radial-gradient(circle,rgba(255,230,170,.9),rgba(255,210,150,.35),transparent 65%);
-  animation:sunpulse 6s ease-in-out infinite;
+  width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,
+    rgba(255,230,170,.85),
+    rgba(255,210,150,.32),
+    transparent 66%);
+  animation:sunpulse 7s ease-in-out infinite;
+  opacity:.75;
 }
-@keyframes sunpulse{0%,100%{transform:scale(.95)}50%{transform:scale(1.05)}}
+@keyframes sunpulse{0%,100%{transform:scale(.95)}50%{transform:scale(1.03)}}
 
-/* ================= APP ================= */
+/* App */
 .app{
   position:relative;
   z-index:1;
   height:100vh;
   display:grid;
-  grid-template-rows:96px 1fr 48px;
+  grid-template-rows:110px 1fr 48px;
 }
 
-/* ================= HEADER ================= */
+/* Header */
 header{
   padding:0 28px;
   display:flex;
   align-items:center;
+  gap:18px;
   justify-content:space-between;
 }
 
@@ -93,62 +91,116 @@ header{
   display:flex;
   align-items:center;
   gap:16px;
+  min-width:420px;
 }
 
 .logo{
-  height:52px;
+  height:58px; /* maior, mais presença */
+  filter:drop-shadow(0 10px 18px rgba(0,0,0,.18));
 }
 
 .now{
   display:flex;
   align-items:center;
-  gap:10px;
-  padding:10px 14px;
+  gap:12px;
+  padding:12px 14px;
   border-radius:var(--r1);
   background:linear-gradient(180deg,var(--glass),var(--glass2));
   border:1px solid var(--stroke);
+  backdrop-filter: blur(10px);
 }
 
-.now .temp{font-size:20px;font-weight:800}
-.now .desc{font-size:14px;color:var(--t2)}
+.now .temp{font-size:22px;font-weight:900;line-height:1}
+.now .desc{font-size:14px;color:var(--t2);margin-top:2px}
 
 .header-mid{
+  flex:1;
   display:flex;
+  align-items:center;
+  justify-content:center;
   gap:16px;
 }
 
 .group{
   display:flex;
-  gap:10px;
-  padding:10px 14px;
+  align-items:center;
+  gap:12px;
+  padding:12px 14px;
   border-radius:var(--r1);
   background:linear-gradient(180deg,var(--glass),var(--glass2));
   border:1px solid var(--stroke);
+  backdrop-filter: blur(10px);
 }
 
 .group-title{
   font-size:12px;
   text-transform:uppercase;
   color:var(--t2);
+  letter-spacing:.7px;
+  white-space:nowrap;
 }
 
-.pills{display:flex;gap:10px}
+.pills{display:flex;gap:12px}
 
 .pill{
   display:flex;
   align-items:center;
-  gap:8px;
-  padding:8px 10px;
-  border-radius:14px;
+  gap:10px;
+  padding:10px 12px;
+  border-radius:16px;
   background:rgba(255,255,255,.22);
+  border:1px solid rgba(255,255,255,.18);
+  min-width:112px;
 }
+
+.pill .big{font-size:16px;font-weight:900;line-height:1}
+.pill .sub{font-size:12px;color:var(--t3);margin-top:2px}
 
 .clock{
-  font-size:30px;
-  font-weight:800;
+  min-width:110px;
+  text-align:right;
+  font-size:32px;
+  font-weight:900;
+  text-shadow:0 12px 20px rgba(0,0,0,.18);
 }
 
-/* ================= MAIN ================= */
+/* Weather Icons (CSS puro, TV-safe) */
+.icon{
+  width:28px;height:28px;position:relative;flex:0 0 28px;
+  filter:drop-shadow(0 8px 14px rgba(0,0,0,.18));
+}
+
+.icon.sun:before{
+  content:"";position:absolute;inset:6px;border-radius:50%;
+  background:radial-gradient(circle,#ffe6b4,#ffc36e);
+}
+.icon.cloud:before{
+  content:"";position:absolute;left:3px;right:3px;bottom:7px;height:12px;
+  background:#fff;border-radius:999px;opacity:.95;
+}
+.icon.cloud:after{
+  content:"";position:absolute;left:6px;bottom:11px;width:12px;height:12px;
+  background:#fff;border-radius:50%;
+  box-shadow:10px -2px 0 #fff;
+  opacity:.98;
+}
+.icon.rain:before{
+  content:"";position:absolute;left:3px;right:3px;bottom:11px;height:12px;
+  background:#fff;border-radius:999px;opacity:.95;
+}
+.icon.rain:after{
+  content:"";position:absolute;left:9px;top:16px;width:10px;height:10px;
+  background:
+    radial-gradient(circle, rgba(170,230,255,.95) 2px, transparent 3px),
+    radial-gradient(circle, rgba(170,230,255,.85) 2px, transparent 3px),
+    radial-gradient(circle, rgba(170,230,255,.75) 2px, transparent 3px);
+  background-position:0 0, 8px 2px, 4px 8px;
+  background-size:10px 10px;
+  background-repeat:no-repeat;
+  opacity:.9;
+}
+
+/* Main (KPIs) */
 main{
   padding:22px 28px;
   display:grid;
@@ -162,7 +214,9 @@ main{
   border:1px solid var(--stroke);
   border-radius:var(--r2);
   padding:18px 20px;
+  backdrop-filter: blur(10px);
   transition:opacity .4s, transform .4s;
+  align-self:start;
 }
 
 .card.hidden{
@@ -176,28 +230,28 @@ main{
   font-size:13px;
   text-transform:uppercase;
   color:var(--t2);
+  letter-spacing:.6px;
 }
 
 .kpi{
   font-size:56px;
   font-weight:900;
+  letter-spacing:-.5px;
+  line-height:1.0;
 }
-.kpi span{font-size:18px;color:var(--t2)}
+.kpi span{font-size:18px;color:var(--t2);font-weight:700}
 
-.kpi-sub{
-  margin-top:8px;
-  font-size:18px;
-}
+.kpi-sub{margin-top:8px;font-size:18px;color:var(--t2)}
 
 .kpi-image img{
   width:100%;
-  max-height:280px;
+  max-height:300px;
   object-fit:contain;
   border-radius:14px;
-  background:rgba(0,0,0,.1);
+  background:rgba(0,0,0,.10);
 }
 
-/* ================= FOOTER ================= */
+/* Footer */
 footer{
   padding:0 28px;
   display:flex;
@@ -214,8 +268,9 @@ footer{
 <div class="app">
   <header>
     <div class="header-left">
-      <img class="logo" src="assets/logo-monte-do-pasto.png">
+      <img class="logo" src="assets/logo-monte-do-pasto.png" alt="Monte do Pasto">
       <div class="now">
+        <div id="nowIcon" class="icon cloud"></div>
         <div>
           <div class="temp" id="nowTemp">--°C</div>
           <div class="desc" id="nowDesc">---</div>
@@ -238,111 +293,312 @@ footer{
   </header>
 
   <main id="kpis"></main>
-
   <footer>Informação interna · Monte do Pasto</footer>
 </div>
 
 <script>
 /* ================= CONFIG ================= */
-var LAT=38.219, LON=-7.887;
-var SHEET_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vRcoOLTXvKf6K_4aejdyA7ZK6PObIzqyiLBBOPSehdSkKlxj9_ms0EqJOjT7u2lN11j5DaYIAkcqoy7/pub?output=csv";
-var MAX_VISIBLE=6;
-var ROTATE_MS=15000;
+var LAT = 38.219, LON = -7.887;
+var MAX_VISIBLE = 6;
+var ROTATE_MS = 15000;
+
+var SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRcoOLTXvKf6K_4aejdyA7ZK6PObIzqyiLBBOPSehdSkKlxj9_ms0EqJOjT7u2lN11j5DaYIAkcqoy7/pub?output=csv";
+
+/* Open-Meteo (timezone=auto para bater certo na TV) */
+var WEATHER_URL =
+  "https://api.open-meteo.com/v1/forecast?latitude="+LAT+"&longitude="+LON+
+  "&current_weather=true"+
+  "&hourly=temperature_2m,precipitation,weathercode"+
+  "&daily=temperature_2m_max,temperature_2m_min,weathercode"+
+  "&timezone=auto";
+
+/* Códigos de chuva do Open-Meteo (suficiente para o efeito) */
+function isRainCode(code){
+  return (code===51||code===53||code===55||code===61||code===63||code===65||code===80||code===81||code===82||code===95||code===96||code===99);
+}
+function iconClass(code){
+  if (isRainCode(code)) return "rain";
+  if (code===0) return "sun";
+  return "cloud";
+}
+function descFrom(code){
+  if (isRainCode(code)) return "Chuva";
+  if (code===0) return "Sol";
+  return "Nublado";
+}
 
 /* ================= CLOCK ================= */
 function tick(){
-  var d=new Date();
-  clock.textContent=("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);
+  var d = new Date();
+  var hh = ("0"+d.getHours()).slice(-2);
+  var mm = ("0"+d.getMinutes()).slice(-2);
+  document.getElementById("clock").textContent = hh+":"+mm;
 }
-tick(); setInterval(tick,30000);
+tick();
+setInterval(tick, 30000);
 
-/* ================= CSV PARSER ================= */
-function parseCSV(t){
-  var l=t.trim().split("\n");
-  var h=l.shift().split(",");
-  var o=[];
-  for(var i=0;i<l.length;i++){
-    var c=l[i].split(",");
-    var r={};
-    for(var j=0;j<h.length;j++) r[h[j]]=c[j]||"";
-    o.push(r);
+/* ================= CSV PARSER (simples e TV-safe) ================= */
+function parseCSV(text){
+  text = (text||"").replace(/\r/g,"").trim();
+  if (!text) return [];
+  var lines = text.split("\n");
+  var headers = lines.shift().split(",");
+  for (var i=0;i<headers.length;i++) headers[i] = (headers[i]||"").trim();
+  var out = [];
+  for (var l=0;l<lines.length;l++){
+    if (!lines[l]) continue;
+    var cols = lines[l].split(",");
+    var row = {};
+    for (var c=0;c<headers.length;c++){
+      row[headers[c]] = (cols[c]||"").trim();
+    }
+    out.push(row);
   }
-  return o;
+  return out;
+}
+function asBool(v){
+  v = (v||"").toString().trim().toLowerCase();
+  return (v==="true"||v==="1"||v==="sim"||v==="yes");
+}
+function asNum(v){
+  if (v===undefined || v===null) return NaN;
+  v = (""+v).trim().replace(",",".");
+  var n = Number(v);
+  return (isFinite(n) ? n : NaN);
 }
 
-/* ================= WEATHER ================= */
-function weather(){
-  fetch("https://api.open-meteo.com/v1/forecast?latitude="+LAT+"&longitude="+LON+"&current_weather=true&hourly=temperature_2m,precipitation&daily=temperature_2m_max,temperature_2m_min&timezone=auto")
-  .then(r=>r.json())
-  .then(d=>{
-    nowTemp.textContent=Math.round(d.current_weather.temperature)+"°C";
-    nowDesc.textContent=d.current_weather.precipitation>0?"Chuva":"Nublado";
+/* ================= FX ================= */
+function clearFX(){ document.getElementById("fx").innerHTML = ""; }
+function addFog(){
+  var f = document.createElement("div");
+  f.className = "fog";
+  document.getElementById("fx").appendChild(f);
+}
+function addSun(){
+  var s = document.createElement("div");
+  s.className = "sunGlow";
+  document.getElementById("fx").appendChild(s);
+}
+function addRainDrops(count){
+  var fx = document.getElementById("fx");
+  for (var i=0;i<count;i++){
+    var d = document.createElement("div");
+    d.className = "drop";
+    d.style.left = (Math.random()*100)+"%";
+    d.style.animationDuration = (0.55 + Math.random()*1.2)+"s";
+    d.style.opacity = (0.22 + Math.random()*0.55);
+    d.style.height = (12 + Math.random()*18)+"px";
+    fx.appendChild(d);
+  }
+}
 
-    hours.innerHTML="";
-    for(var i=1;i<=4;i++){
-      hours.innerHTML+=
-        "<div class='pill'>"+Math.round(d.hourly.temperature_2m[i])+"°</div>";
-    }
+/* ================= WEATHER (widgets) ================= */
+function updateWeather(){
+  fetch(WEATHER_URL)
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var cw = d.current_weather || {};
+      var temp = Math.round(cw.temperature || 0);
+      var code = (cw.weathercode!==undefined ? cw.weathercode : 3);
 
-    days.innerHTML="";
-    for(var i=1;i<=4;i++){
-      days.innerHTML+=
-        "<div class='pill'>"+Math.round(d.daily.temperature_2m_max[i])+"°/"+Math.round(d.daily.temperature_2m_min[i])+"°</div>";
-    }
+      document.getElementById("nowTemp").textContent = temp+"°C";
+      document.getElementById("nowDesc").textContent = descFrom(code);
+      document.getElementById("nowIcon").className = "icon " + iconClass(code);
 
-    fx.innerHTML="";
-    if(d.current_weather.precipitation>0){
-      for(var i=0;i<120;i++){
-        var e=document.createElement("div");
-        e.className="drop";
-        e.style.left=Math.random()*100+"%";
-        e.style.animationDuration=(0.6+Math.random())+"s";
-        fx.appendChild(e);
+      /* próximos 4 blocos horários */
+      var hoursEl = document.getElementById("hours");
+      hoursEl.innerHTML = "";
+      var hTemps = (d.hourly && d.hourly.temperature_2m) ? d.hourly.temperature_2m : [];
+      var hCodes = (d.hourly && d.hourly.weathercode) ? d.hourly.weathercode : [];
+      var hTimes = (d.hourly && d.hourly.time) ? d.hourly.time : [];
+
+      for (var i=1;i<=4;i++){
+        var t = Math.round(hTemps[i] || 0);
+        var c = (hCodes[i]!==undefined ? hCodes[i] : 3);
+        var timeStr = (hTimes[i] || "");
+        var hh = "--h";
+        if (timeStr){
+          var dt = new Date(timeStr);
+          hh = ("0"+dt.getHours()).slice(-2) + "h";
+        }
+
+        hoursEl.innerHTML +=
+          "<div class='pill'>"+
+            "<div class='icon "+iconClass(c)+"'></div>"+
+            "<div>"+
+              "<div class='big'>"+t+"°</div>"+
+              "<div class='sub'>"+hh+"</div>"+
+            "</div>"+
+          "</div>";
       }
-    } else {
-      fx.innerHTML="<div class='sun'></div>";
-    }
-  });
-}
 
-/* ================= KPIs ================= */
-var page=0, cards=[];
-function loadKPIs(){
-  fetch(SHEET_URL,{cache:"no-store"})
-  .then(r=>r.text())
-  .then(t=>{
-    var rows=parseCSV(t).filter(r=>r.active==="TRUE");
-    rows.sort((a,b)=>(a.order||999)-(b.order||999));
+      /* próximos 4 dias */
+      var daysEl = document.getElementById("days");
+      daysEl.innerHTML = "";
+      var dMax = (d.daily && d.daily.temperature_2m_max) ? d.daily.temperature_2m_max : [];
+      var dMin = (d.daily && d.daily.temperature_2m_min) ? d.daily.temperature_2m_min : [];
+      var dCode = (d.daily && d.daily.weathercode) ? d.daily.weathercode : [];
+      var dTime = (d.daily && d.daily.time) ? d.daily.time : [];
 
-    kpis.innerHTML="";
-    rows.forEach(r=>{
-      var body="";
-      if(r.type==="image") body="<div class='kpi-image'><img src='"+r.imageUrl+"'></div>";
-      if(r.type==="number") body="<div class='kpi'>"+r.value+" <span>"+r.unit+"</span></div>";
-      if(r.type==="text") body="<div class='kpi-sub'>"+r.value+"</div>";
+      var dias = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
 
-      kpis.innerHTML+=
-        "<div class='card kpi-card'><h3>"+r.title+"</h3>"+body+"</div>";
+      for (var j=1;j<=4;j++){
+        var tmax = Math.round(dMax[j] || 0);
+        var tmin = Math.round(dMin[j] || 0);
+        var cc = (dCode[j]!==undefined ? dCode[j] : 3);
+        var wd = "---";
+        if (dTime[j]){
+          var dd = new Date(dTime[j]);
+          wd = dias[dd.getDay()];
+        }
+        daysEl.innerHTML +=
+          "<div class='pill'>"+
+            "<div class='icon "+iconClass(cc)+"'></div>"+
+            "<div>"+
+              "<div class='big'>"+tmax+"°/"+tmin+"°</div>"+
+              "<div class='sub'>"+wd+"</div>"+
+            "</div>"+
+          "</div>";
+      }
+
+      /* FX: fog sempre leve, rain conforme precipitação */
+      clearFX();
+      addFog();
+      if (isRainCode(code)){
+        var prec = 0;
+        if (d.hourly && d.hourly.precipitation && d.hourly.precipitation[0]!==undefined){
+          prec = Number(d.hourly.precipitation[0]) || 0;
+        }
+        var intensity = prec / 4; /* mm/h -> intensidade 0..1 */
+        if (intensity < 0.15) intensity = 0.15;
+        if (intensity > 1) intensity = 1;
+        var drops = Math.floor(70 + intensity * 260);
+        addRainDrops(drops);
+      } else if (code===0){
+        addSun();
+      }
+    })
+    .catch(function(){
+      /* se falhar, não rebenta o layout */
     });
-
-    cards=[].slice.call(document.querySelectorAll(".kpi-card"));
-    rotate();
-    setInterval(rotate,ROTATE_MS);
-  });
 }
+
+/* ================= KPIs (sheet + rotação) ================= */
+var page = 0;
+var cards = [];
+var rotateTimer = null;
 
 function rotate(){
-  cards.forEach((c,i)=>{
-    c.classList.toggle("hidden",!(i>=page*MAX_VISIBLE && i<(page+1)*MAX_VISIBLE));
-  });
-  page=(page+1)%Math.ceil(cards.length/MAX_VISIBLE);
+  if (!cards.length) return;
+  var start = page * MAX_VISIBLE;
+  var end = start + MAX_VISIBLE;
+  for (var i=0;i<cards.length;i++){
+    var show = (i>=start && i<end);
+    if (show) cards[i].classList.remove("hidden");
+    else cards[i].classList.add("hidden");
+  }
+  var totalPages = Math.ceil(cards.length / MAX_VISIBLE);
+  page = (page + 1) % (totalPages || 1);
+}
+
+function startRotation(){
+  if (rotateTimer) clearInterval(rotateTimer);
+  page = 0;
+  rotate();
+  if (cards.length > MAX_VISIBLE){
+    rotateTimer = setInterval(rotate, ROTATE_MS);
+  }
+}
+
+function loadKPIs(){
+  fetch(SHEET_URL, { cache: "no-store" })
+    .then(function(r){ return r.text(); })
+    .then(function(t){
+      var rows = parseCSV(t).map(function(r){
+        return {
+          id: (r.id||"").trim(),
+          active: asBool(r.active),
+          type: (r.type||"").trim().toLowerCase(),
+          title: (r.title||"").trim(),
+          value: (r.value||"").trim(),
+          unit: (r.unit||"").trim(),
+          imageUrl: (r.imageUrl||"").trim(),
+          order: asNum(r.order),
+          extra: (r.extra||"").trim()
+        };
+      }).filter(function(r){
+        return r.active && r.type && r.title;
+      });
+
+      rows.sort(function(a,b){
+        var ao = isFinite(a.order) ? a.order : 999999;
+        var bo = isFinite(b.order) ? b.order : 999999;
+        return ao - bo;
+      });
+
+      var grid = document.getElementById("kpis");
+      grid.innerHTML = "";
+
+      if (!rows.length){
+        grid.innerHTML =
+          "<div class='card kpi-card'>"+
+            "<h3>Sem KPIs ativos</h3>"+
+            "<div class='kpi-sub'>Liga KPIs na Google Sheet (active=TRUE).</div>"+
+          "</div>";
+      } else {
+        for (var i=0;i<rows.length;i++){
+          var r = rows[i];
+          var body = "";
+
+          if (r.type === "image"){
+            if (r.imageUrl){
+              body = "<div class='kpi-image'><img src='"+r.imageUrl+"' alt=''></div>";
+            } else {
+              body = "<div class='kpi-sub'>Sem imageUrl</div>";
+            }
+          } else if (r.type === "number"){
+            body = "<div class='kpi'>"+(r.value||"--")+" <span>"+(r.unit||"")+"</span></div>";
+          } else if (r.type === "text"){
+            body = "<div class='kpi-sub'>"+(r.value||"")+"</div>";
+          } else {
+            body = "<div class='kpi-sub'>Tipo não suportado: "+r.type+"</div>";
+          }
+
+          grid.innerHTML +=
+            "<div class='card kpi-card'>"+
+              "<h3>"+r.title+"</h3>"+
+              body+
+            "</div>";
+        }
+      }
+
+      cards = Array.prototype.slice.call(document.querySelectorAll(".kpi-card"));
+      startRotation();
+    })
+    .catch(function(){
+      /* se a sheet falhar, não rebenta tudo */
+    });
+}
+
+/* ================= HOURLY REFRESH (simples) ================= */
+function scheduleHourly(fn){
+  fn();
+  var now = new Date();
+  var msToNextHour =
+    (60 - now.getMinutes())*60*1000 - now.getSeconds()*1000 - now.getMilliseconds();
+
+  setTimeout(function(){
+    fn();
+    setInterval(fn, 60*60*1000);
+  }, msToNextHour);
 }
 
 /* ================= INIT ================= */
-weather();
+updateWeather();
 loadKPIs();
-setInterval(weather,60*60*1000);
-setInterval(loadKPIs,60*60*1000);
+
+scheduleHourly(updateWeather);
+scheduleHourly(loadKPIs);
 </script>
 </body>
 </html>
