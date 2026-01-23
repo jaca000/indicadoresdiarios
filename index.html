@@ -278,6 +278,42 @@ footer{
   color:var(--t2);
   font-size:14px;
 }
+
+/* ========= NEWS TICKER (NOVO) ========= */
+.news-bar{
+  position:fixed;
+  left:0; right:0; bottom:0;
+  height:44px;
+  z-index:5; /* acima de tudo */
+  display:flex;
+  align-items:center;
+  overflow:hidden;
+  background:linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.55));
+  border-top:1px solid rgba(255,255,255,.22);
+  backdrop-filter: blur(8px);
+  pointer-events:none; /* TV-safe */
+}
+
+.news-track{
+  display:inline-block;
+  white-space:nowrap;
+  padding-left:100%;
+  animation:news-scroll 45s linear infinite;
+  font-size:16px;
+  font-weight:700;
+  color:var(--t1);
+  text-shadow:0 8px 14px rgba(0,0,0,.25);
+}
+
+.news-item{
+  display:inline-block;
+  margin-right:60px;
+}
+
+@keyframes news-scroll{
+  from{ transform:translateX(0); }
+  to{ transform:translateX(-100%); }
+}
 </style>
 </head>
 
@@ -315,6 +351,11 @@ footer{
   <footer>Informação interna · Monte do Pasto</footer>
 </div>
 
+<!-- NEWS BAR (NOVO) -->
+<div class="news-bar">
+  <div class="news-track" id="newsTrack"></div>
+</div>
+
 <script>
 /* ================= CONFIG ================= */
 var LAT = 38.219, LON = -7.887;
@@ -323,6 +364,9 @@ var MAX_VISIBLE = 6;
 var ROTATE_MS = 15000;
 
 var SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRcoOLTXvKf6K_4aejdyA7ZK6PObIzqyiLBBOPSehdSkKlxj9_ms0EqJOjT7u2lN11j5DaYIAkcqoy7/pub?output=csv";
+
+/* ✅ NOVO: Sheet de Notícias (CSV) */
+var NEWS_SHEET_URL = "COLOCA_AQUI_O_LINK_CSV_DAS_NOTICIAS";
 
 var WEATHER_URL =
   "https://api.open-meteo.com/v1/forecast?latitude="+LAT+"&longitude="+LON+
@@ -601,6 +645,65 @@ function loadKPIs(){
     .catch(function(){});
 }
 
+/* ================= NEWS (Google Sheet) (NOVO) =================
+   Sheet colunas: active, order, text
+*/
+function loadNews(){
+  if (!NEWS_SHEET_URL || NEWS_SHEET_URL.indexOf("http") !== 0){
+    // Se não estiver configurado, não rebenta a app
+    document.getElementById("newsTrack").innerHTML =
+      "<span class='news-item'>Configura NEWS_SHEET_URL (CSV)</span>";
+    return;
+  }
+
+  fetch(NEWS_SHEET_URL, { cache: "no-store" })
+    .then(function(r){ return r.text(); })
+    .then(function(t){
+      var rows = parseCSV(t).map(function(r){
+        return {
+          active: asBool(r.active),
+          order: asNum(r.order),
+          text: (r.text||"").trim()
+        };
+      }).filter(function(r){
+        return r.active && r.text;
+      });
+
+      rows.sort(function(a,b){
+        var ao = isFinite(a.order) ? a.order : 999999;
+        var bo = isFinite(b.order) ? b.order : 999999;
+        return ao - bo;
+      });
+
+      var track = document.getElementById("newsTrack");
+      track.innerHTML = "";
+
+      if (!rows.length){
+        track.innerHTML = "<span class='news-item'>Sem comunicações ativas</span>";
+      } else {
+        for (var i=0;i<rows.length;i++){
+          track.innerHTML += "<span class='news-item'>"+escapeHTML(rows[i].text)+"</span>";
+        }
+      }
+
+      // reset da animação (TV-safe)
+      track.style.animation = "none";
+      track.offsetHeight;
+      track.style.animation = "";
+    })
+    .catch(function(){});
+}
+
+/* util p/ evitar injetar HTML por acidente */
+function escapeHTML(s){
+  return (s||"")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
 /* ================= HOURLY REFRESH (alinhado) ================= */
 function scheduleHourly(fn){
   fn();
@@ -618,9 +721,12 @@ function scheduleHourly(fn){
 /* ================= INIT ================= */
 updateWeather();
 loadKPIs();
+loadNews();
 
+/* refresh alinhado à hora */
 scheduleHourly(updateWeather);
 scheduleHourly(loadKPIs);
+scheduleHourly(loadNews);
 </script>
 </body>
 </html>
