@@ -1,989 +1,732 @@
 <!doctype html>
 <html lang="pt-PT">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Monte do Pasto · Painel Vivo</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Monte do Pasto · Painel Vivo</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-  <style>
-    * { box-sizing: border-box; }
-    html, body { height: 100%; margin: 0; }
-    body{
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      color: var(--t1);
-      overflow: hidden;
-      background:
-        radial-gradient(1200px 800px at 20% 10%, rgba(255,255,255,.20), transparent 60%),
-        radial-gradient(900px 700px at 80% 20%, rgba(200,160,110,.18), transparent 60%),
-        radial-gradient(1200px 900px at 60% 90%, rgba(140,220,180,.25), transparent 65%),
-        linear-gradient(135deg, var(--g1), var(--g2) 55%, var(--b1));
-    }
+<style>
+/* ================= RESET ================= */
+*{box-sizing:border-box}
+html,body{height:100%}
 
-    :root{
-      /* Base Monte do Pasto (verde + castanho) */
-      --g1:#6fa98c;
-      --g2:#4f7f63;
-      --b1:#7b6445;
+/* ================= VARIÁVEIS (MOOD) ================= */
+:root{
+  --g1:#6fa98c;
+  --g2:#4f7f63;
+  --b1:#7b6445;
 
-      --glass: rgba(255,255,255,.18);
-      --glass2: rgba(0,0,0,.10);
-      --stroke: rgba(255,255,255,.24);
+  --glass:rgba(255,255,255,.18);
+  --glass2:rgba(0,0,0,.10);
+  --stroke:rgba(255,255,255,.22);
 
-      --t1:#f4f6f3;
-      --t2: rgba(244,246,243,.82);
-      --t3: rgba(244,246,243,.62);
+  --t1:#f4f6f3;
+  --t2:rgba(244,246,243,.78);
+  --t3:rgba(244,246,243,.60);
 
-      --r1: 18px;
-      --r2: 26px;
+  --good:#7fd18c;
+  --bad:#d1b27f;
 
-      --headerMinH: 92px;
-      --footerH: 48px;
-    }
-
-    /* =========================================================
-       FX LAYER
-    ========================================================= */
-    #fx{
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 2;
-      overflow: hidden;
-    }
-
-    .fog{
-      position:absolute;
-      inset:-20%;
-      background:
-        radial-gradient(circle at 30% 50%, rgba(255,255,255,.18), transparent 55%),
-        radial-gradient(circle at 70% 60%, rgba(255,255,255,.12), transparent 60%),
-        radial-gradient(circle at 55% 35%, rgba(255,255,255,.10), transparent 62%);
-      opacity:.38;
-      animation:fogMove 110s linear infinite;
-      filter: blur(0.6px);
-    }
-    @keyframes fogMove{
-      from{ transform: translateX(0); }
-      to{ transform: translateX(-14%); }
-    }
-
-    .sunGlow{
-      position:absolute;
-      top: 5%;
-      right: 10%;
-      width: 280px;
-      height: 280px;
-      border-radius: 50%;
-      background: radial-gradient(circle,
-        rgba(255,230,170,.90),
-        rgba(255,210,150,.30),
-        transparent 66%);
-      opacity: .78;
-      animation: sunPulse 7s ease-in-out infinite;
-    }
-    @keyframes sunPulse{
-      0%,100%{ transform: scale(.96); }
-      50%{ transform: scale(1.04); }
-    }
-
-    .drop{
-      position:absolute;
-      width:2px;
-      height:18px;
-      background: rgba(220,245,255,.86);
-      border-radius: 999px;
-      animation-name: fall;
-      animation-timing-function: linear;
-      animation-iteration-count: infinite;
-      will-change: transform;
-    }
-    @keyframes fall{
-      from{ transform: translateY(-140px); }
-      to{ transform: translateY(110vh); }
-    }
-
-    /* =========================================================
-       APP LAYER
-    ========================================================= */
-    .app{
-      position: relative;
-      z-index: 3; /* acima dos FX */
-      height: 100vh;
-      display: grid;
-      grid-template-rows: auto 1fr var(--footerH);
-    }
-
-    /* =========================================================
-       HEADER (GRID) — não corta, faz scroll inteligente
-    ========================================================= */
-    header{
-  padding: 8px 20px;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 14px;
-
-  overflow-y: visible;   /* 🔴 ISTO É CRÍTICO */
+  --radius-1:18px;
+  --radius-2:26px;
 }
 
-    .header-left{
-      display:flex;
-      align-items:center;
-      gap:14px;
-      min-width: 360px;
-    }
+/* ================= BODY ================= */
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  color:var(--t1);
+  overflow:hidden;
+  transition:background 12s ease;
 
-    .logo{
-      height: 62px;
-      filter: drop-shadow(0 10px 18px rgba(0,0,0,.18));
-    }
+  background:
+    radial-gradient(1200px 800px at 20% 10%, rgba(255,255,255,.20), transparent 60%),
+    radial-gradient(900px 700px at 80% 20%, rgba(200,160,110,.18), transparent 60%),
+    radial-gradient(1200px 900px at 60% 90%, rgba(140,220,180,.25), transparent 65%),
+    linear-gradient(135deg,var(--g1),var(--g2) 55%,var(--b1));
+}
 
-    .glass{
-      background: linear-gradient(180deg, var(--glass), var(--glass2));
-      border: 1px solid var(--stroke);
-      border-radius: var(--r1);
-      backdrop-filter: blur(10px);
-    }
+/* ================= FX (tempo) ================= */
+#fx{position:fixed;inset:0;pointer-events:none;z-index:0}
 
-    .now{
+/* chuva */
+.drop{
+  position:absolute;width:2px;height:18px;
+  background:rgba(230,245,255,.60);
+  border-radius:999px;
+  animation:fall linear infinite;
+}
+@keyframes fall{
+  from{transform:translateY(-120px)}
+  to{transform:translateY(110vh)}
+}
+
+/* neve (opcional futuro) */
+.flake{
+  position:absolute;width:4px;height:4px;border-radius:50%;
+  background:rgba(245,252,255,.9);
+  animation:snow linear infinite;
+}
+@keyframes snow{
+  from{transform:translateY(-40px)}
+  to{transform:translateY(110vh)}
+}
+
+/* nevoeiro */
+.fog{
+  position:absolute;inset:-20%;
+  background:
+    radial-gradient(circle at 30% 50%, rgba(255,255,255,.18), transparent 55%),
+    radial-gradient(circle at 70% 60%, rgba(255,255,255,.14), transparent 60%);
+  animation:fogmove 120s linear infinite;
+}
+@keyframes fogmove{
+  from{transform:translateX(0)}
+  to{transform:translateX(-14%)}
+}
+
+/* sol */
+.sunGlow{
+  position:absolute;top:8%;right:12%;
+  width:320px;height:320px;border-radius:50%;
+  background:radial-gradient(circle,
+    rgba(255,230,170,.90),
+    rgba(255,210,150,.35),
+    transparent 66%);
+  animation:sunpulse 7s ease-in-out infinite;
+}
+@keyframes sunpulse{
+  0%,100%{transform:scale(.95);opacity:.8}
+  50%{transform:scale(1.03);opacity:1}
+}
+
+/* ================= APP LAYOUT ================= */
+.app{
+  position:relative;
+  z-index:1;
+  height:100vh;
+  display:grid;
+  grid-template-rows:96px 1fr 48px;
+}
+
+/* ================= HEADER ================= */
+header{
+  padding:0 28px;
   display:flex;
   align-items:center;
-  gap:8px;
-  padding:6px 10px;
-}
-.now .temp{
-  font-size:16px;     /* ↓ */
-  font-weight:800;
-}
-.now .desc{
-  font-size:11px;     /* ↓ */
+  gap:18px;
 }
 
-    /* Centro: permite scroll horizontal se necessário (TVs variam) */
-    .header-mid{
+.header-left{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  min-width:380px;
+}
+
+.logo{height:48px; filter:drop-shadow(0 8px 14px rgba(0,0,0,.22));}
+
+.now{
+  display:flex;gap:10px;align-items:center;
+  padding:10px 14px;border-radius:var(--radius-1);
+  background:linear-gradient(180deg,var(--glass),var(--glass2));
+  border:1px solid var(--stroke);
+  backdrop-filter: blur(10px);
+}
+.now .temp{font-size:20px;font-weight:800}
+.now .desc{font-size:14px;color:var(--t2)}
+
+.header-mid{
+  flex:1;
   display:flex;
   justify-content:center;
+  gap:14px;
+}
+
+.group{
+  display:flex;
   align-items:center;
-  gap: 12px;
-  min-width: 0;
-  max-width: calc(100vw - 520px); /* <<< ISTO É A CHAVE */
-  overflow-x: auto;
-}
-    .header-mid::-webkit-scrollbar{ display:none; }
-
-    .group{
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-
-  max-width: 100%;
-  min-width: 0;              /* 🔑 ESSENCIAL */
-  overflow: hidden;          /* 🔑 ESSENCIAL */
-
-  flex: 1 1 auto;
+  gap:10px;
+  padding:10px 14px;
+  border-radius:var(--radius-1);
+  background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(0,0,0,.10));
+  border:1px solid var(--stroke);
+  backdrop-filter: blur(10px);
 }
 
-    .group-title{
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: .7px;
-      color: var(--t2);
-      white-space: nowrap;
-    }
+.group .title{
+  font-size:12px;
+  text-transform:uppercase;
+  color:var(--t2);
+  letter-spacing:.8px;
+}
 
-    .pills{
-      display:flex;
-      gap:10px;
-      min-width: 0;
-      overflow-x: auto;
-      scrollbar-width: none;
-      padding-bottom: 2px;
-    }
-    .pills::-webkit-scrollbar{ display:none; }
+.pills{display:flex;gap:10px}
 
-    .pill{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding:2px 6px;     /* 🔽 menos altura */
-      border-radius: 16px;
-      background: rgba(255,255,255,.22);
-      border: 1px solid rgba(255,255,255,.18);
-      min-width: 84px;
-      animation: float 6s ease-in-out infinite;
-      will-change: transform;
-      flex-shrink: 0;
-    }
-    .pill:nth-child(2){ animation-delay: .6s; }
-    .pill:nth-child(3){ animation-delay: 1.2s; }
-    .pill:nth-child(4){ animation-delay: 1.8s; }
-    @keyframes float{
-      0%,100%{ transform: translateY(0); }
-      50%{ transform: translateY(-3px); }
-    }
-    .pill .big{ font-size: 14px; font-weight: 900; line-height: 1; }
-    .pill .sub{ font-size: 10px; color: var(--t3); margin-top: 2px; }
+.pill{
+  display:flex;gap:8px;align-items:center;
+  padding:8px 10px;border-radius:14px;
+  background:rgba(255,255,255,.22);
+  border:1px solid rgba(255,255,255,.18);
+  min-width:100px;
+}
 
-    .clock{
-      min-width: 120px;
-      text-align: right;
-      font-size: 28px;
-      font-weight: 900;
-      white-space: nowrap;
-      text-shadow: 0 10px 18px rgba(0,0,0,.18);
-    }
+.small{font-size:14px;font-weight:800}
+.sub{font-size:12px;color:var(--t3)}
 
-    /* =========================================================
-       ICONS (CSS puro + micro-vida)
-    ========================================================= */
-    .icon{
-      width: 26px;
-      height: 26px;
-      position: relative;
-      flex: 0 0 26px;
-      filter: drop-shadow(0 8px 14px rgba(0,0,0,.18));
-    }
-    .icon.sun:before{
-      content:"";
-      position:absolute;
-      inset:6px;
-      border-radius:50%;
-      background: radial-gradient(circle, #ffe6b4, #ffc36e);
-      animation: sunSpin 10s linear infinite;
-      transform-origin: center;
-    }
-    @keyframes sunSpin{
-      from{ transform: rotate(0deg) scale(1); }
-      50%{ transform: rotate(180deg) scale(1.02); }
-      to{ transform: rotate(360deg) scale(1); }
-    }
+.clock{
+  min-width:90px;
+  text-align:right;
+  font-size:30px;
+  font-weight:800;
+  text-shadow: 0 10px 18px rgba(0,0,0,.18);
+}
 
-    .icon.cloud:before{
-      content:"";
-      position:absolute;
-      left:3px; right:3px;
-      bottom:7px;
-      height:12px;
-      background:#fff;
-      border-radius:999px;
-      opacity:.95;
-    }
-    .icon.cloud:after{
-      content:"";
-      position:absolute;
-      left:6px;
-      bottom:11px;
-      width:12px;
-      height:12px;
-      background:#fff;
-      border-radius:50%;
-      box-shadow:10px -2px 0 #fff;
-      opacity:.98;
-      animation: cloudBob 4.8s ease-in-out infinite;
-    }
-    @keyframes cloudBob{
-      0%,100%{ transform: translateY(0); }
-      50%{ transform: translateY(-1.5px); }
-    }
+/* ================= MAIN (KPIs) ================= */
+main{
+  padding:22px 28px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr); /* 3 colunas */
+  gap:22px;
+  align-items:start;
+}
 
-    .icon.rain:before{
-      content:"";
-      position:absolute;
-      left:3px; right:3px;
-      bottom:11px;
-      height:12px;
-      background:#fff;
-      border-radius:999px;
-      opacity:.95;
-    }
-    .icon.rain:after{
-      content:"";
-      position:absolute;
-      left:9px;
-      top:16px;
-      width:10px;
-      height:10px;
-      background:
-        radial-gradient(circle, rgba(170,230,255,.95) 2px, transparent 3px),
-        radial-gradient(circle, rgba(170,230,255,.85) 2px, transparent 3px),
-        radial-gradient(circle, rgba(170,230,255,.75) 2px, transparent 3px);
-      background-position:0 0, 8px 2px, 4px 8px;
-      background-size:10px 10px;
-      background-repeat:no-repeat;
-      opacity:.95;
-      animation: rainIcon 0.9s linear infinite;
-    }
-    @keyframes rainIcon{
-      from{ transform: translateY(0); opacity:.95; }
-      to{ transform: translateY(2px); opacity:.75; }
-    }
+.card{
+  align-self:start;
+  height:auto;
+  background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(0,0,0,.10));
+  border:1px solid var(--stroke);
+  border-radius:var(--radius-2);
+  padding:18px 20px;
+  backdrop-filter: blur(10px);
+  transition:opacity .45s ease, transform .45s ease;
+}
 
-    /* =========================================================
-       MAIN / KPIs — adaptam ao conteúdo (sem “janelas gigantes”)
-    ========================================================= */
-    main{
-      padding: 22px 28px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, max-content));
-      gap: 22px;
-      align-items: start;
-      overflow: hidden;
-    }
+.card.hidden{
+  opacity:0;
+  transform:translateY(10px);
+  pointer-events:none;
+}
 
-    .card{
-      background: linear-gradient(180deg, var(--glass), var(--glass2));
-      border: 1px solid var(--stroke);
-      border-radius: var(--r2);
-      padding: clamp(14px, 1.6vw, 18px) clamp(16px, 1.8vw, 20px);
-      backdrop-filter: blur(10px);
-      align-self: start;
-      max-width: 560px;          /* impede “tapetes” */
-      width: 100%;
-      transition: opacity .35s, transform .35s;
-    }
+.card h3{
+  margin:0 0 10px;
+  font-size:13px;
+  text-transform:uppercase;
+  color:var(--t2);
+  letter-spacing:.6px;
+}
 
-    .card.hidden{
-      opacity: 0;
-      transform: translateY(10px);
-      pointer-events: none;
-    }
+.kpi{
+  font-size:56px;
+  font-weight:900;
+  letter-spacing:-.5px;
+  line-height:1.0;
+}
+.kpi span{font-size:18px;color:var(--t2); font-weight:700}
 
-    .card h3{
-      margin: 0 0 10px;
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: .6px;
-      color: var(--t2);
-    }
+.kpi-sub{
+  margin-top:8px;
+  font-size:18px;
+}
+.kpi-sub.good{color:var(--good)}
+.kpi-sub.bad{color:var(--bad)}
+.kpi-sub.neutral{color:var(--t2)}
 
-    .kpi{
-      font-size: clamp(40px, 3.8vw, 54px);
-      font-weight: 900;
-      line-height: 1;
-    }
-    .kpi span{
-      font-size: 18px;
-      color: var(--t2);
-      font-weight: 700;
-    }
-    .kpi-sub{
-      margin-top: 8px;
-      font-size: clamp(14px, 1.6vw, 18px);
-      color: var(--t2);
-    }
+.kpi-image{
+  margin-top:10px;
+}
+.kpi-image img{
+  width:100%;
+  max-height:260px;
+  object-fit:contain;
+  border-radius:16px;
+  background:rgba(0,0,0,.10);
+}
 
-    .kpi-image img{
-      width: 100%;
-      max-height: clamp(220px, 24vh, 320px);
-      object-fit: contain;
-      border-radius: 14px;
-      background: rgba(0,0,0,.08);
-    }
+/* ================= FOOTER ================= */
+footer{
+  padding:0 28px;
+  display:flex;
+  align-items:center;
+  color:var(--t2);
+  font-size:14px;
+}
 
-    /* KPI do sistema (fixo) — visual igual aos outros */
-    .system-kpi{ }
+/* ================= ÍCONES TEMPO ================= */
+.icon{width:26px;height:26px;position:relative;flex:0 0 26px}
 
-    /* =========================================================
-       FOOTER
-    ========================================================= */
-    footer{
-      padding: 0 28px;
-      display:flex;
-      align-items:center;
-      color: var(--t2);
-      font-size: 14px;
-      opacity: .9;
-    }
-  </style>
+.icon.sun::before{
+  content:""; position:absolute; inset:5px; border-radius:50%;
+  background:radial-gradient(circle,#ffe6b4,#ffc36e);
+  animation:sunMini 4s ease-in-out infinite;
+}
+@keyframes sunMini{0%,100%{transform:scale(.9)}50%{transform:scale(1.05)}}
+
+.icon.cloud::before{
+  content:""; position:absolute; left:3px; right:3px; bottom:6px; height:12px;
+  background:#fff; border-radius:12px; opacity:.9;
+}
+.icon.cloud::after{
+  content:""; position:absolute; left:6px; bottom:10px; width:12px; height:12px;
+  background:#fff; border-radius:50%;
+  box-shadow:10px -2px 0 #fff;
+  opacity:.95;
+}
+
+.icon.rain::before{
+  content:""; position:absolute; left:3px; right:3px; bottom:10px; height:10px;
+  background:#fff; border-radius:12px; opacity:.92;
+}
+.icon.rain::after{
+  content:""; position:absolute; left:9px; top:15px; width:8px; height:8px;
+  background:radial-gradient(circle,#9fdcff 2px,transparent 3px);
+  animation:rainMini 1s linear infinite;
+}
+@keyframes rainMini{from{transform:translateY(-2px)}to{transform:translateY(4px)}}
+</style>
 </head>
 
 <body>
+<div id="fx"></div>
 
-  <div id="fx"></div>
-
-  <div class="app">
-    <header>
-      <div class="header-left">
-        <img class="logo" src="assets/logo-monte-do-pasto.png" alt="Monte do Pasto">
-
-        <div class="now glass">
-          <div id="nowIcon" class="icon cloud" aria-hidden="true"></div>
-          <div>
-            <div id="nowTemp" class="temp">--°C</div>
-            <div id="nowDesc" class="desc">---</div>
-          </div>
+<div class="app">
+  <header>
+    <div class="header-left">
+      <img class="logo" src="assets/logo-monte-do-pasto.png" alt="Monte do Pasto">
+      <div class="now">
+        <div id="nowIcon" class="icon cloud"></div>
+        <div>
+          <div class="temp" id="nowTemp">--°C</div>
+          <div class="desc" id="nowDesc">---</div>
         </div>
       </div>
+    </div>
 
-      <div class="header-mid">
-        <div class="group glass">
-          <div class="group-title">Próx. horas</div>
-          <div id="hours" class="pills"></div>
-        </div>
-
-        <div class="group glass">
-          <div class="group-title">Próx. dias</div>
-          <div id="days" class="pills"></div>
-        </div>
+    <div class="header-mid">
+      <div class="group">
+        <div class="title">Próx. horas</div>
+        <div class="pills" id="hoursPills"></div>
       </div>
+      <div class="group">
+        <div class="title">Próx. dias</div>
+        <div class="pills" id="daysPills"></div>
+      </div>
+    </div>
 
-      <div id="clock" class="clock">--:--</div>
-    </header>
+    <div class="clock" id="clock">--:--</div>
+  </header>
 
-    <main id="kpis"></main>
-    <footer>Informação interna · Monte do Pasto</footer>
-  </div>
+  <main id="kpiGrid"></main>
+
+  <footer>Informação interna · Monte do Pasto</footer>
+</div>
 
 <script>
 /* =========================================================
    CONFIG
-========================================================= */
-var LAT = 38.219;   // Cuba (aprox.)
-var LON = -7.887;
+   ========================================================= */
+const LAT = 38.219;
+const LON = -7.887;
 
-var MAX_VISIBLE = 6;       // KPIs da Sheet por página
-var ROTATE_MS  = 15000;    // rotação KPIs da Sheet
+const MAX_VISIBLE_KPIS = 6;       // máx no ecrã
+const ROTATE_EVERY_MS  = 15000;   // 15s
+const REFRESH_HOURLY_MS = 60*60*1000;
 
-var SHEET_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vRcoOLTXvKf6K_4aejdyA7ZK6PObIzqyiLBBOPSehdSkKlxj9_ms0EqJOjT7u2lN11j5DaYIAkcqoy7/pub?output=csv";
+const RAIN_CODES = new Set([51,53,55,61,63,65,80,81,82,95,96,99]);
 
-var FORECAST_URL =
-  "https://api.open-meteo.com/v1/forecast?latitude=" + LAT + "&longitude=" + LON +
-  "&current_weather=true" +
-  "&hourly=temperature_2m,precipitation,weathercode" +
-  "&daily=temperature_2m_max,temperature_2m_min,weathercode" +
-  "&timezone=auto";
-
-var ARCHIVE_BASE =
-  "https://archive-api.open-meteo.com/v1/archive?latitude=" + LAT + "&longitude=" + LON +
-  "&daily=precipitation_sum&timezone=auto";
+const WEATHER_URL =
+  `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}` +
+  `&current_weather=true` +
+  `&hourly=temperature_2m,precipitation,weathercode,cloudcover,shortwave_radiation` +
+  `&daily=temperature_2m_max,temperature_2m_min,weathercode` +
+  `&timezone=auto`;
 
 /* =========================================================
-   ELEMENTOS
-========================================================= */
-var fx = document.getElementById("fx");
-var nowIcon = document.getElementById("nowIcon");
-var nowTemp = document.getElementById("nowTemp");
-var nowDesc = document.getElementById("nowDesc");
-var hoursEl = document.getElementById("hours");
-var daysEl  = document.getElementById("days");
-var kpisEl  = document.getElementById("kpis");
-var clockEl = document.getElementById("clock");
-
-/* =========================================================
-   CLOCK
-========================================================= */
+   RELÓGIO
+   ========================================================= */
 function tickClock(){
-  var d = new Date();
-  var hh = ("0"+d.getHours()).slice(-2);
-  var mm = ("0"+d.getMinutes()).slice(-2);
-  clockEl.textContent = hh + ":" + mm;
+  clock.textContent = new Intl.DateTimeFormat("pt-PT",{hour:"2-digit",minute:"2-digit"}).format(new Date());
 }
 tickClock();
 setInterval(tickClock, 30000);
 
 /* =========================================================
    HELPERS
-========================================================= */
-function pad2(n){ return (n < 10 ? "0"+n : ""+n); }
-function fmtDate(d){
-  return d.getFullYear() + "-" + pad2(d.getMonth()+1) + "-" + pad2(d.getDate());
-}
-function startOfYear(year){ return new Date(year, 0, 1); }
-function addDays(date, days){
-  var d = new Date(date.getTime());
-  d.setDate(d.getDate() + days);
-  return d;
-}
-function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+   ========================================================= */
+const PT_DIAS = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
 
-function asBool(v){
-  v = (v||"").toString().trim().toLowerCase();
-  return (v==="true" || v==="1" || v==="sim" || v==="yes");
-}
-function asNum(v){
-  if (v===undefined || v===null) return NaN;
-  v = (""+v).trim().replace(",",".");
-  var n = Number(v);
-  return (isFinite(n) ? n : NaN);
-}
-
-/* CSV robusto (suporta aspas e vírgulas em campos) */
-function parseCSV(text){
-  text = (text || "").replace(/\r/g, "");
-  if (!text.trim()) return [];
-  var rows = [];
-  var row = [];
-  var cur = "";
-  var inQuotes = false;
-
-  for (var i=0;i<text.length;i++){
-    var ch = text[i];
-    if (ch === '"'){
-      if (inQuotes && text[i+1] === '"'){
-        cur += '"'; i++;
-      } else {
-        inQuotes = !inQuotes;
-      }
-    } else if (ch === ',' && !inQuotes){
-      row.push(cur); cur = "";
-    } else if (ch === '\n' && !inQuotes){
-      row.push(cur); rows.push(row); row = []; cur = "";
-    } else {
-      cur += ch;
-    }
-  }
-  row.push(cur);
-  rows.push(row);
-
-  var headers = rows.shift().map(function(h){ return (h||"").trim(); });
-  var out = [];
-  for (var r=0;r<rows.length;r++){
-    if (rows[r].length === 1 && !rows[r][0].trim()) continue;
-    var obj = {};
-    for (var c=0;c<headers.length;c++){
-      obj[headers[c]] = (rows[r][c] || "").trim();
-    }
-    out.push(obj);
-  }
-  return out;
-}
-
-/* =========================================================
-   WEATHER CODES (Open-Meteo)
-========================================================= */
-function isRainCode(code){
-  return (code===51||code===53||code===55||code===61||code===63||code===65||code===80||code===81||code===82||code===95||code===96||code===99);
-}
-function iconClass(code){
-  if (isRainCode(code)) return "rain";
+function iconClassFrom(code, tempC){
+  if (RAIN_CODES.has(code)) return "rain";
   if (code === 0) return "sun";
   return "cloud";
 }
+
 function descFrom(code){
-  if (isRainCode(code)) return "Chuva";
+  if (RAIN_CODES.has(code)) return "Chuva";
   if (code === 0) return "Sol";
   return "Nublado";
 }
 
-/* =========================================================
-   THEME MOOD (verde muda com o tempo)
-========================================================= */
-function setMood(code, precip){
-  // precip em mm/h (0..)
-  // Mantém sempre verde/castanho, mas “muda o mood”
-  var g1 = "#6fa98c", g2 = "#4f7f63", b1 = "#7b6445";
-
-  if (isRainCode(code)){
-    // mais húmido/escuro quanto mais precip
-    var k = clamp((precip || 0) / 6, 0, 1); // 0..1
-    g1 = mixHex("#7ab79a", "#4f7f63", k);
-    g2 = mixHex("#5a8f73", "#3f6a53", k);
-    b1 = mixHex("#7b6445", "#6a553a", k);
-  } else if (code === 0){
-    // sol mais vivo
-    g1 = "#78b89a";
-    g2 = "#4f8a6c";
-    b1 = "#806443";
-  } else {
-    // nublado: mais suave
-    g1 = "#73ad90";
-    g2 = "#4b7a60";
-    b1 = "#7a6344";
-  }
-
-  document.documentElement.style.setProperty("--g1", g1);
-  document.documentElement.style.setProperty("--g2", g2);
-  document.documentElement.style.setProperty("--b1", b1);
-}
-
-// mistura simples de hex
-function hexToRgb(h){
-  h = h.replace("#","");
-  return {
-    r: parseInt(h.slice(0,2),16),
-    g: parseInt(h.slice(2,4),16),
-    b: parseInt(h.slice(4,6),16)
-  };
-}
-function rgbToHex(r,g,b){
-  function c(n){ var s=n.toString(16); return s.length===1?("0"+s):s; }
-  return "#"+c(r)+c(g)+c(b);
-}
-function mixHex(a,b,t){
-  var A=hexToRgb(a), B=hexToRgb(b);
-  var r = Math.round(A.r + (B.r-A.r)*t);
-  var g = Math.round(A.g + (B.g-A.g)*t);
-  var bb= Math.round(A.b + (B.b-A.b)*t);
-  return rgbToHex(r,g,bb);
-}
+function clamp01(x){ return Math.max(0, Math.min(1, x)); }
 
 /* =========================================================
-   FX ENGINE
-========================================================= */
+   FX (chuva/sol/nevoeiro) + MOOD
+   ========================================================= */
+const fx = document.getElementById("fx");
+
 function clearFX(){ fx.innerHTML = ""; }
-function addFog(){
-  var f = document.createElement("div");
+
+function addFog(opacity=0.45){
+  const f = document.createElement("div");
   f.className = "fog";
+  f.style.opacity = String(opacity);
   fx.appendChild(f);
 }
-function addSun(){
-  var s = document.createElement("div");
+
+function addSun(intensity=0.7){
+  const s = document.createElement("div");
   s.className = "sunGlow";
+  s.style.opacity = String(0.25 + intensity*0.65);
   fx.appendChild(s);
 }
-function addRainDrops(count){
-  for (var i=0;i<count;i++){
-    var d = document.createElement("div");
+
+function addRain(count){
+  for (let i=0;i<count;i++){
+    const d = document.createElement("div");
     d.className = "drop";
     d.style.left = (Math.random()*100) + "%";
-    d.style.opacity = (0.25 + Math.random()*0.60);
-    d.style.height = (14 + Math.random()*22) + "px";
-    d.style.animationDuration = (0.55 + Math.random()*1.25) + "s";
+    d.style.animationDuration = (0.55 + Math.random()*1.2) + "s";
+    d.style.opacity = String(0.22 + Math.random()*0.55);
+    d.style.height = (12 + Math.random()*18) + "px";
     fx.appendChild(d);
   }
 }
 
-function applyFX(code, precipNow){
-  // fog sempre (dá “vida” mesmo sem chuva)
-  clearFX();
-  addFog();
+function applyMood({sun, rain, cloud, hour}){
+  // mood 0..100
+  let mood = 50;
+  mood += sun * 40;     // mais sol = mais mood
+  mood -= rain * 30;    // mais chuva = mood mais fechado
+  mood -= cloud * 20;   // mais nuvens = mood mais fechado
+  if (hour < 8 || hour > 18) mood -= 10;
+  mood = Math.max(0, Math.min(100, mood));
 
-  if (isRainCode(code)){
-    var intensity = clamp((precipNow || 0) / 6, 0.18, 1); // 0.18..1
-    var drops = Math.floor(140 + intensity * 520);        // 140..660
-    addRainDrops(drops);
-  } else if (code === 0){
-    addSun();
+  // Paletas (A = oliva quando está bom)
+  let g1,g2,b1;
+  if (mood > 70){
+    // dia bom: oliva/amarelado
+    g1="#7fae4f"; g2="#4f7f3f"; b1="#6b5a3e";
+  } else if (mood > 40){
+    // normal
+    g1="#6fa98c"; g2="#4f7f63"; b1="#7b6445";
+  } else {
+    // fechado/terra
+    g1="#4f7a63"; g2="#3f5f4f"; b1="#5c472f";
   }
+
+  const r = document.documentElement.style;
+  r.setProperty("--g1", g1);
+  r.setProperty("--g2", g2);
+  r.setProperty("--b1", b1);
 }
 
 /* =========================================================
-   WEATHER (tempo real + widgets + FX + mood)
-========================================================= */
+   WEATHER WIDGETS (HEADER)
+   ========================================================= */
 async function updateWeather(){
-  try{
-    var r = await fetch(FORECAST_URL, { cache: "no-store" });
-    var d = await r.json();
+  const d = await fetch(WEATHER_URL).then(r=>r.json());
+  const cw = d.current_weather;
 
-    var cw = d.current_weather || {};
-    var temp = Math.round(cw.temperature || 0);
-    var code = (cw.weathercode!==undefined ? cw.weathercode : 3);
+  const temp = Math.round(cw.temperature);
+  const code = cw.weathercode;
 
-    // precipitação "agora": usar hourly[0] (mm/h) se existir
-    var precipNow = 0;
-    if (d.hourly && d.hourly.precipitation && d.hourly.precipitation[0]!==undefined){
-      precipNow = Number(d.hourly.precipitation[0]) || 0;
-    }
+  nowTemp.textContent = `${temp}°C`;
+  nowDesc.textContent = descFrom(code);
+  nowIcon.className = `icon ${iconClassFrom(code,temp)}`;
 
-    // header now
-    nowTemp.textContent = temp + "°C";
-    nowDesc.textContent = descFrom(code);
-    nowIcon.className = "icon " + iconClass(code);
+  // próximas horas (4)
+  hoursPills.innerHTML = "";
+  for (let i=1;i<=4;i++){
+    const t = Math.round(d.hourly.temperature_2m[i]);
+    const codeH = d.hourly.weathercode[i];
+    const dt = new Date(d.hourly.time[i]);
+    const hh = String(dt.getHours()).padStart(2,"0")+"h";
+    const ic = iconClassFrom(codeH, t);
 
-    // mood + FX
-    setMood(code, precipNow);
-    applyFX(code, precipNow);
-
-    // próximas 4 horas
-    hoursEl.innerHTML = "";
-    var hTemps = (d.hourly && d.hourly.temperature_2m) ? d.hourly.temperature_2m : [];
-    var hCodes = (d.hourly && d.hourly.weathercode) ? d.hourly.weathercode : [];
-    var hTimes = (d.hourly && d.hourly.time) ? d.hourly.time : [];
-
-    for (var i=1;i<=4;i++){
-      var t = Math.round(hTemps[i] || 0);
-      var c = (hCodes[i]!==undefined ? hCodes[i] : 3);
-      var hh = "--h";
-      if (hTimes[i]){
-        var dt = new Date(hTimes[i]);
-        hh = pad2(dt.getHours()) + "h";
-      }
-      hoursEl.innerHTML +=
-        "<div class='pill'>" +
-          "<div class='icon " + iconClass(c) + "'></div>" +
-          "<div>" +
-            "<div class='big'>" + t + "°</div>" +
-            "<div class='sub'>" + hh + "</div>" +
-          "</div>" +
-        "</div>";
-    }
-
-    // próximos 4 dias
-    daysEl.innerHTML = "";
-    var dMax = (d.daily && d.daily.temperature_2m_max) ? d.daily.temperature_2m_max : [];
-    var dMin = (d.daily && d.daily.temperature_2m_min) ? d.daily.temperature_2m_min : [];
-    var dCode = (d.daily && d.daily.weathercode) ? d.daily.weathercode : [];
-    var dTime = (d.daily && d.daily.time) ? d.daily.time : [];
-
-    var dias = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
-    for (var j=1;j<=4;j++){
-      var tmax = Math.round(dMax[j] || 0);
-      var tmin = Math.round(dMin[j] || 0);
-      var cc = (dCode[j]!==undefined ? dCode[j] : 3);
-
-      var wd = "---";
-      if (dTime[j]){
-        var dd = new Date(dTime[j]);
-        wd = dias[dd.getDay()];
-      }
-
-      daysEl.innerHTML +=
-        "<div class='pill'>" +
-          "<div class='icon " + iconClass(cc) + "'></div>" +
-          "<div>" +
-            "<div class='big'>" + tmax + "°/" + tmin + "°</div>" +
-            "<div class='sub'>" + wd + "</div>" +
-          "</div>" +
-        "</div>";
-    }
-
-    return { ok:true };
-  } catch(e){
-    // mantém algo visível mesmo sem rede
-    nowDesc.textContent = "Sem ligação";
-    return { ok:false, err:e };
+    hoursPills.insertAdjacentHTML("beforeend", `
+      <div class="pill">
+        <div class="icon ${ic}"></div>
+        <div>
+          <div class="small">${t}°</div>
+          <div class="sub">${hh}</div>
+        </div>
+      </div>
+    `);
   }
+
+  // próximos dias (4)
+  daysPills.innerHTML = "";
+  for (let i=1;i<=4;i++){
+    const tmax = Math.round(d.daily.temperature_2m_max[i]);
+    const tmin = Math.round(d.daily.temperature_2m_min[i]);
+    const codeD = d.daily.weathercode[i];
+    const date = new Date(d.daily.time[i]);
+    const wd = PT_DIAS[date.getDay()];
+    const ic = iconClassFrom(codeD, tmin);
+
+    daysPills.insertAdjacentHTML("beforeend", `
+      <div class="pill">
+        <div class="icon ${ic}"></div>
+        <div>
+          <div class="small">${tmax}°/${tmin}°</div>
+          <div class="sub">${wd}</div>
+        </div>
+      </div>
+    `);
+  }
+
+  // FX + Mood (dados reais)
+  clearFX();
+
+  const rain = (d.hourly.precipitation?.[0] ?? 0);           // mm/h
+  const cloud = (d.hourly.cloudcover?.[0] ?? 50) / 100;      // 0..1
+  const sun = clamp01(((d.hourly.shortwave_radiation?.[0] ?? 0) - 100) / 600); // 0..1
+
+  // baseline de vida (nunca morto)
+  addFog(0.35 + cloud*0.35);
+
+  // chuva real -> sempre visível quando weathercode é chuva; densidade escala com mm/h
+  if (RAIN_CODES.has(code)){
+    const intensity = Math.max(0.15, Math.min(1, rain/4));
+    const drops = Math.floor(60 + intensity * 260);
+    addRain(drops);
+  }
+
+  // sol
+  if (code === 0){
+    addSun(sun);
+  }
+
+  applyMood({
+    sun: sun,
+    rain: rain,
+    cloud: cloud,
+    hour: new Date().getHours()
+  });
 }
 
 /* =========================================================
-   KPI FIXO: chuva acumulada (Jan 1 -> ontem) vs ano anterior
-   - mm = L/m²
-========================================================= */
-var rainKpiHtmlCache = "";
+   KPI ENGINE (ilimitados) + rotação
+   ========================================================= */
 
-function sumArray(arr){
-  var s = 0;
-  for (var i=0;i<arr.length;i++) s += (Number(arr[i]) || 0);
-  return s;
+/**
+ * Config de KPIs (ilimitados).
+ * Tipos suportados:
+ * - rainYTD: calculado automaticamente (L/m²) e comparação com ano anterior
+ * - image: mostra imagem externa por URL
+ * - number: valor simples
+ * - text: texto simples
+ */
+const KPI_CONFIG = [
+  { id:"rainYTD", type:"rainYTD", title:"Chuva acumulada desde 1 de Janeiro" },
+
+  { id:"graf1", type:"image", title:"Gráfico operacional",
+    imageUrl:"https://upload.wikimedia.org/wikipedia/commons/3/3a/Precipitation_example_chart.png" },
+
+  { id:"prod", type:"number", title:"Produção diária", value:"1 280", unit:"kg" },
+
+  { id:"tempMed", type:"number", title:"Temperatura média", value:"14", unit:"°C" },
+
+  { id:"consumo", type:"number", title:"Consumo ração", value:"860", unit:"kg" },
+
+  { id:"avisos", type:"text", title:"Avisos", text:"Nenhum alerta ativo" },
+
+  // Mais do que 6 para testar rotação:
+  { id:"graf2", type:"image", title:"Gráfico de produção",
+    imageUrl:"https://upload.wikimedia.org/wikipedia/commons/6/6f/Graph_example.svg" },
+
+  { id:"nota", type:"text", title:"Nota", text:"Atualiza conteúdos sem mexer no GitHub (URLs externas)." }
+];
+
+const kpiGrid = document.getElementById("kpiGrid");
+let kpiItems = [];
+let page = 0;
+let rotateTimer = null;
+
+function kpiCardTemplate({id,title,bodyHtml}){
+  return `
+    <div class="card kpi-item" data-kpi-id="${id}">
+      <h3>${title}</h3>
+      ${bodyHtml}
+    </div>
+  `;
 }
 
-async function fetchArchiveRainSum(startDateStr, endDateStr){
-  var url = ARCHIVE_BASE + "&start_date=" + startDateStr + "&end_date=" + endDateStr;
-  var r = await fetch(url, { cache: "no-store" });
-  var d = await r.json();
-  if (d && d.daily && d.daily.precipitation_sum) return sumArray(d.daily.precipitation_sum);
-  return null;
-}
+function renderKPIs(){
+  kpiGrid.innerHTML = "";
 
-async function updateRainKPI(){
-  try{
-    var today = new Date();
-    var endNow = addDays(today, -1);       // ontem (dias completos)
-    var yearNow = today.getFullYear();
-    var yearPrev = yearNow - 1;
-
-    // 1 de janeiro: ontem cai no ano anterior -> 0
-    if (endNow.getFullYear() !== yearNow){
-      rainKpiHtmlCache =
-        "<div class='card system-kpi' id='kpiRainFixed'>" +
-          "<h3>Chuva acumulada (desde 1 de janeiro)</h3>" +
-          "<div class='kpi'>0 <span>L/m²</span></div>" +
-          "<div class='kpi-sub'>+0 L/m² vs " + yearPrev + "</div>" +
-        "</div>";
-      return true;
+  KPI_CONFIG.forEach(k=>{
+    if (k.type === "rainYTD"){
+      kpiGrid.insertAdjacentHTML("beforeend", kpiCardTemplate({
+        id:k.id,
+        title:k.title,
+        bodyHtml: `
+          <div class="kpi" id="rainNow">-- <span>L/m²</span></div>
+          <div class="kpi-sub neutral" id="rainDiff">A calcular...</div>
+        `
+      }));
     }
 
-    var startNowStr = fmtDate(startOfYear(yearNow));
-    var endNowStr   = fmtDate(endNow);
-
-    // mesmo dia/mês de ontem no ano anterior
-    var endPrev = new Date(yearPrev, endNow.getMonth(), endNow.getDate());
-    var startPrevStr = fmtDate(startOfYear(yearPrev));
-    var endPrevStr   = fmtDate(endPrev);
-
-    var sumNow  = await fetchArchiveRainSum(startNowStr, endNowStr);
-    var sumPrev = await fetchArchiveRainSum(startPrevStr, endPrevStr);
-
-    if (sumNow === null || sumPrev === null){
-      rainKpiHtmlCache =
-        "<div class='card system-kpi' id='kpiRainFixed'>" +
-          "<h3>Chuva acumulada (desde 1 de janeiro)</h3>" +
-          "<div class='kpi'>-- <span>L/m²</span></div>" +
-          "<div class='kpi-sub'>Sem dados neste momento</div>" +
-        "</div>";
-      return false;
+    if (k.type === "image"){
+      // imagem com cache-bust suave (atualiza de hora a hora via refreshImages)
+      kpiGrid.insertAdjacentHTML("beforeend", kpiCardTemplate({
+        id:k.id,
+        title:k.title,
+        bodyHtml: `
+          <div class="kpi-image">
+            <img data-img-url="${k.imageUrl}" alt="${k.title}">
+          </div>
+        `
+      }));
     }
 
-    var nowRounded = Math.round(sumNow);
-    var prevRounded = Math.round(sumPrev);
-    var diff = nowRounded - prevRounded;
-    var sign = diff >= 0 ? "+" : "−";
+    if (k.type === "number"){
+      kpiGrid.insertAdjacentHTML("beforeend", kpiCardTemplate({
+        id:k.id,
+        title:k.title,
+        bodyHtml: `
+          <div class="kpi">${k.value} <span>${k.unit ?? ""}</span></div>
+        `
+      }));
+    }
 
-    rainKpiHtmlCache =
-      "<div class='card system-kpi' id='kpiRainFixed'>" +
-        "<h3>Chuva acumulada (desde 1 de janeiro)</h3>" +
-        "<div class='kpi'>" + nowRounded + " <span>L/m²</span></div>" +
-        "<div class='kpi-sub'>" + sign + Math.abs(diff) + " L/m² vs " + yearPrev + "</div>" +
-      "</div>";
+    if (k.type === "text"){
+      kpiGrid.insertAdjacentHTML("beforeend", kpiCardTemplate({
+        id:k.id,
+        title:k.title,
+        bodyHtml: `
+          <div class="kpi-sub neutral">${k.text}</div>
+        `
+      }));
+    }
+  });
 
-    return true;
-  } catch(e){
-    rainKpiHtmlCache =
-      "<div class='card system-kpi' id='kpiRainFixed'>" +
-        "<h3>Chuva acumulada (desde 1 de janeiro)</h3>" +
-        "<div class='kpi'>-- <span>L/m²</span></div>" +
-        "<div class='kpi-sub'>Sem ligação ao histórico</div>" +
-      "</div>";
-    return false;
-  }
+  kpiItems = Array.from(document.querySelectorAll(".kpi-item"));
 }
 
-/* =========================================================
-   KPIs da SHEET + rotação
-   Campos recomendados na sheet (colunas):
-   id, active, type, title, value, unit, imageUrl, order, extra
-   type: number | text | image
-========================================================= */
-var page = 0;
-var cards = [];
-var rotateTimer = null;
+/* rotação (máx 6 visíveis) */
+function updateKPIVisibility(){
+  const start = page * MAX_VISIBLE_KPIS;
+  const end = start + MAX_VISIBLE_KPIS;
 
-function rotateSheetKPIs(){
-  if (!cards.length) return;
-
-  var start = page * MAX_VISIBLE;
-  var end = start + MAX_VISIBLE;
-
-  for (var i=0;i<cards.length;i++){
-    var show = (i >= start && i < end);
-    if (show) cards[i].classList.remove("hidden");
-    else cards[i].classList.add("hidden");
-  }
-
-  var totalPages = Math.ceil(cards.length / MAX_VISIBLE);
-  page = (page + 1) % (totalPages || 1);
+  kpiItems.forEach((el,i)=>{
+    el.classList.toggle("hidden", !(i>=start && i<end));
+  });
 }
 
 function startRotation(){
+  const totalPages = Math.ceil(kpiItems.length / MAX_VISIBLE_KPIS);
   if (rotateTimer) clearInterval(rotateTimer);
+
   page = 0;
-  rotateSheetKPIs();
+  updateKPIVisibility();
 
-  if (cards.length > MAX_VISIBLE){
-    rotateTimer = setInterval(rotateSheetKPIs, ROTATE_MS);
-  }
-}
+  if (totalPages <= 1) return;
 
-async function loadKPIsFromSheet(){
-  try{
-    var r = await fetch(SHEET_URL, { cache: "no-store" });
-    var csvText = await r.text();
-
-    var rows = parseCSV(csvText)
-      .map(function(rr){
-        return {
-          id: (rr.id||"").trim(),
-          active: asBool(rr.active),
-          type: (rr.type||"").trim().toLowerCase(),
-          title: (rr.title||"").trim(),
-          value: (rr.value||"").trim(),
-          unit: (rr.unit||"").trim(),
-          imageUrl: (rr.imageUrl||"").trim(),
-          order: asNum(rr.order),
-          extra: (rr.extra||"").trim()
-        };
-      })
-      .filter(function(x){
-        return x.active && x.type && x.title;
-      });
-
-    rows.sort(function(a,b){
-      var ao = isFinite(a.order) ? a.order : 999999;
-      var bo = isFinite(b.order) ? b.order : 999999;
-      return ao - bo;
-    });
-
-    // Render final: KPI fixo + KPIs da sheet
-    kpisEl.innerHTML = (rainKpiHtmlCache || "");
-
-    if (!rows.length){
-      kpisEl.innerHTML +=
-        "<div class='card sheet-kpi'>" +
-          "<h3>Sem KPIs ativos (Sheet)</h3>" +
-          "<div class='kpi-sub'>Liga KPIs na Google Sheet (active=TRUE).</div>" +
-        "</div>";
-    } else {
-      for (var i=0;i<rows.length;i++){
-        var it = rows[i];
-        var body = "";
-
-        if (it.type === "image"){
-          body = it.imageUrl
-            ? "<div class='kpi-image'><img src='" + it.imageUrl + "' alt=''></div>"
-            : "<div class='kpi-sub'>Sem imageUrl</div>";
-        } else if (it.type === "number"){
-          body = "<div class='kpi'>" + (it.value || "--") + " <span>" + (it.unit || "") + "</span></div>";
-        } else if (it.type === "text"){
-          body = "<div class='kpi-sub'>" + (it.value || "") + "</div>";
-        } else {
-          body = "<div class='kpi-sub'>Tipo não suportado: " + it.type + "</div>";
-        }
-
-        kpisEl.innerHTML +=
-          "<div class='card sheet-kpi'>" +
-            "<h3>" + it.title + "</h3>" +
-            body +
-          "</div>";
-      }
-    }
-
-    cards = Array.prototype.slice.call(document.querySelectorAll(".sheet-kpi"));
-    startRotation();
-    return true;
-  } catch(e){
-    kpisEl.innerHTML = (rainKpiHtmlCache || "") +
-      "<div class='card sheet-kpi'>" +
-        "<h3>Erro a carregar KPIs (Sheet)</h3>" +
-        "<div class='kpi-sub'>Sem ligação à Google Sheet neste momento.</div>" +
-      "</div>";
-
-    cards = Array.prototype.slice.call(document.querySelectorAll(".sheet-kpi"));
-    startRotation();
-    return false;
-  }
+  rotateTimer = setInterval(()=>{
+    page = (page + 1) % totalPages;
+    updateKPIVisibility();
+  }, ROTATE_EVERY_MS);
 }
 
 /* =========================================================
-   REFRESH HORÁRIO (alinhado à hora cheia)
-========================================================= */
+   KPI: chuva acumulada YTD (Open-Meteo archive)
+   ========================================================= */
+async function updateRainYTD(){
+  // só corre se existir o KPI no DOM
+  const rainNowEl = document.getElementById("rainNow");
+  const rainDiffEl = document.getElementById("rainDiff");
+  if (!rainNowEl || !rainDiffEl) return;
+
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth()+1).padStart(2,"0");
+  const dd = String(today.getDate()).padStart(2,"0");
+
+  const startThis = `${yyyy}-01-01`;
+  const startLast = `${yyyy-1}-01-01`;
+  const endToday  = `${yyyy}-${mm}-${dd}`;
+  const endLast   = `${yyyy-1}-${mm}-${dd}`;
+
+  const url = (s,e) =>
+    `https://archive-api.open-meteo.com/v1/archive?latitude=${LAT}&longitude=${LON}` +
+    `&daily=precipitation_sum&start_date=${s}&end_date=${e}&timezone=auto`;
+
+  const [cur, prev] = await Promise.all([
+    fetch(url(startThis, endToday)).then(r=>r.json()),
+    fetch(url(startLast, endLast)).then(r=>r.json())
+  ]);
+
+  const sum = (a)=> (a||[]).reduce((t,v)=>t+(v||0),0);
+
+  const now = sum(cur?.daily?.precipitation_sum);
+  const last = sum(prev?.daily?.precipitation_sum);
+  const diff = now - last;
+
+  rainNowEl.textContent = `${Math.round(now)} `;
+
+  rainDiffEl.textContent = `${diff>=0?"+":""}${Math.round(diff)} L/m² vs ${yyyy-1}`;
+  rainDiffEl.classList.remove("good","bad","neutral");
+  rainDiffEl.classList.add(diff>=0 ? "good" : "bad");
+}
+
+/* imagens externas: refresh horário com cache-bust */
+function refreshExternalImages(){
+  const imgs = Array.from(document.querySelectorAll("img[data-img-url]"));
+  const ts = Date.now();
+  imgs.forEach(img=>{
+    const base = img.getAttribute("data-img-url");
+    img.src = base + (base.includes("?") ? "&" : "?") + "t=" + ts;
+  });
+}
+
+/* =========================================================
+   SCHEDULER (hora a hora, alinhado à hora certa)
+   ========================================================= */
 function scheduleHourly(fn){
+  // chama já
   fn();
 
-  var now = new Date();
-  var msToNextHour =
-    (60 - now.getMinutes()) * 60 * 1000 -
-    now.getSeconds() * 1000 -
-    now.getMilliseconds();
+  // alinha à hora
+  const now = new Date();
+  const msToNextHour =
+    (60 - now.getMinutes())*60*1000 - now.getSeconds()*1000 - now.getMilliseconds();
 
-  if (msToNextHour < 1000) msToNextHour = 1000;
-
-  setTimeout(function(){
+  setTimeout(()=>{
     fn();
-    setInterval(fn, 60*60*1000);
+    setInterval(fn, REFRESH_HOURLY_MS);
   }, msToNextHour);
 }
 
 /* =========================================================
-   REFRESH GLOBAL (ordem importa)
-========================================================= */
-async function refreshAll(){
-  await updateWeather();
-  await updateRainKPI();
-  await loadKPIsFromSheet();
-}
-
-/* =========================================================
    INIT
-========================================================= */
-refreshAll();
-scheduleHourly(refreshAll);
+   ========================================================= */
+async function init(){
+  // render KPIs e iniciar rotação
+  renderKPIs();
+  startRotation();
 
+  // Weather e KPI chuva + imagens externas: hora a hora (alinhado)
+  scheduleHourly(()=>{ updateWeather().catch(()=>{}); });
+  scheduleHourly(()=>{ updateRainYTD().catch(()=>{}); });
+  scheduleHourly(()=>{ refreshExternalImages(); });
+
+  // primeira carga imediata das imagens também (para não esperar pela hora)
+  refreshExternalImages();
+}
+init();
 </script>
 </body>
 </html>
