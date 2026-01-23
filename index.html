@@ -121,13 +121,14 @@
        HEADER (GRID) — não corta, faz scroll inteligente
     ========================================================= */
     header{
-      padding: 12px 24px;
-      height: auto;
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      align-items: center;
-      gap: 16px;
-    }
+  padding: 10px 22px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+
+  overflow-y: visible;   /* 🔴 ISTO É CRÍTICO */
+}
 
     .header-left{
       display:flex;
