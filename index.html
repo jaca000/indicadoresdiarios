@@ -279,6 +279,19 @@ footer{
   font-size:14px;
 }
 
+/* ========= ERVA (NOVO) ========= */
+.footer-field{
+  position:fixed;
+  left:0; right:0; bottom:0;
+  height:120px;                 /* ajusta se quiseres 110/130 */
+  z-index:4;                    /* abaixo da news-bar (5) */
+  pointer-events:none;
+  background:
+    linear-gradient(to top, rgba(0,0,0,.35), rgba(0,0,0,0) 70%),
+    url("assets/grass.png") repeat-x bottom;
+  background-size:auto 120px;
+}
+
 /* ========= NEWS TICKER (TV SIZE) ========= */
 .news-bar{
   position:fixed;
@@ -352,6 +365,9 @@ footer{
   <footer>Informação interna · Monte do Pasto</footer>
 </div>
 
+<!-- ERVA (NOVO) -->
+<div class="footer-field" aria-hidden="true"></div>
+
 <!-- NEWS BAR -->
 <div class="news-bar">
   <div class="news-track" id="newsTrack"></div>
@@ -366,7 +382,6 @@ var ROTATE_MS = 15000;
 
 var SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRcoOLTXvKf6K_4aejdyA7ZK6PObIzqyiLBBOPSehdSkKlxj9_ms0EqJOjT7u2lN11j5DaYIAkcqoy7/pub?output=csv";
 
-/* Sheet de Notícias (CSV) */
 var NEWS_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgtnmWS6XFXm8V80ZzxQ1n4QwGxncyWqw4LnljjBu2kG5xWIRBoMLM_ya7cyg9B_Jyi9N2gqjSvVfS/pub?gid=0&single=true&output=csv";
 
 var WEATHER_URL =
@@ -630,11 +645,11 @@ function loadKPIs(){
               body = "<div class='kpi-sub'>Sem imageUrl</div>";
             }
           } else if (r.type === "number"){
-            body = "<div class='kpi'>"+(r.value||"--")+" <span>"+(r.unit||"")+"</span></div>";
+            body = "<div class='kpi'>"+(escapeHTML(r.value)||"--")+" <span>"+escapeHTML(r.unit||"")+"</span></div>";
           } else if (r.type === "text"){
-            body = "<div class='kpi-sub'>"+(r.value||"")+"</div>";
+            body = "<div class='kpi-sub'>"+escapeHTML(r.value||"")+"</div>";
           } else {
-            body = "<div class='kpi-sub'>Tipo não suportado: "+r.type+"</div>";
+            body = "<div class='kpi-sub'>Tipo não suportado: "+escapeHTML(r.type)+"</div>";
           }
 
           grid.innerHTML +=
@@ -645,11 +660,11 @@ function loadKPIs(){
         }
       }
 
-      // depois de renderizar KPIs, recolhemos cards e iniciamos rotação
+      // Recolhe cards e inicia rotação
       cards = Array.prototype.slice.call(document.querySelectorAll(".kpi-card"));
       startRotation();
 
-      // garante que o KPI de chuva volta a entrar (porque o grid foi limpo)
+      // Como o grid foi limpo, voltamos a injetar o KPI de chuva
       loadRainKPI();
     })
     .catch(function(){});
@@ -714,7 +729,7 @@ function escapeHTML(s){
 }
 
 /* ================= CHUVA YTD (L/m²) vs ano anterior =================
-   1 mm = 1 L/m², portanto podemos apresentar diretamente em L/m²
+   1 mm = 1 L/m², portanto apresentamos em L/m²
 */
 function buildRainURL(start, end){
   return "https://archive-api.open-meteo.com/v1/archive"
@@ -776,7 +791,7 @@ function loadRainKPI(){
     // mete no topo do grid
     grid.prepend(card);
 
-    // como entrou um KPI novo, refrescamos a rotação
+    // atualiza rotação com o novo card incluído
     refreshCardsAndRotation();
   });
 }
