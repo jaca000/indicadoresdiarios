@@ -45,7 +45,7 @@ body{
   position:fixed;
   inset:0;
   pointer-events:none;
-  z-index:2;
+  z-index:2; /* acima do fundo */
 }
 
 .drop{
@@ -97,13 +97,13 @@ body{
 /* ================= APP ================= */
 .app{
   position:relative;
-  z-index:3;
+  z-index:3; /* acima dos FX */
   height:100vh;
   display:grid;
   grid-template-rows:90px 1fr 48px;
 }
 
-/* ================= HEADER (GRID) ================= */
+/* ================= HEADER (GRID = relógio nunca sai) ================= */
 header{
   padding:0 24px;
   display:grid;
@@ -253,11 +253,11 @@ header{
   opacity:.9;
 }
 
-/* ================= MAIN / KPIs (ADAPTATIVO) ================= */
+/* ================= MAIN / KPIs ================= */
 main{
   padding:22px 28px;
   display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); /* adapta ao conteúdo/nº cards */
+  grid-template-columns:repeat(3,1fr);
   gap:22px;
   align-items:start;
 }
@@ -266,10 +266,10 @@ main{
   background:linear-gradient(180deg,var(--glass),var(--glass2));
   border:1px solid var(--stroke);
   border-radius:var(--r2);
-  padding:clamp(14px, 1.6vw, 18px) clamp(16px, 1.8vw, 20px);
+  padding:18px 20px;
   backdrop-filter: blur(10px);
   transition:opacity .4s, transform .4s;
-  align-self:start; /* altura só do conteúdo */
+  align-self:start;
 }
 
 .card.hidden{
@@ -287,7 +287,7 @@ main{
 }
 
 .kpi{
-  font-size:clamp(44px, 4.2vw, 56px); /* adapta */
+  font-size:56px;
   font-weight:900;
   line-height:1;
 }
@@ -295,21 +295,20 @@ main{
 
 .kpi-sub{
   margin-top:8px;
-  font-size:clamp(14px, 1.6vw, 18px);
+  font-size:18px;
   color:var(--t2);
 }
 
 .kpi-image img{
   width:100%;
-  max-height:clamp(220px, 24vh, 320px); /* evita “caixas gigantes” */
+  max-height:300px;
   object-fit:contain;
   border-radius:14px;
   background:rgba(0,0,0,.10);
 }
 
-/* KPI fixo ocupa sempre a largura toda */
 .fixed-kpi{
-  grid-column:1 / -1;
+  grid-column:span 3; /* sempre no topo, largura total */
 }
 
 /* ================= FOOTER ================= */
@@ -367,16 +366,16 @@ var ROTATE_MS = 15000;    // rotação de KPIs (Sheet)
 var SHEET_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vRcoOLTXvKf6K_4aejdyA7ZK6PObIzqyiLBBOPSehdSkKlxj9_ms0EqJOjT7u2lN11j5DaYIAkcqoy7/pub?output=csv";
 
-var FORECAST_URL =
+var WEATHER_URL =
   "https://api.open-meteo.com/v1/forecast?latitude="+LAT+"&longitude="+LON+
   "&current_weather=true"+
   "&hourly=temperature_2m,precipitation,weathercode"+
   "&daily=temperature_2m_max,temperature_2m_min,weathercode"+
   "&timezone=auto";
 
-/* HISTÓRICO para precipitação acumulada (corrige o comparativo) */
-var ARCHIVE_URL_BASE =
-  "https://archive-api.open-meteo.com/v1/archive?latitude="+LAT+"&longitude="+LON+
+/* chuva YTD (diário) */
+var RAIN_DAILY_URL_BASE =
+  "https://api.open-meteo.com/v1/forecast?latitude="+LAT+"&longitude="+LON+
   "&daily=precipitation_sum&timezone=auto";
 
 /* ================= CLOCK ================= */
@@ -394,11 +393,12 @@ function pad2(n){ return (n<10?("0"+n):(""+n)); }
 function fmtDate(d){
   return d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate());
 }
-function startOfYear(year){ return new Date(year,0,1); }
-function addDays(date, days){
-  var d = new Date(date.getTime());
-  d.setDate(d.getDate()+days);
-  return d;
+function startOfYear(year){
+  return new Date(year,0,1);
+}
+function samePeriodLastYear(today){
+  // "mesmo período" = 1 Jan até ao mesmo dia/mês do ano anterior
+  return new Date(today.getFullYear()-1, today.getMonth(), today.getDate());
 }
 
 /* ================= OPEN-METEO CODES ================= */
@@ -443,7 +443,7 @@ function addRainDrops(count){
 
 /* ================= WEATHER (widgets + FX) ================= */
 function updateWeather(){
-  fetch(FORECAST_URL)
+  fetch(WEATHER_URL)
     .then(function(r){ return r.json(); })
     .then(function(d){
       var cw = d.current_weather || {};
@@ -465,6 +465,7 @@ function updateWeather(){
       for (var i=1;i<=4;i++){
         var t = Math.round(hTemps[i] || 0);
         var c = (hCodes[i]!==undefined ? hCodes[i] : 3);
+
         var hh = "--h";
         if (hTimes[i]){
           var dt = new Date(hTimes[i]);
@@ -564,8 +565,8 @@ function asNum(v){
   return (isFinite(n) ? n : NaN);
 }
 
-/* ================= KPI FIXO: CHUVA YTD (CORRIGIDO) ================= */
-var rainKpiHtmlCache = "";
+/* ================= KPI FIXO: CHUVA YTD + COMPARATIVO ================= */
+var rainKpiHtmlCache = ""; // para não piscar quando a sheet atualiza
 
 function sumArray(arr){
   var s=0;
@@ -573,8 +574,8 @@ function sumArray(arr){
   return s;
 }
 
-function fetchArchiveRainSum(startDateStr, endDateStr, cb){
-  var url = ARCHIVE_URL_BASE + "&start_date="+startDateStr + "&end_date="+endDateStr;
+function fetchRainSum(startDateStr, endDateStr, cb){
+  var url = RAIN_DAILY_URL_BASE + "&start_date="+startDateStr + "&end_date="+endDateStr;
   fetch(url)
     .then(function(r){ return r.json(); })
     .then(function(d){
@@ -586,32 +587,19 @@ function fetchArchiveRainSum(startDateStr, endDateStr, cb){
 }
 
 function updateRainKPI(cbDone){
-  // Comparação estável: Jan 1 → ONTEM (dias completos)
   var today = new Date();
-  var endNow = addDays(today, -1);
+
   var yearNow = today.getFullYear();
-
-  // Se for 1 de Janeiro, endNow cai no ano anterior -> mostramos 0 e comparação 0
-  if (endNow.getFullYear() !== yearNow){
-    rainKpiHtmlCache =
-      "<div class='card fixed-kpi' id='kpiRainFixed'>"+
-        "<h3>Chuva acumulada (desde 1 de janeiro)</h3>"+
-        "<div class='kpi'>0 <span>L/m²</span></div>"+
-        "<div class='kpi-sub'>+0 L/m² vs "+(yearNow-1)+"</div>"+
-      "</div>";
-    if (cbDone) cbDone();
-    return;
-  }
-
   var startNow = fmtDate(startOfYear(yearNow));
-  var endNowStr = fmtDate(endNow);
+  var endNow = fmtDate(today);
 
+  var prevEndDate = samePeriodLastYear(today);
   var yearPrev = yearNow - 1;
   var startPrev = fmtDate(startOfYear(yearPrev));
-  var endPrev = fmtDate(new Date(yearPrev, endNow.getMonth(), endNow.getDate()));
+  var endPrev = fmtDate(prevEndDate);
 
-  fetchArchiveRainSum(startNow, endNowStr, function(sumNow){
-    fetchArchiveRainSum(startPrev, endPrev, function(sumPrev){
+  fetchRainSum(startNow, endNow, function(sumNow){
+    fetchRainSum(startPrev, endPrev, function(sumPrev){
       if (sumNow===null || sumPrev===null){
         rainKpiHtmlCache =
           "<div class='card fixed-kpi' id='kpiRainFixed'>"+
@@ -695,6 +683,7 @@ function loadKPIsFromSheet(cbDone){
         return ao - bo;
       });
 
+      // render: KPI fixo + KPIs da sheet
       var grid = document.getElementById("kpis");
       grid.innerHTML = rainKpiHtmlCache || "";
 
@@ -731,6 +720,7 @@ function loadKPIsFromSheet(cbDone){
         }
       }
 
+      // IMPORTANTÍSSIMO: a rotação só apanha ".kpi-card" (a fixed-kpi não roda)
       cards = Array.prototype.slice.call(document.querySelectorAll(".kpi-card"));
       startRotation();
 
@@ -767,9 +757,11 @@ function scheduleHourly(fn){
   }, msToNextHour);
 }
 
-/* ================= INIT ================= */
+/* ================= INIT (ordem importante) ================= */
 function refreshAll(){
   updateWeather();
+
+  // Atualiza KPI chuva e só depois redesenha os KPIs (para o fixo entrar sempre)
   updateRainKPI(function(){
     loadKPIsFromSheet();
   });
