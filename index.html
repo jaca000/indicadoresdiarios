@@ -279,67 +279,24 @@ footer{
   font-size:14px;
 }
 
-/* ========= ERVA (campo) ========= */
+/* ========= ERVA (NOVO) ========= */
 .footer-field{
   position:fixed;
   left:0; right:0; bottom:0;
   height:120px;
-  z-index:4; /* abaixo da news-bar (5) */
+  z-index:4;               /* abaixo da news-bar */
   pointer-events:none;
   background:
     linear-gradient(to top, rgba(0,0,0,.35), rgba(0,0,0,0) 70%),
     url("assets/grass.png") repeat-x bottom;
   background-size:auto 120px;
-  transition:filter 2.5s ease;
+  transition:filter 2.5s ease;  /* mudança suave */
 }
 .footer-field.dry{filter:saturate(.6) brightness(.9)}
 .footer-field.normal{filter:saturate(1) brightness(1)}
 .footer-field.wet{filter:saturate(1.35) brightness(1.05)}
 
-/* ========= CAMADA DAS VACAS ========= */
-.cow-layer{
-  position:fixed;
-  left:0; right:0;
-  bottom:120px;      /* em cima da erva */
-  height:120px;
-  z-index:4;         /* acima da erva mas abaixo do ticker */
-  pointer-events:none;
-  overflow:hidden;
-}
-
-/* ========= VACA (A2 + A3) ========= */
-.cow{
-  position:absolute;
-  bottom:0;
-  width:220px; /* cow.png 220x150 recomendado */
-  opacity:.96;
-  filter:drop-shadow(0 10px 12px rgba(0,0,0,.35));
-  pointer-events:none;
-}
-
-/* walk: UMA VEZ (forwards), não infinito */
-.cow.walk{
-  animation:cow-walk 40s linear forwards;
-}
-
-/* graze: micro movimento, contínuo (fica subtil) */
-.cow.graze{
-  animation:cow-graze 2.8s ease-in-out infinite;
-}
-
-@keyframes cow-walk{
-  0%   { transform:translateX(-260px); }
-  35%  { transform:translateX(60vw); }
-  45%  { transform:translateX(60vw); }
-  100% { transform:translateX(120vw); }
-}
-
-@keyframes cow-graze{
-  0%,100% { transform:translateY(0); }
-  50%     { transform:translateY(3px); }
-}
-
-/* ========= NEWS TICKER ========= */
+/* ========= NEWS TICKER (TV SIZE) ========= */
 .news-bar{
   position:fixed;
   left:0; right:0; bottom:0;
@@ -412,11 +369,8 @@ footer{
   <footer>Informação interna · Monte do Pasto</footer>
 </div>
 
-<!-- VACAS (A1) -->
-<div class="cow-layer" aria-hidden="true"></div>
-
 <!-- ERVA -->
-<div class="footer-field normal" aria-hidden="true"></div>
+<div class="footer-field" aria-hidden="true"></div>
 
 <!-- NEWS BAR -->
 <div class="news-bar">
@@ -620,6 +574,11 @@ var page = 0;
 var cards = [];
 var rotateTimer = null;
 
+function refreshCardsAndRotation(){
+  cards = Array.prototype.slice.call(document.querySelectorAll(".kpi-card"));
+  startRotation();
+}
+
 function rotate(){
   if (!cards.length) return;
   var start = page * MAX_VISIBLE;
@@ -691,11 +650,11 @@ function loadKPIs(){
               body = "<div class='kpi-sub'>Sem imageUrl</div>";
             }
           } else if (r.type === "number"){
-            body = "<div class='kpi'>"+(r.value||"--")+" <span>"+(r.unit||"")+"</span></div>";
+            body = "<div class='kpi'>"+(escapeHTML(r.value)||"--")+" <span>"+escapeHTML(r.unit||"")+"</span></div>";
           } else if (r.type === "text"){
-            body = "<div class='kpi-sub'>"+(r.value||"")+"</div>";
+            body = "<div class='kpi-sub'>"+escapeHTML(r.value||"")+"</div>";
           } else {
-            body = "<div class='kpi-sub'>Tipo não suportado: "+r.type+"</div>";
+            body = "<div class='kpi-sub'>Tipo não suportado: "+escapeHTML(r.type)+"</div>";
           }
 
           grid.innerHTML +=
@@ -708,11 +667,16 @@ function loadKPIs(){
 
       cards = Array.prototype.slice.call(document.querySelectorAll(".kpi-card"));
       startRotation();
+
+      // como o grid foi limpo, volta a inserir o KPI de chuva (e aplica estado à erva)
+      loadRainKPI();
     })
     .catch(function(){});
 }
 
-/* ================= NEWS (Google Sheet) ================= */
+/* ================= NEWS (Google Sheet) =================
+   Sheet colunas: active, order, text
+*/
 function loadNews(){
   if (!NEWS_SHEET_URL || NEWS_SHEET_URL.indexOf("http") !== 0){
     document.getElementById("newsTrack").innerHTML =
@@ -767,14 +731,14 @@ function escapeHTML(s){
     .replace(/'/g,"&#039;");
 }
 
-/* ================= ERVA COM VIDA ================= */
+/* ================= ERVA COM VIDA (NOVO) ================= */
 function updateGrassByRain(rainNow){
   var grass = document.querySelector(".footer-field");
   if (!grass) return;
 
   grass.classList.remove("dry","normal","wet");
 
-  // thresholds em L/m² (ajustáveis)
+  // Ajusta estes thresholds se quiseres (valores em L/m²)
   if (rainNow < 200){
     grass.classList.add("dry");
   } else if (rainNow < 400){
@@ -784,16 +748,8 @@ function updateGrassByRain(rainNow){
   }
 }
 
-function getGrassState(){
-  var g = document.querySelector(".footer-field");
-  if (!g) return "dry";
-  if (g.classList.contains("wet")) return "wet";
-  if (g.classList.contains("normal")) return "normal";
-  return "dry";
-}
-
 /* ================= CHUVA YTD (L/m²) vs ano anterior =================
-   1 mm = 1 L/m²
+   1 mm = 1 L/m², portanto apresentamos em L/m²
 */
 function buildRainURL(start, end){
   return "https://archive-api.open-meteo.com/v1/archive"
@@ -832,7 +788,7 @@ function loadRainKPI(){
     var rainLast = Math.round(values[1]);  // L/m²
     var diff = rainNow - rainLast;
 
-    // aplica vida à erva
+    // ✅ aplica "vida" à erva
     updateGrassByRain(rainNow);
 
     var diffTxt =
@@ -843,7 +799,7 @@ function loadRainKPI(){
     var grid = document.getElementById("kpis");
     if (!grid) return;
 
-    // remove o card anterior se existir
+    // remove o card anterior se existir (para não duplicar)
     var old = document.getElementById("rainKpiCard");
     if (old && old.parentNode) old.parentNode.removeChild(old);
 
@@ -855,84 +811,13 @@ function loadRainKPI(){
       "<div class='kpi'>"+rainNow+" <span>L/m²</span></div>" +
       "<div class='kpi-sub'>"+diffTxt+"</div>";
 
+    // mete no topo do grid
     grid.prepend(card);
 
-    // atualizar lista de cards e rotação (inclui este novo)
-    cards = Array.prototype.slice.call(document.querySelectorAll(".kpi-card"));
-    startRotation();
+    // atualiza rotação com o novo card incluído
+    refreshCardsAndRotation();
   });
 }
 
-/* ================= VACAS (A3) ================= */
-var cowVisible = false;
-
-function spawnCow(){
-  if (cowVisible) return;
-
-  var state = getGrassState();
-  if (state === "dry") return; // nunca em ano seco
-
-  var layer = document.querySelector(".cow-layer");
-  if (!layer) return;
-
-  cowVisible = true;
-
-  var cow = document.createElement("img");
-  cow.src = "assets/cow.png";
-  cow.className = "cow walk";
-  cow.style.left = "0";
-  layer.appendChild(cow);
-
-  // ativar pastar (quando já parou perto do meio)
-  setTimeout(function(){
-    if (cow && cow.parentNode) cow.classList.add("graze");
-  }, 14000);
-
-  // remover no fim do percurso
-  setTimeout(function(){
-    if (cow && cow.parentNode) cow.parentNode.removeChild(cow);
-    cowVisible = false;
-  }, 42000);
-}
-
-function cowScheduler(){
-  // probabilidade baixa por verificação
-  var chance = Math.random();
-  if (chance < 0.15){
-    spawnCow();
-  }
-
-  // próximo check entre 3 e 8 minutos
-  var next = 180000 + Math.random() * 300000;
-  setTimeout(cowScheduler, next);
-}
-
 /* ================= HOURLY REFRESH (alinhado) ================= */
-function scheduleHourly(fn){
-  fn();
-  var now = new Date();
-  var msToNextHour =
-    (60 - now.getMinutes())*60*1000 - now.getSeconds()*1000 - now.getMilliseconds();
-  if (msToNextHour < 1000) msToNextHour = 1000;
-
-  setTimeout(function(){
-    fn();
-    setInterval(fn, 60*60*1000);
-  }, msToNextHour);
-}
-
-/* ================= INIT ================= */
-updateWeather();
-loadKPIs();
-loadNews();
-loadRainKPI();
-cowScheduler();
-
-/* refresh alinhado à hora */
-scheduleHourly(updateWeather);
-scheduleHourly(loadKPIs);
-scheduleHourly(loadNews);
-scheduleHourly(loadRainKPI);
-</script>
-</body>
-</html>
+functio
