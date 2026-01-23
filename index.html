@@ -176,10 +176,16 @@
     .header-mid::-webkit-scrollbar{ display:none; }
 
     .group{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:5px 8px;   /* 🔽 menos altura */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+
+  max-width: 100%;
+  min-width: 0;              /* 🔑 ESSENCIAL */
+  overflow: hidden;          /* 🔑 ESSENCIAL */
+
+  flex: 1 1 auto;
 }
 
     .group-title{
