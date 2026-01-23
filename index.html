@@ -820,4 +820,29 @@ function loadRainKPI(){
 }
 
 /* ================= HOURLY REFRESH (alinhado) ================= */
-functio
+function scheduleHourly(fn){
+  fn();
+  var now = new Date();
+  var msToNextHour =
+    (60 - now.getMinutes())*60*1000 - now.getSeconds()*1000 - now.getMilliseconds();
+  if (msToNextHour < 1000) msToNextHour = 1000;
+
+  setTimeout(function(){
+    fn();
+    setInterval(fn, 60*60*1000);
+  }, msToNextHour);
+}
+
+/* ================= INIT ================= */
+updateWeather();
+loadKPIs();   // loadKPIs chama loadRainKPI no fim (porque limpa o grid)
+loadNews();
+
+/* refresh alinhado à hora */
+scheduleHourly(updateWeather);
+scheduleHourly(loadKPIs);
+scheduleHourly(loadNews);
+scheduleHourly(loadRainKPI);
+</script>
+</body>
+</html>
