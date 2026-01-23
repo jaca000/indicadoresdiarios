@@ -1,16 +1,18 @@
 <!doctype html>
 <html lang="pt-PT">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Monte do Pasto · Painel Vivo</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
+/* ================= RESET ================= */
 *{box-sizing:border-box}
-html,body{height:100%}
+html,body{height:100%;margin:0}
 
+/* ================= VARS ================= */
 :root{
   --g1:#6fa98c;
   --g2:#4f7f63;
@@ -27,17 +29,15 @@ html,body{height:100%}
   --good:#7fd18c;
   --bad:#d1b27f;
 
-  --radius-1:18px;
-  --radius-2:26px;
+  --r1:18px;
+  --r2:26px;
 }
 
+/* ================= BODY ================= */
 body{
-  margin:0;
-  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  font-family:Inter,system-ui,Arial;
   color:var(--t1);
   overflow:hidden;
-  transition:background 12s ease;
-
   background:
     radial-gradient(1200px 800px at 20% 10%, rgba(255,255,255,.20), transparent 60%),
     radial-gradient(900px 700px at 80% 20%, rgba(200,160,110,.18), transparent 60%),
@@ -45,16 +45,15 @@ body{
     linear-gradient(135deg,var(--g1),var(--g2) 55%,var(--b1));
 }
 
-/* FX */
+/* ================= FX ================= */
 #fx{position:fixed;inset:0;pointer-events:none;z-index:0}
 
 .drop{
   position:absolute;width:2px;height:18px;
-  background:rgba(230,245,255,.60);
-  border-radius:999px;
+  background:rgba(230,245,255,.6);
   animation:fall linear infinite;
 }
-@keyframes fall{from{transform:translateY(-120px)}to{transform:translateY(110vh)}}
+@keyframes fall{from{transform:translateY(-100px)}to{transform:translateY(110vh)}}
 
 .fog{
   position:absolute;inset:-20%;
@@ -65,18 +64,15 @@ body{
 }
 @keyframes fogmove{from{transform:translateX(0)}to{transform:translateX(-14%)}}
 
-.sunGlow{
+.sun{
   position:absolute;top:8%;right:12%;
-  width:320px;height:320px;border-radius:50%;
-  background:radial-gradient(circle,
-    rgba(255,230,170,.90),
-    rgba(255,210,150,.35),
-    transparent 66%);
-  animation:sunpulse 7s ease-in-out infinite;
+  width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,230,170,.9),rgba(255,210,150,.35),transparent 65%);
+  animation:sunpulse 6s ease-in-out infinite;
 }
-@keyframes sunpulse{0%,100%{transform:scale(.95);opacity:.8}50%{transform:scale(1.03);opacity:1}}
+@keyframes sunpulse{0%,100%{transform:scale(.95)}50%{transform:scale(1.05)}}
 
-/* App layout */
+/* ================= APP ================= */
 .app{
   position:relative;
   z-index:1;
@@ -85,83 +81,74 @@ body{
   grid-template-rows:96px 1fr 48px;
 }
 
-/* Header */
+/* ================= HEADER ================= */
 header{
   padding:0 28px;
   display:flex;
   align-items:center;
-  gap:18px;
+  justify-content:space-between;
 }
 
 .header-left{
   display:flex;
   align-items:center;
   gap:16px;
-  min-width:380px;
 }
 
 .logo{
   height:52px;
-  filter:drop-shadow(0 8px 14px rgba(0,0,0,.22));
 }
 
 .now{
-  display:flex;gap:10px;align-items:center;
-  padding:10px 14px;border-radius:var(--radius-1);
-  background:linear-gradient(180deg,var(--glass),var(--glass2));
-  border:1px solid var(--stroke);
-  backdrop-filter: blur(10px);
-}
-.now .temp{font-size:20px;font-weight:800}
-.now .desc{font-size:14px;color:var(--t2)}
-
-.header-mid{
-  flex:1;
-  display:flex;
-  justify-content:center;
-  gap:14px;
-}
-
-.group{
   display:flex;
   align-items:center;
   gap:10px;
   padding:10px 14px;
-  border-radius:var(--radius-1);
-  background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(0,0,0,.10));
+  border-radius:var(--r1);
+  background:linear-gradient(180deg,var(--glass),var(--glass2));
   border:1px solid var(--stroke);
-  backdrop-filter: blur(10px);
 }
 
-.group .title{
+.now .temp{font-size:20px;font-weight:800}
+.now .desc{font-size:14px;color:var(--t2)}
+
+.header-mid{
+  display:flex;
+  gap:16px;
+}
+
+.group{
+  display:flex;
+  gap:10px;
+  padding:10px 14px;
+  border-radius:var(--r1);
+  background:linear-gradient(180deg,var(--glass),var(--glass2));
+  border:1px solid var(--stroke);
+}
+
+.group-title{
   font-size:12px;
   text-transform:uppercase;
   color:var(--t2);
-  letter-spacing:.8px;
 }
 
 .pills{display:flex;gap:10px}
 
 .pill{
-  display:flex;gap:8px;align-items:center;
-  padding:8px 10px;border-radius:14px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 10px;
+  border-radius:14px;
   background:rgba(255,255,255,.22);
-  border:1px solid rgba(255,255,255,.18);
-  min-width:100px;
 }
-
-.small{font-size:14px;font-weight:800}
-.sub{font-size:12px;color:var(--t3)}
 
 .clock{
-  min-width:90px;
-  text-align:right;
   font-size:30px;
   font-weight:800;
-  text-shadow: 0 10px 18px rgba(0,0,0,.18);
 }
 
-/* Main */
+/* ================= MAIN ================= */
 main{
   padding:22px 28px;
   display:grid;
@@ -171,14 +158,11 @@ main{
 }
 
 .card{
-  align-self:start;
-  height:auto;
-  background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(0,0,0,.10));
+  background:linear-gradient(180deg,var(--glass),var(--glass2));
   border:1px solid var(--stroke);
-  border-radius:var(--radius-2);
+  border-radius:var(--r2);
   padding:18px 20px;
-  backdrop-filter: blur(10px);
-  transition:opacity .45s ease, transform .45s ease;
+  transition:opacity .4s, transform .4s;
 }
 
 .card.hidden{
@@ -192,34 +176,28 @@ main{
   font-size:13px;
   text-transform:uppercase;
   color:var(--t2);
-  letter-spacing:.6px;
 }
 
 .kpi{
   font-size:56px;
   font-weight:900;
-  letter-spacing:-.5px;
-  line-height:1.0;
 }
-.kpi span{font-size:18px;color:var(--t2); font-weight:700}
+.kpi span{font-size:18px;color:var(--t2)}
 
 .kpi-sub{
   margin-top:8px;
   font-size:18px;
 }
-.kpi-sub.good{color:var(--good)}
-.kpi-sub.bad{color:var(--bad)}
-.kpi-sub.neutral{color:var(--t2)}
 
-.kpi-image{margin-top:10px}
 .kpi-image img{
   width:100%;
-  max-height:260px;
+  max-height:280px;
   object-fit:contain;
-  border-radius:16px;
-  background:rgba(0,0,0,.10);
+  border-radius:14px;
+  background:rgba(0,0,0,.1);
 }
 
+/* ================= FOOTER ================= */
 footer{
   padding:0 28px;
   display:flex;
@@ -227,38 +205,6 @@ footer{
   color:var(--t2);
   font-size:14px;
 }
-
-/* Weather icons */
-.icon{width:26px;height:26px;position:relative;flex:0 0 26px}
-
-.icon.sun::before{
-  content:""; position:absolute; inset:5px; border-radius:50%;
-  background:radial-gradient(circle,#ffe6b4,#ffc36e);
-  animation:sunMini 4s ease-in-out infinite;
-}
-@keyframes sunMini{0%,100%{transform:scale(.9)}50%{transform:scale(1.05)}}
-
-.icon.cloud::before{
-  content:""; position:absolute; left:3px; right:3px; bottom:6px; height:12px;
-  background:#fff; border-radius:12px; opacity:.9;
-}
-.icon.cloud::after{
-  content:""; position:absolute; left:6px; bottom:10px; width:12px; height:12px;
-  background:#fff; border-radius:50%;
-  box-shadow:10px -2px 0 #fff;
-  opacity:.95;
-}
-
-.icon.rain::before{
-  content:""; position:absolute; left:3px; right:3px; bottom:10px; height:10px;
-  background:#fff; border-radius:12px; opacity:.92;
-}
-.icon.rain::after{
-  content:""; position:absolute; left:9px; top:15px; width:8px; height:8px;
-  background:radial-gradient(circle,#9fdcff 2px,transparent 3px);
-  animation:rainMini 1s linear infinite;
-}
-@keyframes rainMini{from{transform:translateY(-2px)}to{transform:translateY(4px)}}
 </style>
 </head>
 
@@ -268,9 +214,8 @@ footer{
 <div class="app">
   <header>
     <div class="header-left">
-      <img class="logo" src="assets/logo-monte-do-pasto.png" alt="Monte do Pasto">
+      <img class="logo" src="assets/logo-monte-do-pasto.png">
       <div class="now">
-        <div id="nowIcon" class="icon cloud"></div>
         <div>
           <div class="temp" id="nowTemp">--°C</div>
           <div class="desc" id="nowDesc">---</div>
@@ -280,535 +225,124 @@ footer{
 
     <div class="header-mid">
       <div class="group">
-        <div class="title">Próx. horas</div>
-        <div class="pills" id="hoursPills"></div>
+        <div class="group-title">Próx. horas</div>
+        <div class="pills" id="hours"></div>
       </div>
       <div class="group">
-        <div class="title">Próx. dias</div>
-        <div class="pills" id="daysPills"></div>
+        <div class="group-title">Próx. dias</div>
+        <div class="pills" id="days"></div>
       </div>
     </div>
 
     <div class="clock" id="clock">--:--</div>
   </header>
 
-  <main id="kpiGrid"></main>
+  <main id="kpis"></main>
 
   <footer>Informação interna · Monte do Pasto</footer>
 </div>
 
 <script>
-/* =========================================================
-   CONFIG
-   ========================================================= */
-const LAT = 38.219;
-const LON = -7.887;
+/* ================= CONFIG ================= */
+var LAT=38.219, LON=-7.887;
+var SHEET_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vRcoOLTXvKf6K_4aejdyA7ZK6PObIzqyiLBBOPSehdSkKlxj9_ms0EqJOjT7u2lN11j5DaYIAkcqoy7/pub?output=csv";
+var MAX_VISIBLE=6;
+var ROTATE_MS=15000;
 
-const MAX_VISIBLE_KPIS = 6;
-const ROTATE_EVERY_MS  = 15000;
-const REFRESH_HOURLY_MS = 60*60*1000;
-
-const SHEET_CSV_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vRcoOLTXvKf6K_4aejdyA7ZK6PObIzqyiLBBOPSehdSkKlxj9_ms0EqJOjT7u2lN11j5DaYIAkcqoy7/pub?gid=0&single=true&output=csv";
-
-const RAIN_CODES = new Set([51,53,55,61,63,65,80,81,82,95,96,99]);
-
-const WEATHER_URL =
-  `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}` +
-  `&current_weather=true` +
-  `&hourly=temperature_2m,precipitation,weathercode,cloudcover,shortwave_radiation` +
-  `&daily=temperature_2m_max,temperature_2m_min,weathercode` +
-  `&timezone=auto`;
-
-const PT_DIAS = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
-
-/* =========================================================
-   RELÓGIO
-   ========================================================= */
-function tickClock(){
-  clock.textContent = new Intl.DateTimeFormat("pt-PT",{hour:"2-digit",minute:"2-digit"}).format(new Date());
+/* ================= CLOCK ================= */
+function tick(){
+  var d=new Date();
+  clock.textContent=("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);
 }
-tickClock();
-setInterval(tickClock, 30000);
+tick(); setInterval(tick,30000);
 
-/* =========================================================
-   CSV robusto (suporta vírgulas dentro de aspas)
-   ========================================================= */
-function parseCSV(text){
-  const rows = [];
-  let row = [];
-  let cell = "";
-  let inQuotes = false;
+/* ================= CSV PARSER ================= */
+function parseCSV(t){
+  var l=t.trim().split("\n");
+  var h=l.shift().split(",");
+  var o=[];
+  for(var i=0;i<l.length;i++){
+    var c=l[i].split(",");
+    var r={};
+    for(var j=0;j<h.length;j++) r[h[j]]=c[j]||"";
+    o.push(r);
+  }
+  return o;
+}
 
-  for (let i=0;i<text.length;i++){
-    const ch = text[i];
-    const next = text[i+1];
+/* ================= WEATHER ================= */
+function weather(){
+  fetch("https://api.open-meteo.com/v1/forecast?latitude="+LAT+"&longitude="+LON+"&current_weather=true&hourly=temperature_2m,precipitation&daily=temperature_2m_max,temperature_2m_min&timezone=auto")
+  .then(r=>r.json())
+  .then(d=>{
+    nowTemp.textContent=Math.round(d.current_weather.temperature)+"°C";
+    nowDesc.textContent=d.current_weather.precipitation>0?"Chuva":"Nublado";
 
-    if (ch === '"' ){
-      if (inQuotes && next === '"'){ // escape ""
-        cell += '"';
-        i++;
-      } else {
-        inQuotes = !inQuotes;
+    hours.innerHTML="";
+    for(var i=1;i<=4;i++){
+      hours.innerHTML+=
+        "<div class='pill'>"+Math.round(d.hourly.temperature_2m[i])+"°</div>";
+    }
+
+    days.innerHTML="";
+    for(var i=1;i<=4;i++){
+      days.innerHTML+=
+        "<div class='pill'>"+Math.round(d.daily.temperature_2m_max[i])+"°/"+Math.round(d.daily.temperature_2m_min[i])+"°</div>";
+    }
+
+    fx.innerHTML="";
+    if(d.current_weather.precipitation>0){
+      for(var i=0;i<120;i++){
+        var e=document.createElement("div");
+        e.className="drop";
+        e.style.left=Math.random()*100+"%";
+        e.style.animationDuration=(0.6+Math.random())+"s";
+        fx.appendChild(e);
       }
-      continue;
-    }
-
-    if (ch === ',' && !inQuotes){
-      row.push(cell);
-      cell = "";
-      continue;
-    }
-
-    if ((ch === '\n' || ch === '\r') && !inQuotes){
-      if (ch === '\r' && next === '\n') i++; // CRLF
-      row.push(cell);
-      cell = "";
-      if (row.some(v => v.trim().length > 0)) rows.push(row);
-      row = [];
-      continue;
-    }
-
-    cell += ch;
-  }
-
-  // último
-  row.push(cell);
-  if (row.some(v => v.trim().length > 0)) rows.push(row);
-
-  if (rows.length === 0) return [];
-
-  const headers = rows[0].map(h => h.trim());
-  const out = [];
-
-  for (let r=1;r<rows.length;r++){
-    const obj = {};
-    for (let c=0;c<headers.length;c++){
-      obj[headers[c]] = (rows[r][c] ?? "").trim();
-    }
-    out.push(obj);
-  }
-  return out;
-}
-
-/* =========================================================
-   HELPERS KPI
-   ========================================================= */
-function toBool(v){
-  const s = String(v ?? "").trim().toLowerCase();
-  return (s === "true" || s === "1" || s === "yes" || s === "sim");
-}
-
-function toNumberOrNaN(v){
-  if (v === null || v === undefined) return NaN;
-  const s = String(v).trim().replace(/\s+/g,"").replace(",",".");
-  const n = Number(s);
-  return Number.isFinite(n) ? n : NaN;
-}
-
-function safeText(s){ return String(s ?? ""); }
-
-/* =========================================================
-   FX + MOOD
-   ========================================================= */
-const fx = document.getElementById("fx");
-
-function clearFX(){ fx.innerHTML = ""; }
-
-function addFog(opacity=0.45){
-  const f = document.createElement("div");
-  f.className = "fog";
-  f.style.opacity = String(opacity);
-  fx.appendChild(f);
-}
-
-function addSun(intensity=0.7){
-  const s = document.createElement("div");
-  s.className = "sunGlow";
-  s.style.opacity = String(0.25 + intensity*0.65);
-  fx.appendChild(s);
-}
-
-function addRain(count){
-  for (let i=0;i<count;i++){
-    const d = document.createElement("div");
-    d.className = "drop";
-    d.style.left = (Math.random()*100) + "%";
-    d.style.animationDuration = (0.55 + Math.random()*1.2) + "s";
-    d.style.opacity = String(0.22 + Math.random()*0.55);
-    d.style.height = (12 + Math.random()*18) + "px";
-    fx.appendChild(d);
-  }
-}
-
-function clamp01(x){ return Math.max(0, Math.min(1, x)); }
-
-function applyMood({sun, rain, cloud, hour}){
-  let mood = 50;
-  mood += sun * 40;
-  mood -= rain * 30;
-  mood -= cloud * 20;
-  if (hour < 8 || hour > 18) mood -= 10;
-  mood = Math.max(0, Math.min(100, mood));
-
-  let g1,g2,b1;
-  if (mood > 70){
-    g1="#7fae4f"; g2="#4f7f3f"; b1="#6b5a3e";
-  } else if (mood > 40){
-    g1="#6fa98c"; g2="#4f7f63"; b1="#7b6445";
-  } else {
-    g1="#4f7a63"; g2="#3f5f4f"; b1="#5c472f";
-  }
-
-  const r = document.documentElement.style;
-  r.setProperty("--g1", g1);
-  r.setProperty("--g2", g2);
-  r.setProperty("--b1", b1);
-}
-
-/* =========================================================
-   WEATHER WIDGETS (HEADER)
-   ========================================================= */
-function iconClassFrom(code){
-  if (RAIN_CODES.has(code)) return "rain";
-  if (code === 0) return "sun";
-  return "cloud";
-}
-function descFrom(code){
-  if (RAIN_CODES.has(code)) return "Chuva";
-  if (code === 0) return "Sol";
-  return "Nublado";
-}
-
-async function updateWeather(){
-  const d = await fetch(WEATHER_URL).then(r=>r.json());
-  const cw = d.current_weather;
-
-  const temp = Math.round(cw.temperature);
-  const code = cw.weathercode;
-
-  nowTemp.textContent = `${temp}°C`;
-  nowDesc.textContent = descFrom(code);
-  nowIcon.className = `icon ${iconClassFrom(code)}`;
-
-  // próximas horas (4)
-  hoursPills.innerHTML = "";
-  for (let i=1;i<=4;i++){
-    const t = Math.round(d.hourly.temperature_2m[i]);
-    const codeH = d.hourly.weathercode[i];
-    const dt = new Date(d.hourly.time[i]);
-    const hh = String(dt.getHours()).padStart(2,"0")+"h";
-    const ic = iconClassFrom(codeH);
-
-    hoursPills.insertAdjacentHTML("beforeend", `
-      <div class="pill">
-        <div class="icon ${ic}"></div>
-        <div>
-          <div class="small">${t}°</div>
-          <div class="sub">${hh}</div>
-        </div>
-      </div>
-    `);
-  }
-
-  // próximos dias (4)
-  daysPills.innerHTML = "";
-  for (let i=1;i<=4;i++){
-    const tmax = Math.round(d.daily.temperature_2m_max[i]);
-    const tmin = Math.round(d.daily.temperature_2m_min[i]);
-    const codeD = d.daily.weathercode[i];
-    const date = new Date(d.daily.time[i]);
-    const wd = PT_DIAS[date.getDay()];
-    const ic = iconClassFrom(codeD);
-
-    daysPills.insertAdjacentHTML("beforeend", `
-      <div class="pill">
-        <div class="icon ${ic}"></div>
-        <div>
-          <div class="small">${tmax}°/${tmin}°</div>
-          <div class="sub">${wd}</div>
-        </div>
-      </div>
-    `);
-  }
-
-  // FX + Mood
-  clearFX();
-
-  const rain = (d.hourly.precipitation?.[0] ?? 0); // mm/h
-  const cloud = (d.hourly.cloudcover?.[0] ?? 50) / 100; // 0..1
-  const sun = clamp01(((d.hourly.shortwave_radiation?.[0] ?? 0) - 100) / 600); // 0..1
-
-  addFog(0.35 + cloud*0.35);
-
-  if (RAIN_CODES.has(code)){
-    const intensity = Math.max(0.15, Math.min(1, rain/4));
-    const drops = Math.floor(60 + intensity * 260);
-    addRain(drops);
-  }
-  if (code === 0){
-    addSun(sun);
-  }
-
-  applyMood({
-    sun,
-    rain,
-    cloud,
-    hour: new Date().getHours()
-  });
-}
-
-/* =========================================================
-   KPIs: render + rotação
-   ========================================================= */
-const kpiGrid = document.getElementById("kpiGrid");
-let kpiItems = [];
-let page = 0;
-let rotateTimer = null;
-
-function kpiCardTemplate({id,title,bodyHtml, extra}){
-  const safeId = safeText(id);
-  const safeTitle = safeText(title);
-
-  // extra (opcional): "compact" reduz padding, "tall" aumenta max-height das imagens
-  const extraStr = (extra ?? "").toLowerCase();
-  const compact = extraStr.includes("compact");
-  const tall = extraStr.includes("tall");
-  const cover = extraStr.includes("cover");
-
-  const styleBits = [];
-  if (compact) styleBits.push("padding:14px 16px;");
-  const styleAttr = styleBits.length ? ` style="${styleBits.join("")}"` : "";
-
-  return `
-    <div class="card kpi-item" data-kpi-id="${safeId}" data-extra="${extraStr}"${styleAttr}>
-      <h3>${safeTitle}</h3>
-      ${bodyHtml}
-      <style>
-        .card[data-kpi-id="${CSS.escape(safeId)}"] .kpi-image img{
-          ${tall ? "max-height:340px;" : ""}
-          ${cover ? "object-fit:cover;" : ""}
-        }
-      </style>
-    </div>
-  `;
-}
-
-function updateKPIVisibility(){
-  const start = page * MAX_VISIBLE_KPIS;
-  const end = start + MAX_VISIBLE_KPIS;
-  kpiItems.forEach((el,i)=>{
-    el.classList.toggle("hidden", !(i>=start && i<end));
-  });
-}
-
-function startRotation(){
-  const totalPages = Math.ceil(kpiItems.length / MAX_VISIBLE_KPIS);
-  if (rotateTimer) clearInterval(rotateTimer);
-
-  page = 0;
-  updateKPIVisibility();
-
-  if (totalPages <= 1) return;
-
-  rotateTimer = setInterval(()=>{
-    page = (page + 1) % totalPages;
-    updateKPIVisibility();
-  }, ROTATE_EVERY_MS);
-}
-
-function refreshExternalImages(){
-  const imgs = Array.from(document.querySelectorAll("img[data-img-url]"));
-  const ts = Date.now();
-  imgs.forEach(img=>{
-    const base = img.getAttribute("data-img-url");
-    if (!base) return;
-    img.src = base + (base.includes("?") ? "&" : "?") + "t=" + ts;
-  });
-}
-
-/* =========================================================
-   KPI automático: Chuva acumulada YTD (comparação ano anterior)
-   ========================================================= */
-async function computeRainYTD(){
-  const today = new Date();
-  const yyyy = today.getFullYear();
-  const mm = String(today.getMonth()+1).padStart(2,"0");
-  const dd = String(today.getDate()).padStart(2,"0");
-
-  const startThis = `${yyyy}-01-01`;
-  const startLast = `${yyyy-1}-01-01`;
-  const endToday  = `${yyyy}-${mm}-${dd}`;
-  const endLast   = `${yyyy-1}-${mm}-${dd}`;
-
-  const url = (s,e) =>
-    `https://archive-api.open-meteo.com/v1/archive?latitude=${LAT}&longitude=${LON}` +
-    `&daily=precipitation_sum&start_date=${s}&end_date=${e}&timezone=auto`;
-
-  const [cur, prev] = await Promise.all([
-    fetch(url(startThis, endToday)).then(r=>r.json()),
-    fetch(url(startLast, endLast)).then(r=>r.json())
-  ]);
-
-  const sum = (a)=> (a||[]).reduce((t,v)=>t+(v||0),0);
-
-  const now = sum(cur?.daily?.precipitation_sum);
-  const last = sum(prev?.daily?.precipitation_sum);
-  const diff = now - last;
-
-  return { now, last, diff, yyyy };
-}
-
-async function updateAllRainYTD(){
-  const targets = Array.from(document.querySelectorAll('[data-kpi-type="rainYTD"]'));
-  if (!targets.length) return;
-
-  const { now, diff, yyyy } = await computeRainYTD();
-
-  targets.forEach(card=>{
-    const nowEl = card.querySelector(".rainNow");
-    const diffEl = card.querySelector(".rainDiff");
-    if (nowEl) nowEl.textContent = `${Math.round(now)} `;
-    if (diffEl){
-      diffEl.textContent = `${diff>=0?"+":""}${Math.round(diff)} L/m² vs ${yyyy-1}`;
-      diffEl.classList.remove("good","bad","neutral");
-      diffEl.classList.add(diff>=0 ? "good" : "bad");
+    } else {
+      fx.innerHTML="<div class='sun'></div>";
     }
   });
 }
 
-/* =========================================================
-   Sheet loader (CSV -> KPIs)
-   ========================================================= */
-function normalizeRow(r){
-  // Espera colunas:
-  // id | active | type | title | value | unit | imageUrl | order | extra
-  const id = safeText(r.id);
-  const active = toBool(r.active);
-  const type = safeText(r.type).trim();
-  const title = safeText(r.title);
-  const value = safeText(r.value);
-  const unit = safeText(r.unit);
-  const imageUrl = safeText(r.imageUrl);
-  const order = toNumberOrNaN(r.order);
-  const extra = safeText(r.extra);
+/* ================= KPIs ================= */
+var page=0, cards=[];
+function loadKPIs(){
+  fetch(SHEET_URL,{cache:"no-store"})
+  .then(r=>r.text())
+  .then(t=>{
+    var rows=parseCSV(t).filter(r=>r.active==="TRUE");
+    rows.sort((a,b)=>(a.order||999)-(b.order||999));
 
-  return { id, active, type, title, value, unit, imageUrl, order, extra };
-}
+    kpis.innerHTML="";
+    rows.forEach(r=>{
+      var body="";
+      if(r.type==="image") body="<div class='kpi-image'><img src='"+r.imageUrl+"'></div>";
+      if(r.type==="number") body="<div class='kpi'>"+r.value+" <span>"+r.unit+"</span></div>";
+      if(r.type==="text") body="<div class='kpi-sub'>"+r.value+"</div>";
 
-async function loadKPIsFromSheet(){
-  const res = await fetch(SHEET_CSV_URL, { cache: "no-store" });
-  const txt = await res.text();
-  const raw = parseCSV(txt);
-
-  const rows = raw
-    .map(normalizeRow)
-    .filter(r => r.active && r.type && r.title)
-    .sort((a,b)=>{
-      const ao = Number.isFinite(a.order) ? a.order : 999999;
-      const bo = Number.isFinite(b.order) ? b.order : 999999;
-      if (ao !== bo) return ao - bo;
-      return (a.title || "").localeCompare(b.title || "");
+      kpis.innerHTML+=
+        "<div class='card kpi-card'><h3>"+r.title+"</h3>"+body+"</div>";
     });
 
-  renderKPIs(rows);
-}
-
-function renderKPIs(rows){
-  kpiGrid.innerHTML = "";
-
-  if (!rows.length){
-    kpiGrid.insertAdjacentHTML("beforeend", kpiCardTemplate({
-      id:"sheet-empty",
-      title:"Sem KPIs ativos",
-      extra:"",
-      bodyHtml:`<div class="kpi-sub neutral">Liga KPIs na Google Sheet (active=TRUE).</div>`
-    }));
-    kpiItems = Array.from(document.querySelectorAll(".kpi-item"));
-    startRotation();
-    return;
-  }
-
-  rows.forEach(k=>{
-    const t = k.type.toLowerCase();
-    let body = "";
-
-    if (t === "image"){
-      if (!k.imageUrl){
-        body = `<div class="kpi-sub neutral">Sem imageUrl</div>`;
-      } else {
-        body = `
-          <div class="kpi-image">
-            <img data-img-url="${k.imageUrl}" alt="${safeText(k.title)}">
-          </div>
-        `;
-      }
-    } else if (t === "number"){
-      const unit = k.unit ? ` <span>${safeText(k.unit)}</span>` : ` <span></span>`;
-      body = `<div class="kpi">${safeText(k.value || "--")}${unit}</div>`;
-    } else if (t === "text"){
-      body = `<div class="kpi-sub neutral">${safeText(k.value || "")}</div>`;
-    } else if (t === "rainytd"){
-      body = `
-        <div class="kpi rainNow">-- <span>L/m²</span></div>
-        <div class="kpi-sub neutral rainDiff">A calcular...</div>
-      `;
-    } else {
-      // tipo desconhecido -> mostra debug suave
-      body = `<div class="kpi-sub neutral">Tipo não suportado: ${safeText(k.type)}</div>`;
-    }
-
-    const extra = k.extra ?? "";
-    const extraStr = String(extra).toLowerCase();
-    const typeAttr = (t === "rainytd") ? ` data-kpi-type="rainYTD"` : "";
-
-    kpiGrid.insertAdjacentHTML("beforeend",
-      kpiCardTemplate({ id:k.id || k.title, title:k.title, bodyHtml: body, extra: extraStr })
-        .replace('<div class="card kpi-item"', `<div class="card kpi-item"${typeAttr}`)
-    );
+    cards=[].slice.call(document.querySelectorAll(".kpi-card"));
+    rotate();
+    setInterval(rotate,ROTATE_MS);
   });
-
-  kpiItems = Array.from(document.querySelectorAll(".kpi-item"));
-  refreshExternalImages();
-  startRotation();
-  await updateAllRainYTD();
 }
 
-/* =========================================================
-   Scheduler (hora a hora, alinhado)
-   ========================================================= */
-function scheduleHourly(fn){
-  fn();
-  const now = new Date();
-  const msToNextHour =
-    (60 - now.getMinutes())*60*1000 - now.getSeconds()*1000 - now.getMilliseconds();
-
-  setTimeout(()=>{
-    fn();
-    setInterval(fn, REFRESH_HOURLY_MS);
-  }, msToNextHour);
+function rotate(){
+  cards.forEach((c,i)=>{
+    c.classList.toggle("hidden",!(i>=page*MAX_VISIBLE && i<(page+1)*MAX_VISIBLE));
+  });
+  page=(page+1)%Math.ceil(cards.length/MAX_VISIBLE);
 }
 
-/* =========================================================
-   INIT
-   ========================================================= */
-async function init(){
-  // arranque imediato
-  await Promise.allSettled([
-    updateWeather(),
-    loadKPIsFromSheet()
-  ]);
-
-  // hora a hora (alinhado à hora)
-  scheduleHourly(()=>{ updateWeather().catch(()=>{}); });
-  scheduleHourly(()=>{ loadKPIsFromSheet().catch(()=>{}); });
-  scheduleHourly(()=>{ updateAllRainYTD().catch(()=>{}); });
-  scheduleHourly(()=>{ refreshExternalImages(); });
-
-  // primeira atualização das imagens já feita, mas reforça (alguns browsers demoram)
-  setTimeout(refreshExternalImages, 1200);
-}
-init();
+/* ================= INIT ================= */
+weather();
+loadKPIs();
+setInterval(weather,60*60*1000);
+setInterval(loadKPIs,60*60*1000);
 </script>
 </body>
 </html>
