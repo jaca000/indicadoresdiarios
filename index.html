@@ -847,7 +847,7 @@ scheduleHourly(loadRainKPI);
 
 /* ================= RADIO PLAYER PROFISSIONAL ================= */
 
-(function(){
+document.addEventListener("DOMContentLoaded", () => {
 
   const radio = document.getElementById("radioPlayer");
   const radioBtn = document.getElementById("radioBtn");
@@ -884,20 +884,17 @@ scheduleHourly(loadRainKPI);
       }, 200);
 
     }).catch(() => {
-      console.log("Autoplay bloqueado, aguarda interação...");
+      console.log("Autoplay bloqueado...");
     });
 
   }
 
-  /* tenta iniciar logo */
-  window.addEventListener("load", startRadio);
+  startRadio();
 
-  /* desbloqueio universal */
   document.addEventListener("click", () => {
     if(!unlocked) startRadio();
   });
 
-  /* botão manual */
   if(radioBtn){
 
     radioBtn.addEventListener("click", () => {
@@ -916,7 +913,7 @@ scheduleHourly(loadRainKPI);
 
   }
 
-})();
+});
 </script>
 
 <audio id="radioPlayer" preload="auto" autoplay loop muted>
