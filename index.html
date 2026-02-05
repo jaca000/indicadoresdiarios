@@ -882,6 +882,39 @@ scheduleHourly(loadRainKPI);
   });
 
 })();
+
+/* AUTO START RADIO */
+window.addEventListener("load", () => {
+
+  const radio = document.getElementById("radioPlayer");
+  if(!radio) return;
+
+  radio.muted = true;
+  radio.volume = 0;
+
+  radio.play().then(() => {
+
+    let v = 0;
+
+    const fade = setInterval(() => {
+
+      v += 0.02;
+
+      if(v >= 0.25){
+        radio.volume = 0.25;
+        radio.muted = false;
+        clearInterval(fade);
+      }else{
+        radio.volume = v;
+      }
+
+    }, 200);
+
+  }).catch(() => {
+    console.log("Autoplay bloqueado");
+  });
+
+});
 </script>
 
 <audio id="radioPlayer" preload="auto" autoplay loop muted>
