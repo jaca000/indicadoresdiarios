@@ -847,7 +847,7 @@ scheduleHourly(loadRainKPI);
 
 /* ================= RADIO PLAYER ================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+(function initRadio(){
 
   const radio = document.getElementById("radioPlayer");
   const radioBtn = document.getElementById("radioBtn");
@@ -867,7 +867,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch(() => {
           radioBtn.innerHTML = "⚠️ Clique novamente";
-        });
+        })();
 
     }else{
 
