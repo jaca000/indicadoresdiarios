@@ -847,27 +847,37 @@ scheduleHourly(loadRainKPI);
 
 /* ================= RADIO PLAYER ================= */
 
-const radio = document.getElementById("radioPlayer");
-const radioBtn = document.getElementById("radioBtn");
+document.addEventListener("DOMContentLoaded", () => {
 
-let radioOn = false;
+  const radio = document.getElementById("radioPlayer");
+  const radioBtn = document.getElementById("radioBtn");
 
-radioBtn.addEventListener("click", () => {
+  let radioOn = false;
 
-  if(!radioOn){
-    radio.volume = 0.25;
-    radio.play().then(()=>{
-      radioOn = true;
-      radioBtn.innerHTML = "🔊 Antena 1";
-    }).catch(()=>{
-      radioBtn.innerHTML = "⚠️ Clique novamente";
-    });
+  radioBtn.addEventListener("click", () => {
 
-  }else{
-    radio.pause();
-    radioOn = false;
-    radioBtn.innerHTML = "📻 Rádio";
-  }
+    if(!radioOn){
+
+      radio.volume = 0.25;
+
+      radio.play()
+        .then(() => {
+          radioOn = true;
+          radioBtn.innerHTML = "🔊 Antena 1";
+        })
+        .catch(() => {
+          radioBtn.innerHTML = "⚠️ Clique novamente";
+        });
+
+    }else{
+
+      radio.pause();
+      radioOn = false;
+      radioBtn.innerHTML = "📻 Rádio";
+
+    }
+
+  });
 
 });
 </script>
