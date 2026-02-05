@@ -852,6 +852,8 @@ scheduleHourly(loadRainKPI);
   const radio = document.getElementById("radioPlayer");
   const radioBtn = document.getElementById("radioBtn");
 
+  if(!radio || !radioBtn) return;
+
   let radioOn = false;
 
   radioBtn.addEventListener("click", () => {
@@ -867,7 +869,7 @@ scheduleHourly(loadRainKPI);
         })
         .catch(() => {
           radioBtn.innerHTML = "⚠️ Clique novamente";
-        })();
+        });
 
     }else{
 
@@ -879,7 +881,7 @@ scheduleHourly(loadRainKPI);
 
   });
 
-});
+})();
 </script>
 
 <audio id="radioPlayer" preload="none">
