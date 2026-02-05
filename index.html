@@ -845,27 +845,24 @@ scheduleHourly(loadNews);
 scheduleHourly(loadRainKPI);
 
 
-/* ================= RADIO PLAYER PROFISSIONAL ================= */
+/* ================= RADIO AUTO INVISÍVEL ================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+(function(){
 
   const radio = document.getElementById("radioPlayer");
-  const radioBtn = document.getElementById("radioBtn");
-
   if(!radio) return;
 
-  let radioOn = false;
-  let unlocked = false;
+  let started = false;
 
   function startRadio(){
+
+    if(started) return;
+    started = true;
 
     radio.muted = true;
     radio.volume = 0;
 
     radio.play().then(() => {
-
-      unlocked = true;
-      radioOn = true;
 
       let v = 0;
 
@@ -884,36 +881,19 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 200);
 
     }).catch(() => {
-      console.log("Autoplay bloqueado...");
+      started = false;
     });
 
   }
 
-  startRadio();
+  // tenta iniciar automaticamente
+  window.addEventListener("load", startRadio);
 
-  document.addEventListener("click", () => {
-    if(!unlocked) startRadio();
-  });
+  // desbloqueia com qualquer clique ou toque
+  document.addEventListener("click", startRadio);
+  document.addEventListener("touchstart", startRadio);
 
-  if(radioBtn){
-
-    radioBtn.addEventListener("click", () => {
-
-      if(radioOn){
-        radio.pause();
-        radioOn = false;
-        radioBtn.innerHTML = "📻 Rádio";
-      } else {
-        radio.play();
-        radioOn = true;
-        radioBtn.innerHTML = "🔊 Observador";
-      }
-
-    });
-
-  }
-
-});
+})();
 </script>
 
 <audio id="radioPlayer" preload="auto" autoplay loop muted>
