@@ -847,8 +847,6 @@ scheduleHourly(loadRainKPI);
 
 /* ================= RADIO PLAYER ================= */
 
-/* ================= RADIO AUTO + BOTÃO ================= */
-
 window.addEventListener("load", () => {
 
   const radio = document.getElementById("radioPlayer");
@@ -858,7 +856,7 @@ window.addEventListener("load", () => {
 
   let radioOn = false;
 
-  /* ----- AUTO START SILENCIOSO ----- */
+  /* AUTOPLAY SILENCIOSO */
   radio.muted = true;
   radio.volume = 0;
 
@@ -866,7 +864,6 @@ window.addEventListener("load", () => {
 
     radioOn = true;
 
-    /* fade in */
     let v = 0;
 
     const fade = setInterval(() => {
@@ -887,7 +884,7 @@ window.addEventListener("load", () => {
     console.log("Autoplay bloqueado pelo browser");
   });
 
-  /* ----- BOTÃO MANUAL ----- */
+  /* BOTÃO MANUAL */
   if(radioBtn){
 
     radioBtn.addEventListener("click", () => {
@@ -905,39 +902,6 @@ window.addEventListener("load", () => {
     });
 
   }
-
-});
-
-/* AUTO START RADIO */
-window.addEventListener("load", () => {
-
-  const radio = document.getElementById("radioPlayer");
-  if(!radio) return;
-
-  radio.muted = true;
-  radio.volume = 0;
-
-  radio.play().then(() => {
-
-    let v = 0;
-
-    const fade = setInterval(() => {
-
-      v += 0.02;
-
-      if(v >= 0.25){
-        radio.volume = 0.25;
-        radio.muted = false;
-        clearInterval(fade);
-      }else{
-        radio.volume = v;
-      }
-
-    }, 200);
-
-  }).catch(() => {
-    console.log("Autoplay bloqueado");
-  });
 
 });
 </script>
