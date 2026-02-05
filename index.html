@@ -845,9 +845,9 @@ scheduleHourly(loadNews);
 scheduleHourly(loadRainKPI);
 
 
-/* ================= RADIO PLAYER ================= */
+/* ================= RADIO PLAYER PROFISSIONAL ================= */
 
-window.addEventListener("load", () => {
+(function(){
 
   const radio = document.getElementById("radioPlayer");
   const radioBtn = document.getElementById("radioBtn");
@@ -855,36 +855,49 @@ window.addEventListener("load", () => {
   if(!radio) return;
 
   let radioOn = false;
+  let unlocked = false;
 
-  /* AUTOPLAY SILENCIOSO */
-  radio.muted = true;
-  radio.volume = 0;
+  function startRadio(){
 
-  radio.play().then(() => {
+    radio.muted = true;
+    radio.volume = 0;
 
-    radioOn = true;
+    radio.play().then(() => {
 
-    let v = 0;
+      unlocked = true;
+      radioOn = true;
 
-    const fade = setInterval(() => {
+      let v = 0;
 
-      v += 0.02;
+      const fade = setInterval(() => {
 
-      if(v >= 0.25){
-        radio.volume = 0.25;
-        radio.muted = false;
-        clearInterval(fade);
-      }else{
-        radio.volume = v;
-      }
+        v += 0.02;
 
-    }, 200);
+        if(v >= 0.25){
+          radio.volume = 0.25;
+          radio.muted = false;
+          clearInterval(fade);
+        } else {
+          radio.volume = v;
+        }
 
-  }).catch(() => {
-    console.log("Autoplay bloqueado pelo browser");
+      }, 200);
+
+    }).catch(() => {
+      console.log("Autoplay bloqueado, aguarda interação...");
+    });
+
+  }
+
+  /* tenta iniciar logo */
+  window.addEventListener("load", startRadio);
+
+  /* desbloqueio universal */
+  document.addEventListener("click", () => {
+    if(!unlocked) startRadio();
   });
 
-  /* BOTÃO MANUAL */
+  /* botão manual */
   if(radioBtn){
 
     radioBtn.addEventListener("click", () => {
@@ -893,7 +906,7 @@ window.addEventListener("load", () => {
         radio.pause();
         radioOn = false;
         radioBtn.innerHTML = "📻 Rádio";
-      }else{
+      } else {
         radio.play();
         radioOn = true;
         radioBtn.innerHTML = "🔊 Observador";
@@ -903,7 +916,7 @@ window.addEventListener("load", () => {
 
   }
 
-});
+})();
 </script>
 
 <audio id="radioPlayer" preload="auto" autoplay loop muted>
