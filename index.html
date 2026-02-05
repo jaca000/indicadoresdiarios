@@ -843,6 +843,33 @@ scheduleHourly(updateWeather);
 scheduleHourly(loadKPIs);
 scheduleHourly(loadNews);
 scheduleHourly(loadRainKPI);
+
+
+/* ================= RADIO PLAYER ================= */
+
+const radio = document.getElementById("radioPlayer");
+const radioBtn = document.getElementById("radioBtn");
+
+let radioOn = false;
+
+radioBtn.addEventListener("click", () => {
+
+  if(!radioOn){
+    radio.volume = 0.25;
+    radio.play().then(()=>{
+      radioOn = true;
+      radioBtn.innerHTML = "🔊 Antena 1";
+    }).catch(()=>{
+      radioBtn.innerHTML = "⚠️ Clique novamente";
+    });
+
+  }else{
+    radio.pause();
+    radioOn = false;
+    radioBtn.innerHTML = "📻 Rádio";
+  }
+
+});
 </script>
 
 <audio id="radioPlayer" preload="none">
