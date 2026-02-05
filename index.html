@@ -852,7 +852,55 @@ scheduleHourly(loadRainKPI);
   <source src="https://playerservices.streamtheworld.com/api/livestream-redirect/OBSERVADORAAC.aac" type="audio/aac">
 </audio>
 
+<script>
 
+/* ================= RADIO AUTO INVISÍVEL ================= */
+
+(function(){
+
+  const radio = document.getElementById("radioPlayer");
+  if(!radio) return;
+
+  let started = false;
+
+  function startRadio(){
+
+    if(started) return;
+    started = true;
+
+    radio.muted = true;
+    radio.volume = 0;
+
+    radio.play().then(() => {
+
+      let v = 0;
+
+      const fade = setInterval(() => {
+
+        v += 0.02;
+
+        if(v >= 0.25){
+          radio.volume = 0.25;
+          radio.muted = false;
+          clearInterval(fade);
+        } else {
+          radio.volume = v;
+        }
+
+      }, 200);
+
+    }).catch(() => {
+      started = false;
+    });
+
+  }
+
+  window.addEventListener("load", startRadio);
+  document.addEventListener("click", startRadio);
+  document.addEventListener("touchstart", startRadio);
+
+})();
+</script>
 
 </body>
 </html>
