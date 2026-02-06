@@ -567,13 +567,18 @@ function upsertTHICard(valor, level){
   card.className = "card kpi-card";
   card.id = "thiCard";
 
-  card.innerHTML =
-    "<h3>🐄 Índice Global Conforto Bovino (IGCB)</h3>"+
-    "<div class='kpi'>"+Number(valor).toFixed(1)+"</div>"+
-    "<div class='kpi-sub'>"+
-      level.txt+
-      "<span class='thi-indicator "+level.class+"'></span>"+
-    "</div>";
+var action = igcbActionPlan(valor, LAST_RAIN_3D, LAST_TEMP);
+
+card.innerHTML =
+  "<h3>🐄 Índice Global Conforto Bovino (IGCB)</h3>"+
+  "<div class='kpi'>"+Number(valor).toFixed(1)+"</div>"+
+  "<div class='kpi-sub'>"+
+    level.txt+
+    "<span class='thi-indicator "+level.class+"'></span>"+
+  "</div>"+
+  "<div class='kpi-sub' style='margin-top:12px;font-size:15px;color:var(--t3)'>"+
+    action+
+  "</div>";
 
   var rainCard = document.getElementById("rainKpiCard");
   if(rainCard) grid.insertBefore(card, rainCard);
