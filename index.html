@@ -534,6 +534,37 @@ function igcbActionPlan(igcb, rain3d, tempC){
 
   return "🚨 Stress elevado. Avaliar intervenção imediata.";
 }
+  function upsertTHICard(valor, level){
+
+  var grid = document.getElementById("kpis");
+  if(!grid) return;
+
+  var old = document.getElementById("thiCard");
+  if(old) old.remove();
+
+  var action = igcbActionPlan(valor, LAST_RAIN_3D, LAST_TEMP);
+
+  var card = document.createElement("div");
+  card.className = "card kpi-card";
+  card.id = "thiCard";
+
+  card.innerHTML =
+    "<h3>🐄 Índice Global Conforto Bovino (IGCB)</h3>"+
+    "<div class='kpi'>"+Number(valor).toFixed(1)+"</div>"+
+    "<div class='kpi-sub'>"+
+      level.txt+
+      "<span class='thi-indicator "+level.class+"'></span>"+
+    "</div>"+
+    "<div class='kpi-sub' style='margin-top:12px;font-size:15px;color:var(--t3)'>"+
+      action+
+    "</div>";
+
+  var rainCard = document.getElementById("rainKpiCard");
+  if(rainCard) grid.insertBefore(card, rainCard);
+  else grid.prepend(card);
+
+  refreshCardsAndRotation();
+}
   function calculateAndRenderIGCB(temp, rh, wind, radiation){
 
   if(LAST_RAIN_3D === null) return;
@@ -553,15 +584,7 @@ function igcbActionPlan(igcb, rain3d, tempC){
   LAST_THI = igcb;
   LAST_THI_LEVEL = level;
 
-  upsertTHICard(igcb, level);
-    IGCB_HISTORY.unshift(igcb);
-if(IGCB_HISTORY.length > 5) IGCB_HISTORY.pop();
-
-var isa = calcISA();
-if(isa !== null){
-  var isaLvl = isaLevel(isa);
-  upsertISACard(isa, isaLvl);
-}
+  
 function upsertTHICard(valor, level){
 
   var grid = document.getElementById("kpis");
