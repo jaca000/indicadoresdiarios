@@ -507,7 +507,10 @@ function createTHICard(thi, level){
     grid.insertBefore(card, rainCard);
   }else{
     grid.prepend(card);
-  }
+
+if(LAST_THI !== null){
+  createTHICard(LAST_THI, LAST_THI_LEVEL);
+}
 
   refreshCardsAndRotation();
 }
