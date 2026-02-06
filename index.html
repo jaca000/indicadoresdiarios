@@ -572,7 +572,9 @@ if (isRainCode(code)){
 else if (code === 0){
   addSun();
 }
-
+  })
+    .catch(function(){});
+}
 /* ================= CSV PARSER (TV-safe) ================= */
 function parseCSV(text){
   text = (text||"").replace(/\r/g,"").trim();
