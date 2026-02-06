@@ -586,6 +586,73 @@ card.innerHTML =
 
   refreshCardsAndRotation();
 }
+  function calcISA(){
+
+  if(IGCB_HISTORY.length === 0) return null;
+
+  let pesos = [0.40, 0.25, 0.15, 0.10, 0.10];
+
+  let total = 0;
+  let pesoTotal = 0;
+
+  for(let i=0;i<IGCB_HISTORY.length;i++){
+    total += IGCB_HISTORY[i] * pesos[i];
+    pesoTotal += pesos[i];
+  }
+
+  return total / pesoTotal;
+}
+
+function isaLevel(isa){
+
+  if (isa >= 80) return { txt:"Recuperação total", class:"thi-ok" };
+  if (isa >= 65) return { txt:"Stress ligeiro acumulado", class:"thi-alerta" };
+  if (isa >= 50) return { txt:"Stress moderado acumulado", class:"thi-stress" };
+
+  return { txt:"Stress crítico acumulado", class:"thi-severo" };
+}
+
+function isaActionPlan(isa){
+
+  if(isa >= 80)
+    return "Animais totalmente recuperados.";
+
+  if(isa >= 65)
+    return "Monitorizar ingestão e zonas húmidas.";
+
+  if(isa >= 50)
+    return "Reforçar palha e avaliar redistribuição de lotes.";
+
+  return "Intervenção urgente recomendada.";
+}
+
+function upsertISACard(valor, level){
+
+  var grid = document.getElementById("kpis");
+  if(!grid) return;
+
+  var old = document.getElementById("isaCard");
+  if(old) old.remove();
+
+  var plano = isaActionPlan(valor);
+
+  var card = document.createElement("div");
+  card.className = "card kpi-card";
+  card.id = "isaCard";
+
+  card.innerHTML =
+    "<h3>📊 Índice Stress Acumulado (ISA-5)</h3>"+
+    "<div class='kpi'>"+Number(valor).toFixed(1)+"</div>"+
+    "<div class='kpi-sub'>"+
+      level.txt+
+      "<span class='thi-indicator "+level.class+"'></span>"+
+    "</div>"+
+    "<div class='kpi-sub' style='margin-top:6px;font-size:14px'>"+plano+"</div>";
+
+  grid.appendChild(card);
+
+  refreshCardsAndRotation();
+}
 /* ================= FX HELPERS ================= */
 function clearFX(){ document.getElementById("fx").innerHTML = ""; }
 function addFog(){
