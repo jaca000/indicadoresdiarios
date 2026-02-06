@@ -464,7 +464,12 @@ function calcIGCB(tempC, rh, wind, radiation, rain3d){
   let stressHeat = Math.max(0, thi - 68) * 1.8;
   let stressSun = radiation * 0.02;
   let benefitWind = wind * 1.5;
-  let stressMud = rain3d * 0.25;
+  let stressMud = 0;
+
+if(rain3d > 60) stressMud = 35;
+else if(rain3d > 40) stressMud = 25;
+else if(rain3d > 20) stressMud = 15;
+else if(rain3d > 10) stressMud = 5;
 
   let score = 100 - (stressHeat + stressSun + stressMud - benefitWind);
 
