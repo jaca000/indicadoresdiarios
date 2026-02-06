@@ -1000,11 +1000,15 @@ function scheduleHourly(fn){
 
 /* ================= INIT ================= */
 
+updateWeather();
+loadKPIs();
+loadNews();
+
 scheduleHourly(updateWeather);
 scheduleHourly(loadKPIs);
 scheduleHourly(loadNews);
 
-/* ===== CICLO DO DIA ===== */
+/* ciclo do dia */
 updateDayPeriod();
 setInterval(updateDayPeriod, 5*60*1000);
 
