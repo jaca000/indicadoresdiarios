@@ -671,7 +671,6 @@ if(d.hourly && d.hourly.relativehumidity_2m){
       var thi = calcTHI(temp, rh);
       var level = thiLevel(thi);
 
-      createTHICard(thi, level);
 
     })
     .catch(function(){});
