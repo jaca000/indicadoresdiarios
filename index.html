@@ -664,7 +664,11 @@ getRainLast3Days().then(function(rain3d){
 })
 .catch(function(){});
 
-}
+})  // 👈 FECHA O .then(function(d){
+
+.catch(function(){});
+
+}   // 👈 FECHA updateWeather
 
 /* ================= CSV PARSER ================= */
 function parseCSV(text){
