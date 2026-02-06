@@ -482,9 +482,9 @@ if(tempC < 5 && rh > 85) stressCold = 30;
   else if(rain3d > 20) stressMud = 15;
   else if(rain3d > 10) stressMud = 5;
 
-  if(rainYTD > 250) stressMud += 10;
-  if(rainYTD > 350) stressMud += 15;
-  if(rainYTD > 450) stressMud += 25;
+if(rainYTD > 200) stressMud += 10;
+if(rainYTD > 280) stressMud += 20;
+if(rainYTD > 350) stressMud += 35;
 
   let score = 100 - (
     stressHeat +
