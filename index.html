@@ -894,7 +894,31 @@ function getRainSum(startDate, endDate){
     })
     .catch(function(){ return 0; });
 }
+/* ================= THI BOVINO ================= */
 
+function createTHICard(thi, level){
+
+  var grid = document.getElementById("kpis");
+  if(!grid) return;
+
+  // remove anterior para não duplicar
+  var old = document.getElementById("thiCard");
+  if(old) old.remove();
+
+  var card = document.createElement("div");
+  card.className = "card kpi-card";
+  card.id = "thiCard";
+
+  card.innerHTML =
+    "<h3>🐄 Índice Stress Térmico (THI)</h3>"+
+    "<div class='kpi'>"+thi.toFixed(1)+"</div>"+
+    "<div class='kpi-sub'>"+level.txt+"</div>";
+
+  // entra no topo
+  grid.prepend(card);
+
+  refreshCardsAndRotation();
+}
 function loadRainKPI(){
   var now = new Date();
   var year = now.getFullYear();
