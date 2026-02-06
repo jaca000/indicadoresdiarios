@@ -928,8 +928,12 @@ function scheduleHourly(fn){
 
 /* ================= INIT ================= */
 updateWeather();
-loadKPIs();   // loadKPIs chama loadRainKPI no fim (porque limpa o grid)
+loadKPIs();
 loadNews();
+
+/* ===== CICLO DO DIA ===== */
+updateDayPeriod();
+setInterval(updateDayPeriod, 5*60*1000);
 
 /* refresh alinhado à hora */
 scheduleHourly(updateWeather);
