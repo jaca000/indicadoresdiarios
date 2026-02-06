@@ -722,19 +722,10 @@ if (d.hourly && d.hourly.shortwave_radiation && d.hourly.shortwave_radiation[0] 
 
 getRainLast3Days().then(function(rain3d){
 
-  // 👉 guardar histórico climático
   LAST_RAIN_3D = rain3d;
   LAST_TEMP = temp;
 
-  var rainYTD = LAST_RAIN_YTD || 0;
-
-  var igcb = calcIGCB(temp, rh, wind, radiation, rain3d, rainYTD);
-  var level = igcbLevel(igcb);
-
-  LAST_THI = igcb;
-  LAST_THI_LEVEL = level;
-
-  upsertTHICard(igcb, level);
+  calculateAndRenderIGCB(temp, rh, wind, radiation);
 
 })
 .catch(function(){});
