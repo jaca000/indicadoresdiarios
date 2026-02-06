@@ -670,9 +670,12 @@ if (d.hourly && d.hourly.shortwave_radiation && d.hourly.shortwave_radiation[0] 
 
 getRainLast3Days().then(function(rain3d){
 
- var rainYTD = LAST_RAIN_YTD || 0;
+  var rainYTD = LAST_RAIN_YTD || 0;
 
   var igcb = calcIGCB(temp, rh, wind, radiation, rain3d, rainYTD);
+
+  var level = igcbLevel(igcb);   // 👈 ESTAVA A FALTAR
+
   LAST_THI = igcb;
   LAST_THI_LEVEL = level;
 
