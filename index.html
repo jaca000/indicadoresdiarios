@@ -470,7 +470,41 @@ function calcIGCB(tempC, rh, wind, radiation, rain3d){
 
   return Math.max(0, Math.min(100, score));
 }
+function igcbLevel(igcb){
 
+  if (igcb >= 85) return { txt:"Conforto ótimo", class:"thi-ok" };
+  if (igcb >= 70) return { txt:"Conforto aceitável", class:"thi-alerta" };
+  if (igcb >= 55) return { txt:"Stress ambiental", class:"thi-stress" };
+
+  return { txt:"Stress crítico", class:"thi-severo" };
+}
+
+function upsertTHICard(valor, level){
+
+  var grid = document.getElementById("kpis");
+  if(!grid) return;
+
+  var old = document.getElementById("thiCard");
+  if(old) old.remove();
+
+  var card = document.createElement("div");
+  card.className = "card kpi-card";
+  card.id = "thiCard";
+
+  card.innerHTML =
+    "<h3>🐄 Índice Global Conforto Bovino (IGCB)</h3>"+
+    "<div class='kpi'>"+Number(valor).toFixed(1)+"</div>"+
+    "<div class='kpi-sub'>"+
+      level.txt+
+      "<span class='thi-indicator "+level.class+"'></span>"+
+    "</div>";
+
+  var rainCard = document.getElementById("rainKpiCard");
+  if(rainCard) grid.insertBefore(card, rainCard);
+  else grid.prepend(card);
+
+  refreshCardsAndRotation();
+}
 /* ================= FX HELPERS ================= */
 function clearFX(){ document.getElementById("fx").innerHTML = ""; }
 function addFog(){
