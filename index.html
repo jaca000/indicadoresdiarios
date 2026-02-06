@@ -927,9 +927,10 @@ function scheduleHourly(fn){
 }
 
 /* ================= INIT ================= */
-updateWeather();
-loadKPIs();
-loadNews();
+
+scheduleHourly(updateWeather);
+scheduleHourly(loadKPIs);
+scheduleHourly(loadNews);
 
 /* ===== CICLO DO DIA ===== */
 updateDayPeriod();
