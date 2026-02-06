@@ -544,23 +544,32 @@ document.body.classList.remove("estado-normal","estado-chuva","estado-seca");
 
 if (isRainCode(code)){
   document.body.classList.add("estado-chuva");
-} else if (temp >= 32){
+} 
+else if (temp >= 32){
   document.body.classList.add("estado-seca");
-} else {
+} 
+else{
   document.body.classList.add("estado-normal");
 }
 
+/* ===== FX DINÂMICO ===== */
 if (isRainCode(code)){
   var prec = 0;
+
   if (d.hourly && d.hourly.precipitation && d.hourly.precipitation[0]!==undefined){
-    prec = Number(d.hourly.precipitation[0]) || 0; // mm/h
+    prec = Number(d.hourly.precipitation[0]) || 0;
   }
+
   var intensity = prec / 4;
+
   if (intensity < 0.20) intensity = 0.20;
   if (intensity > 1) intensity = 1;
+
   var drops = Math.floor(120 + intensity * 320);
+
   addRainDrops(drops);
-} else if (code === 0){
+}
+else if (code === 0){
   addSun();
 }
 
