@@ -898,12 +898,11 @@ function getRainSum(startDate, endDate){
 }
 /* ================= THI BOVINO ================= */
 
-function createTHICard(thi, level){
+
 
   var grid = document.getElementById("kpis");
   if(!grid) return;
 
-  // remove anterior para não duplicar
   var old = document.getElementById("thiCard");
   if(old) old.remove();
 
@@ -916,8 +915,13 @@ function createTHICard(thi, level){
     "<div class='kpi'>"+thi.toFixed(1)+"</div>"+
     "<div class='kpi-sub'>"+level.txt+"</div>";
 
-  // entra no topo
-  grid.prepend(card);
+  var rainCard = document.getElementById("rainKpiCard");
+
+  if(rainCard){
+    grid.insertBefore(card, rainCard);
+  }else{
+    grid.prepend(card);
+  }
 
   refreshCardsAndRotation();
 }
