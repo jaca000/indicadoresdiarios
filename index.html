@@ -504,13 +504,32 @@ function igcbLevel(igcb){
 
   return { txt:"Stress crítico", class:"thi-severo" };
 }
-function igcbLevel(igcb){
+function igcbActionPlan(igcb, rain3d, tempC){
 
-  if (igcb >= 85) return { txt:"Conforto ótimo", class:"thi-ok" };
-  if (igcb >= 70) return { txt:"Conforto aceitável", class:"thi-alerta" };
-  if (igcb >= 55) return { txt:"Stress ambiental", class:"thi-stress" };
+  if(igcb >= 85){
+    return "Condições ótimas. Maneio normal.";
+  }
 
-  return { txt:"Stress crítico", class:"thi-severo" };
+  if(igcb >= 70){
+    return "Monitorizar parques mais húmidos e zonas de sombra.";
+  }
+
+  if(igcb >= 55){
+    if(rain3d > 30){
+      return "⚠️ Avaliar redistribuição de animais para parques mais secos.";
+    }
+    return "⚠️ Reforçar vigilância sanitária e ingestão alimentar.";
+  }
+
+  if(rain3d > 40){
+    return "🚨 Alto risco de lama. Considerar movimentação urgente e reforço energético.";
+  }
+
+  if(tempC < 5){
+    return "🚨 Stress por frio húmido. Aumentar energia da dieta.";
+  }
+
+  return "🚨 Stress elevado. Avaliar intervenção imediata.";
 }
 function upsertTHICard(valor, level){
 
