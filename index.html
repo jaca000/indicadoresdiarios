@@ -44,7 +44,7 @@ body{
   position:fixed;
   inset:0;
   pointer-events:none;
-  z-index:2; /* acima do fundo */
+  z-index:2;
 }
 
 .drop{
@@ -82,7 +82,7 @@ body{
 /* ========= APP ========= */
 .app{
   position:relative;
-  z-index:3; /* acima dos FX */
+  z-index:3;
   height:100vh;
   display:grid;
   grid-template-rows:90px 1fr 48px;
@@ -129,7 +129,7 @@ header{
   align-items:center;
   justify-content:center;
   gap:14px;
-  min-width:0; /* evita esmagar o relógio */
+  min-width:0;
 }
 
 .group{
@@ -155,7 +155,6 @@ header{
 
 .pills{display:flex;gap:10px}
 
-/* micro movimento só para “vida” */
 .pill{
   display:flex;
   align-items:center;
@@ -175,7 +174,6 @@ header{
 .pill .big{font-size:15px;font-weight:900;line-height:1}
 .pill .sub{font-size:11px;color:var(--t3);margin-top:2px}
 
-/* 🔥 relógio garantido */
 .clock{
   flex:0 0 auto;
   flex-shrink:0;
@@ -259,7 +257,6 @@ main{
   line-height:1;
 }
 .kpi span{font-size:18px;color:var(--t2)}
-
 .kpi-sub{margin-top:8px;font-size:18px;color:var(--t2)}
 
 .kpi-image img{
@@ -279,38 +276,37 @@ footer{
   font-size:14px;
 }
 
-/* ========= ERVA (NOVO) ========= */
+/* ========= ERVA ========= */
 .footer-field{
   position:fixed;
   left:0; right:0; bottom:0;
   height:120px;
-  z-index:4;               /* abaixo da news-bar */
+  z-index:4;
   pointer-events:none;
   background:
     linear-gradient(to top, rgba(0,0,0,.35), rgba(0,0,0,0) 70%),
     url("assets/grass.png") repeat-x bottom;
   background-size:auto 120px;
-  transition:filter 2.5s ease;  /* mudança suave */
+  transition:filter 2.5s ease;
 }
 .footer-field.dry{filter:saturate(.6) brightness(.9)}
 .footer-field.normal{filter:saturate(1) brightness(1)}
 .footer-field.wet{filter:saturate(1.35) brightness(1.05)}
 
-/* ========= NEWS TICKER (TV SIZE) ========= */
+/* ========= NEWS ========= */
 .news-bar{
   position:fixed;
   left:0; right:0; bottom:0;
   height:68px;
-  z-index:5; /* acima de tudo */
+  z-index:5;
   display:flex;
   align-items:center;
   overflow:hidden;
   background:linear-gradient(180deg, rgba(0,0,0,.40), rgba(0,0,0,.65));
   border-top:1px solid rgba(255,255,255,.28);
   backdrop-filter: blur(10px);
-  pointer-events:none; /* TV-safe */
+  pointer-events:none;
 }
-
 .news-track{
   display:inline-block;
   white-space:nowrap;
@@ -322,53 +318,19 @@ footer{
   color:var(--t1);
   text-shadow:0 10px 18px rgba(0,0,0,.35);
 }
-
-.news-item{
-  display:inline-block;
-  margin-right:100px;
-}
-
-@keyframes news-scroll{
-  from{ transform:translateX(0); }
-  to{ transform:translateX(-100%); }
-}
+.news-item{display:inline-block;margin-right:100px}
+@keyframes news-scroll{from{transform:translateX(0)}to{transform:translateX(-100%)}}
 
 /* ===== ESTADOS DINÂMICOS DO PAINEL ===== */
+body.estado-normal{transition:filter 1.5s ease}
+body.estado-chuva{filter:saturate(1.08) hue-rotate(-8deg);transition:filter 1.5s ease}
+body.estado-seca{filter:brightness(.95) contrast(1.05);transition:filter 1.5s ease}
 
-body.estado-normal{
-  transition: filter 1.5s ease;
-}
-
-body.estado-chuva{
-  filter: saturate(1.08) hue-rotate(-8deg);
-  transition: filter 1.5s ease;
-}
-
-body.estado-seca{
-  filter: brightness(.95) contrast(1.05);
-  transition: filter 1.5s ease;
-}
 /* ===== CICLO DO DIA ===== */
-
-body.periodo-manha{
-  filter: brightness(1.05) saturate(1.05);
-  transition: filter 2s ease;
-}
-
-body.periodo-dia{
-  filter: brightness(1.1);
-  transition: filter 2s ease;
-}
-
-body.periodo-por{
-  filter: sepia(.18) saturate(1.2);
-  transition: filter 2s ease;
-}
-
-body.periodo-noite{
-  filter: brightness(.75) saturate(.85) hue-rotate(-8deg);
-  transition: filter 2s ease;
-}
+body.periodo-manha{filter:brightness(1.05) saturate(1.05);transition:filter 2s ease}
+body.periodo-dia{filter:brightness(1.1);transition:filter 2s ease}
+body.periodo-por{filter:sepia(.18) saturate(1.2);transition:filter 2s ease}
+body.periodo-noite{filter:brightness(.75) saturate(.85) hue-rotate(-8deg);transition:filter 2s ease}
 </style>
 </head>
 
@@ -406,10 +368,8 @@ body.periodo-noite{
   <footer>Informação interna · Monte do Pasto</footer>
 </div>
 
-<!-- ERVA -->
 <div class="footer-field" aria-hidden="true"></div>
 
-<!-- NEWS BAR -->
 <div class="news-bar">
   <div class="news-track" id="newsTrack"></div>
 </div>
@@ -422,8 +382,6 @@ var MAX_VISIBLE = 6;
 var ROTATE_MS = 15000;
 
 var SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRcoOLTXvKf6K_4aejdyA7ZK6PObIzqyiLBBOPSehdSkKlxj9_ms0EqJOjT7u2lN11j5DaYIAkcqoy7/pub?output=csv";
-
-/* Sheet de Notícias (CSV) */
 var NEWS_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgtnmWS6XFXm8V80ZzxQ1n4QwGxncyWqw4LnljjBu2kG5xWIRBoMLM_ya7cyg9B_Jyi9N2gqjSvVfS/pub?gid=0&single=true&output=csv";
 
 var WEATHER_URL =
@@ -432,6 +390,10 @@ var WEATHER_URL =
   "&hourly=temperature_2m,relativehumidity_2m,precipitation,weathercode"+
   "&daily=temperature_2m_max,temperature_2m_min,weathercode"+
   "&timezone=auto";
+
+/* ================= ESTADO THI (memória) ================= */
+var LAST_THI = null;
+var LAST_THI_LEVEL = null;
 
 /* ================= CLOCK ================= */
 function tick(){
@@ -442,33 +404,17 @@ function tick(){
 }
 tick();
 setInterval(tick, 30000);
+
 /* ===== CICLO DO DIA ===== */
-
 function updateDayPeriod(){
-
-  const hour = new Date().getHours();
-
-  document.body.classList.remove(
-    "periodo-manha",
-    "periodo-dia",
-    "periodo-por",
-    "periodo-noite"
-  );
-
-  if(hour >= 6 && hour < 11){
-    document.body.classList.add("periodo-manha");
-  }
-  else if(hour >= 11 && hour < 18){
-    document.body.classList.add("periodo-dia");
-  }
-  else if(hour >= 18 && hour < 21){
-    document.body.classList.add("periodo-por");
-  }
-  else{
-    document.body.classList.add("periodo-noite");
-  }
-
+  var hour = new Date().getHours();
+  document.body.classList.remove("periodo-manha","periodo-dia","periodo-por","periodo-noite");
+  if(hour >= 6 && hour < 11) document.body.classList.add("periodo-manha");
+  else if(hour >= 11 && hour < 18) document.body.classList.add("periodo-dia");
+  else if(hour >= 18 && hour < 21) document.body.classList.add("periodo-por");
+  else document.body.classList.add("periodo-noite");
 }
+
 /* ================= OPEN-METEO CODES ================= */
 function isRainCode(code){
   return (code===51||code===53||code===55||code===61||code===63||code===65||code===80||code===81||code===82||code===95||code===96||code===99);
@@ -484,8 +430,20 @@ function descFrom(code){
   return "Nublado";
 }
 
-function createTHICard(thi, level){
+/* ================= THI BOVINO ================= */
+function calcTHI(tempC, rh){
+  // Fórmula comum (temp em °C, RH em %)
+  return tempC - ((0.55 - 0.0055 * rh) * (tempC - 14.5));
+}
+function thiLevel(thi){
+  if (thi < 68) return { txt:"Conforto", class:"thi-ok" };
+  if (thi < 72) return { txt:"Alerta", class:"thi-alerta" };
+  if (thi < 78) return { txt:"Stress moderado", class:"thi-stress" };
+  return { txt:"Stress severo", class:"thi-severo" };
+}
 
+/* Garante posição: THI sempre antes do rainKpiCard */
+function upsertTHICard(thi, level){
   var grid = document.getElementById("kpis");
   if(!grid) return;
 
@@ -502,15 +460,8 @@ function createTHICard(thi, level){
     "<div class='kpi-sub'>"+level.txt+"</div>";
 
   var rainCard = document.getElementById("rainKpiCard");
-
-  if(rainCard){
-    grid.insertBefore(card, rainCard);
-  }else{
-    grid.prepend(card);
-
-if(LAST_THI !== null){
-  createTHICard(LAST_THI, LAST_THI_LEVEL);
-}
+  if(rainCard) grid.insertBefore(card, rainCard);
+  else grid.prepend(card);
 
   refreshCardsAndRotation();
 }
@@ -539,67 +490,50 @@ function addRainDrops(count){
     fx.appendChild(d);
   }
 }
-function updatePanelState(code, temp, d){
 
-  /* limpa FX e cria base atmosférica */
+function updatePanelState(code, temp, d){
   clearFX();
   addFog();
 
   document.body.classList.remove("estado-normal","estado-chuva","estado-seca");
 
-  if (isRainCode(code)){
-    document.body.classList.add("estado-chuva");
-  }
-  else if (temp >= 32){
-    document.body.classList.add("estado-seca");
-  }
-  else{
-    document.body.classList.add("estado-normal");
-  }
-
-  /* FX DINÂMICO */
+  if (isRainCode(code)) document.body.classList.add("estado-chuva");
+  else if (temp >= 32) document.body.classList.add("estado-seca");
+  else document.body.classList.add("estado-normal");
 
   if (isRainCode(code)){
-
     var prec = 0;
-
     if (d.hourly && d.hourly.precipitation && d.hourly.precipitation[0] !== undefined){
       prec = Number(d.hourly.precipitation[0]) || 0;
     }
-
     var intensity = prec / 4;
-
     if (intensity < 0.20) intensity = 0.20;
     if (intensity > 1) intensity = 1;
-
     var drops = Math.floor(120 + intensity * 320);
-
     addRainDrops(drops);
-
-  }
-  else if (code === 0){
+  } else if (code === 0){
     addSun();
   }
 }
-/* ================= WEATHER (widgets + FX) ================= */
+
+/* ================= WEATHER ================= */
 function updateWeather(){
   fetch(WEATHER_URL)
     .then(function(r){ return r.json(); })
     .then(function(d){
       var cw = d.current_weather || {};
-var temp = Math.round(cw.temperature || 0);
-var code = (cw.weathercode!==undefined ? cw.weathercode : 3);
+      var temp = Math.round(cw.temperature || 0);
+      var code = (cw.weathercode!==undefined ? cw.weathercode : 3);
 
-var rh = 0;
-if(d.hourly && d.hourly.relativehumidity_2m){
-  rh = Number(d.hourly.relativehumidity_2m[0]) || 0;
-}
+      var rh = 0;
+      if (d.hourly && d.hourly.relativehumidity_2m && d.hourly.relativehumidity_2m[0] !== undefined){
+        rh = Number(d.hourly.relativehumidity_2m[0]) || 0;
+      }
 
       document.getElementById("nowTemp").textContent = temp+"°C";
       document.getElementById("nowDesc").textContent = descFrom(code);
       document.getElementById("nowIcon").className = "icon " + iconClass(code);
 
-      /* próximas 4 horas */
       var hoursEl = document.getElementById("hours");
       hoursEl.innerHTML = "";
 
@@ -615,7 +549,6 @@ if(d.hourly && d.hourly.relativehumidity_2m){
           var dt = new Date(hTimes[i]);
           hh = ("0"+dt.getHours()).slice(-2) + "h";
         }
-
         hoursEl.innerHTML +=
           "<div class='pill'>"+
             "<div class='icon "+iconClass(c)+"'></div>"+
@@ -626,7 +559,6 @@ if(d.hourly && d.hourly.relativehumidity_2m){
           "</div>";
       }
 
-      /* próximos 4 dias */
       var daysEl = document.getElementById("days");
       daysEl.innerHTML = "";
 
@@ -641,13 +573,11 @@ if(d.hourly && d.hourly.relativehumidity_2m){
         var tmax = Math.round(dMax[j] || 0);
         var tmin = Math.round(dMin[j] || 0);
         var cc = (dCode[j]!==undefined ? dCode[j] : 3);
-
         var wd = "---";
         if (dTime[j]){
           var dd = new Date(dTime[j]);
           wd = dias[dd.getDay()];
         }
-
         daysEl.innerHTML +=
           "<div class='pill'>"+
             "<div class='icon "+iconClass(cc)+"'></div>"+
@@ -658,30 +588,19 @@ if(d.hourly && d.hourly.relativehumidity_2m){
           "</div>";
       }
 
-      
-
-
-/* ===== ESTADO VISUAL DO PAINEL ===== */
       updatePanelState(code, temp, d);
 
-      /* ===== THI (STRESS TÉRMICO BOVINO) ===== */
-      var rh = 0;
-
-      if (d.hourly && d.hourly.relativehumidity_2m && d.hourly.relativehumidity_2m[0] !== undefined){
-        rh = Number(d.hourly.relativehumidity_2m[0]) || 0;
-      }
-
+      // THI: guarda e desenha já (mesmo que ainda não exista rainKpiCard)
       var thi = calcTHI(temp, rh);
-var level = thiLevel(thi);
-
-LAST_THI = thi;
-LAST_THI_LEVEL = level;
-
-
+      var level = thiLevel(thi);
+      LAST_THI = thi;
+      LAST_THI_LEVEL = level;
+      upsertTHICard(thi, level);
     })
     .catch(function(){});
 }
-/* ================= CSV PARSER (TV-safe) ================= */
+
+/* ================= CSV PARSER ================= */
 function parseCSV(text){
   text = (text||"").replace(/\r/g,"").trim();
   if (!text) return [];
@@ -720,7 +639,6 @@ function refreshCardsAndRotation(){
   cards = Array.prototype.slice.call(document.querySelectorAll(".kpi-card"));
   startRotation();
 }
-
 function rotate(){
   if (!cards.length) return;
   var start = page * MAX_VISIBLE;
@@ -751,15 +669,13 @@ function loadKPIs(){
     .then(function(t){
       var rows = parseCSV(t).map(function(r){
         return {
-          id: (r.id||"").trim(),
           active: asBool(r.active),
           type: (r.type||"").trim().toLowerCase(),
           title: (r.title||"").trim(),
           value: (r.value||"").trim(),
           unit: (r.unit||"").trim(),
           imageUrl: (r.imageUrl||"").trim(),
-          order: asNum(r.order),
-          extra: (r.extra||"").trim()
+          order: asNum(r.order)
         };
       }).filter(function(r){
         return r.active && r.type && r.title;
@@ -786,11 +702,9 @@ function loadKPIs(){
           var body = "";
 
           if (r.type === "image"){
-            if (r.imageUrl){
-              body = "<div class='kpi-image'><img src='"+r.imageUrl+"' alt=''></div>";
-            } else {
-              body = "<div class='kpi-sub'>Sem imageUrl</div>";
-            }
+            body = r.imageUrl
+              ? "<div class='kpi-image'><img src='"+r.imageUrl+"' alt=''></div>"
+              : "<div class='kpi-sub'>Sem imageUrl</div>";
           } else if (r.type === "number"){
             body = "<div class='kpi'>"+(escapeHTML(r.value)||"--")+" <span>"+escapeHTML(r.unit||"")+"</span></div>";
           } else if (r.type === "text"){
@@ -807,18 +721,15 @@ function loadKPIs(){
         }
       }
 
-      cards = Array.prototype.slice.call(document.querySelectorAll(".kpi-card"));
-      startRotation();
+      refreshCardsAndRotation();
 
-      // como o grid foi limpo, volta a inserir o KPI de chuva (e aplica estado à erva)
+      // Recria chuva e volta a “encaixar” THI antes dela
       loadRainKPI();
     })
     .catch(function(){});
 }
 
-/* ================= NEWS (Google Sheet) =================
-   Sheet colunas: active, order, text
-*/
+/* ================= NEWS ================= */
 function loadNews(){
   if (!NEWS_SHEET_URL || NEWS_SHEET_URL.indexOf("http") !== 0){
     document.getElementById("newsTrack").innerHTML =
@@ -830,14 +741,8 @@ function loadNews(){
     .then(function(r){ return r.text(); })
     .then(function(t){
       var rows = parseCSV(t).map(function(r){
-        return {
-          active: asBool(r.active),
-          order: asNum(r.order),
-          text: (r.text||"").trim()
-        };
-      }).filter(function(r){
-        return r.active && r.text;
-      });
+        return { active: asBool(r.active), order: asNum(r.order), text: (r.text||"").trim() };
+      }).filter(function(r){ return r.active && r.text; });
 
       rows.sort(function(a,b){
         var ao = isFinite(a.order) ? a.order : 999999;
@@ -846,15 +751,9 @@ function loadNews(){
       });
 
       var track = document.getElementById("newsTrack");
-      track.innerHTML = "";
-
-      if (!rows.length){
-        track.innerHTML = "<span class='news-item'>Sem comunicações ativas</span>";
-      } else {
-        for (var i=0;i<rows.length;i++){
-          track.innerHTML += "<span class='news-item'>"+escapeHTML(rows[i].text)+"</span>";
-        }
-      }
+      track.innerHTML = rows.length
+        ? rows.map(function(x){ return "<span class='news-item'>"+escapeHTML(x.text)+"</span>"; }).join("")
+        : "<span class='news-item'>Sem comunicações ativas</span>";
 
       track.style.animation = "none";
       track.offsetHeight;
@@ -873,26 +772,18 @@ function escapeHTML(s){
     .replace(/'/g,"&#039;");
 }
 
-/* ================= ERVA COM VIDA (NOVO) ================= */
+/* ================= ERVA COM VIDA ================= */
 function updateGrassByRain(rainNow){
   var grass = document.querySelector(".footer-field");
   if (!grass) return;
 
   grass.classList.remove("dry","normal","wet");
-
-  // Ajusta estes thresholds se quiseres (valores em L/m²)
-  if (rainNow < 200){
-    grass.classList.add("dry");
-  } else if (rainNow < 400){
-    grass.classList.add("normal");
-  } else {
-    grass.classList.add("wet");
-  }
+  if (rainNow < 200) grass.classList.add("dry");
+  else if (rainNow < 400) grass.classList.add("normal");
+  else grass.classList.add("wet");
 }
 
-/* ================= CHUVA YTD (L/m²) vs ano anterior =================
-   1 mm = 1 L/m², portanto apresentamos em L/m²
-*/
+/* ================= CHUVA YTD ================= */
 function buildRainURL(start, end){
   return "https://archive-api.open-meteo.com/v1/archive"
     + "?latitude=" + LAT
@@ -902,7 +793,6 @@ function buildRainURL(start, end){
     + "&daily=precipitation_sum"
     + "&timezone=auto";
 }
-
 function getRainSum(startDate, endDate){
   return fetch(buildRainURL(startDate, endDate))
     .then(function(r){ return r.json(); })
@@ -912,35 +802,7 @@ function getRainSum(startDate, endDate){
     })
     .catch(function(){ return 0; });
 }
-//* ================= THI CARD ================= */
 
-function createTHICard(thi, level){
-
-  var grid = document.getElementById("kpis");
-  if(!grid) return;
-
-  var old = document.getElementById("thiCard");
-  if(old) old.remove();
-
-  var card = document.createElement("div");
-  card.className = "card kpi-card";
-  card.id = "thiCard";
-
-  card.innerHTML =
-    "<h3>🐄 Índice Stress Térmico (THI)</h3>"+
-    "<div class='kpi'>"+thi.toFixed(1)+"</div>"+
-    "<div class='kpi-sub'>"+level.txt+"</div>";
-
-  var rainCard = document.getElementById("rainKpiCard");
-
-  if(rainCard){
-    grid.insertBefore(card, rainCard);
-  }else{
-    grid.prepend(card);
-  }
-
-  refreshCardsAndRotation();
-}
 function loadRainKPI(){
   var now = new Date();
   var year = now.getFullYear();
@@ -954,11 +816,10 @@ function loadRainKPI(){
     getRainSum(startThisYear, today),
     getRainSum(startLastYear, sameDayLastYear)
   ]).then(function(values){
-    var rainNow = Math.round(values[0]);   // L/m²
-    var rainLast = Math.round(values[1]);  // L/m²
+    var rainNow = Math.round(values[0]);
+    var rainLast = Math.round(values[1]);
     var diff = rainNow - rainLast;
 
-    // ✅ aplica "vida" à erva
     updateGrassByRain(rainNow);
 
     var diffTxt =
@@ -969,7 +830,6 @@ function loadRainKPI(){
     var grid = document.getElementById("kpis");
     if (!grid) return;
 
-    // remove o card anterior se existir (para não duplicar)
     var old = document.getElementById("rainKpiCard");
     if (old && old.parentNode) old.parentNode.removeChild(old);
 
@@ -981,15 +841,18 @@ function loadRainKPI(){
       "<div class='kpi'>"+rainNow+" <span>L/m²</span></div>" +
       "<div class='kpi-sub'>"+diffTxt+"</div>";
 
-    // mete no topo do grid
     grid.prepend(card);
 
-    // atualiza rotação com o novo card incluído
-    refreshCardsAndRotation();
+    // Agora que rain existe, volta a “encaixar” THI antes dele (se já temos THI calculado)
+    if (LAST_THI !== null && LAST_THI_LEVEL){
+      upsertTHICard(LAST_THI, LAST_THI_LEVEL);
+    } else {
+      refreshCardsAndRotation();
+    }
   });
 }
 
-/* ================= HOURLY REFRESH (alinhado) ================= */
+/* ================= SCHEDULE ================= */
 function scheduleHourly(fn){
   fn();
   var now = new Date();
@@ -1004,26 +867,12 @@ function scheduleHourly(fn){
 }
 
 /* ================= INIT ================= */
-
-updateWeather();
-loadKPIs();
-loadNews();
-
-scheduleHourly(updateWeather);
-scheduleHourly(loadKPIs);
-scheduleHourly(loadNews);
-
-/* ciclo do dia */
 updateDayPeriod();
 setInterval(updateDayPeriod, 5*60*1000);
 
-/* refresh alinhado à hora */
 scheduleHourly(updateWeather);
 scheduleHourly(loadKPIs);
 scheduleHourly(loadNews);
-
-
-
 </script>
 
 <audio id="radioPlayer" preload="auto" autoplay loop muted>
@@ -1031,18 +880,14 @@ scheduleHourly(loadNews);
 </audio>
 
 <script>
-
 /* ================= RADIO AUTO INVISÍVEL ================= */
-
 (function(){
-
   const radio = document.getElementById("radioPlayer");
   if(!radio) return;
 
   let started = false;
 
   function startRadio(){
-
     if(started) return;
     started = true;
 
@@ -1050,13 +895,9 @@ scheduleHourly(loadNews);
     radio.volume = 0;
 
     radio.play().then(() => {
-
       let v = 0;
-
       const fade = setInterval(() => {
-
         v += 0.02;
-
         if(v >= 0.25){
           radio.volume = 0.25;
           radio.muted = false;
@@ -1064,19 +905,15 @@ scheduleHourly(loadNews);
         } else {
           radio.volume = v;
         }
-
       }, 200);
-
     }).catch(() => {
       started = false;
     });
-
   }
 
   window.addEventListener("load", startRadio);
   document.addEventListener("click", startRadio);
   document.addEventListener("touchstart", startRadio);
-
 })();
 </script>
 
