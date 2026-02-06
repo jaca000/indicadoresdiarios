@@ -534,6 +534,27 @@ function igcbActionPlan(igcb, rain3d, tempC){
 
   return "🚨 Stress elevado. Avaliar intervenção imediata.";
 }
+  function calculateAndRenderIGCB(temp, rh, wind, radiation){
+
+  if(LAST_RAIN_3D === null) return;
+  if(LAST_RAIN_YTD === null) return;
+
+  var igcb = calcIGCB(
+    temp,
+    rh,
+    wind,
+    radiation,
+    LAST_RAIN_3D,
+    LAST_RAIN_YTD
+  );
+
+  var level = igcbLevel(igcb);
+
+  LAST_THI = igcb;
+  LAST_THI_LEVEL = level;
+
+  upsertTHICard(igcb, level);
+}
 function upsertTHICard(valor, level){
 
   var grid = document.getElementById("kpis");
