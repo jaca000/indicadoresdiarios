@@ -669,9 +669,9 @@ if (d.hourly && d.hourly.shortwave_radiation && d.hourly.shortwave_radiation[0] 
 
 getRainLast3Days().then(function(rain3d){
 
-  var igcb = calcIGCB(temp, rh, wind, radiation, rain3d);
-  var level = igcbLevel(igcb);
+ var rainYTD = LAST_RAIN_YTD || 0;
 
+  var igcb = calcIGCB(temp, rh, wind, radiation, rain3d, rainYTD);
   LAST_THI = igcb;
   LAST_THI_LEVEL = level;
 
