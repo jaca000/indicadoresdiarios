@@ -661,7 +661,10 @@ getRainLast3Days().then(function(rain3d){
 
   upsertTHICard(igcb, level);
 
-});
+})
+.catch(function(){});
+
+}
 
 /* ================= CSV PARSER ================= */
 function parseCSV(text){
