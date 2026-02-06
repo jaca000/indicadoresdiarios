@@ -644,11 +644,19 @@ function updateWeather(){
       updatePanelState(code, temp, d);
 
       // THI: guarda e desenha já (mesmo que ainda não exista rainKpiCard)
-      var thi = calcTHI(temp, rh);
-      var level = thiLevel(thi);
-      LAST_THI = thi;
-      LAST_THI_LEVEL = level;
-      upsertTHICard(thi, level);
+var thi = calcTHI(temp, rh);
+
+getRainLast3Days().then(function(rain3d){
+
+  var igcb = calcIGCB(temp, rh, thi, rain3d);
+  var level = igcbLevel(igcb);
+
+  LAST_THI = igcb;
+  LAST_THI_LEVEL = level;
+
+  upsertTHICard(igcb, level);
+
+});
     })
     .catch(function(){});
 }
