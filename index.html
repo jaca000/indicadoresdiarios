@@ -484,6 +484,23 @@ function descFrom(code){
   return "Nublado";
 }
 
+/* ================= THI BOVINO ================= */
+
+function calcTHI(temp, rh){
+
+  return temp - ((0.55 - 0.0055 * rh) * (temp - 14.5));
+
+}
+
+function thiLevel(thi){
+
+  if (thi < 68) return {txt:"Conforto", class:"thi-ok"};
+  if (thi < 72) return {txt:"Alerta", class:"thi-alerta"};
+  if (thi < 78) return {txt:"Stress moderado", class:"thi-stress"};
+  return {txt:"Stress severo", class:"thi-severo"};
+
+}
+
 /* ================= FX HELPERS ================= */
 function clearFX(){ document.getElementById("fx").innerHTML = ""; }
 function addFog(){
