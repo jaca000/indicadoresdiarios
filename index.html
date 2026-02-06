@@ -648,19 +648,21 @@ if(d.hourly && d.hourly.relativehumidity_2m){
 
 
 /* ===== ESTADO VISUAL DO PAINEL ===== */
-updatePanelState(code, temp, d);
+      updatePanelState(code, temp, d);
 
-/* ===== THI (Stress Térmico Bovino) ===== */
-var rh = 0;
-if (d.hourly && d.hourly.relativehumidity_2m && d.hourly.relativehumidity_2m[0] !== undefined){
-  rh = Number(d.hourly.relativehumidity_2m[0]) || 0;
-}
+      /* ===== THI (STRESS TÉRMICO BOVINO) ===== */
+      var rh = 0;
 
-var thi = calcTHI(temp, rh);
-var level = thiLevel(thi);
-createTHICard(thi, level);
+      if (d.hourly && d.hourly.relativehumidity_2m && d.hourly.relativehumidity_2m[0] !== undefined){
+        rh = Number(d.hourly.relativehumidity_2m[0]) || 0;
+      }
 
-  })
+      var thi = calcTHI(temp, rh);
+      var level = thiLevel(thi);
+
+      createTHICard(thi, level);
+
+    })
     .catch(function(){});
 }
 /* ================= CSV PARSER (TV-safe) ================= */
