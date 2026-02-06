@@ -504,7 +504,14 @@ function igcbLevel(igcb){
 
   return { txt:"Stress crítico", class:"thi-severo" };
 }
+function igcbLevel(igcb){
 
+  if (igcb >= 85) return { txt:"Conforto ótimo", class:"thi-ok" };
+  if (igcb >= 70) return { txt:"Conforto aceitável", class:"thi-alerta" };
+  if (igcb >= 55) return { txt:"Stress ambiental", class:"thi-stress" };
+
+  return { txt:"Stress crítico", class:"thi-severo" };
+}
 function upsertTHICard(valor, level){
 
   var grid = document.getElementById("kpis");
