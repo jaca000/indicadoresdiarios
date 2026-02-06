@@ -872,16 +872,14 @@ function getRainSum(startDate, endDate){
     .catch(function(){ return 0; });
 }
 function getRainLast3Days(){
+  var end = new Date();
+  var start = new Date();
+  start.setDate(end.getDate() - 3);
 
-  var today = new Date();
-  var end = today.toISOString().slice(0,10);
-
-  var past = new Date();
-  past.setDate(today.getDate() - 3);
-
-  var start = past.toISOString().slice(0,10);
-
-  return getRainSum(start, end);
+  return getRainSum(
+    start.toISOString().slice(0,10),
+    end.toISOString().slice(0,10)
+  );
 }
 function loadRainKPI(){
   var now = new Date();
