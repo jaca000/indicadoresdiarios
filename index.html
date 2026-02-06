@@ -452,7 +452,9 @@ function descFrom(code){
 }
 
 /* ================= THI BOVINO ================= */
-function calcIGCB(tempC, rh, wind, radiation, rain3d){
+function calcTHI(tempC, rh){
+  return tempC - ((0.55 - 0.0055 * rh) * (tempC - 14.5));
+}
 
   // 1️⃣ Base térmica real
   let thi = calcTHI(tempC, rh);
