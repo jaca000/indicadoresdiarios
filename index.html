@@ -911,9 +911,12 @@ function loadRainKPI(){
     getRainSum(startThisYear, today),
     getRainSum(startLastYear, sameDayLastYear)
   ]).then(function(values){
-    var rainNow = Math.round(values[0]);
-    var rainLast = Math.round(values[1]);
-    var diff = rainNow - rainLast;
+var rainNow = Math.round(values[0]);
+
+LAST_RAIN_YTD = rainNow;
+
+var rainLast = Math.round(values[1]);
+var diff = rainNow - rainLast;
 
     updateGrassByRain(rainNow);
 
