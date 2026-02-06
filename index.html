@@ -348,7 +348,27 @@ body.estado-seca{
   filter: brightness(.95) contrast(1.05);
   transition: filter 1.5s ease;
 }
+/* ===== CICLO DO DIA ===== */
 
+body.periodo-manha{
+  filter: brightness(1.05) saturate(1.05);
+  transition: filter 2s ease;
+}
+
+body.periodo-dia{
+  filter: brightness(1.1);
+  transition: filter 2s ease;
+}
+
+body.periodo-por{
+  filter: sepia(.18) saturate(1.2);
+  transition: filter 2s ease;
+}
+
+body.periodo-noite{
+  filter: brightness(.75) saturate(.85) hue-rotate(-8deg);
+  transition: filter 2s ease;
+}
 </style>
 </head>
 
