@@ -451,67 +451,24 @@ function descFrom(code){
   return "Nublado";
 }
 
-/* ================= THI BOVINO ================= */
+/* ================= THI + IGCB ================= */
+
 function calcTHI(tempC, rh){
   return tempC - ((0.55 - 0.0055 * rh) * (tempC - 14.5));
 }
 
-  // 1️⃣ Base térmica real
+function calcIGCB(tempC, rh, wind, radiation, rain3d){
+
   let thi = calcTHI(tempC, rh);
 
-  // 2️⃣ Penalização por calor
   let stressHeat = Math.max(0, thi - 68) * 1.8;
-
-  // 3️⃣ Penalização por radiação solar
   let stressSun = radiation * 0.02;
-
-  // 4️⃣ Benefício do vento (arrefecimento)
   let benefitWind = wind * 1.5;
-
-  // 5️⃣ Penalização por lama / saturação solo
   let stressMud = rain3d * 0.25;
 
-  // 6️⃣ Score final
   let score = 100 - (stressHeat + stressSun + stressMud - benefitWind);
 
-  // 7️⃣ Limites de segurança
   return Math.max(0, Math.min(100, score));
-}
-function igcbLevel(igcb){
-
-  if (igcb < 68) return { txt:"Conforto", class:"thi-ok" };
-  if (igcb < 72) return { txt:"Alerta térmico", class:"thi-alerta" };
-  if (igcb < 78) return { txt:"Stress ambiental", class:"thi-stress" };
-
-  return { txt:"Stress crítico", class:"thi-severo" };
-}
-
-
-/* Garante posição: THI sempre antes do rainKpiCard */
-function upsertTHICard(thi, level){
-  var grid = document.getElementById("kpis");
-  if(!grid) return;
-
-  var old = document.getElementById("thiCard");
-  if(old) old.remove();
-
-  var card = document.createElement("div");
-  card.className = "card kpi-card";
-  card.id = "thiCard";
-
-  card.innerHTML =
-  "<h3>🐄 Índice Global Conforto Bovino (IGCB)</h3>"+
-  "<div class='kpi'>"+thi.toFixed(1)+"</div>"+
-  "<div class='kpi-sub'>"+
-    level.txt+
-    "<span class='thi-indicator "+level.class+"'></span>"+
-  "</div>";
-
-  var rainCard = document.getElementById("rainKpiCard");
-  if(rainCard) grid.insertBefore(card, rainCard);
-  else grid.prepend(card);
-
-  refreshCardsAndRotation();
 }
 
 /* ================= FX HELPERS ================= */
