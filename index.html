@@ -442,7 +442,33 @@ function tick(){
 }
 tick();
 setInterval(tick, 30000);
+/* ===== CICLO DO DIA ===== */
 
+function updateDayPeriod(){
+
+  const hour = new Date().getHours();
+
+  document.body.classList.remove(
+    "periodo-manha",
+    "periodo-dia",
+    "periodo-por",
+    "periodo-noite"
+  );
+
+  if(hour >= 6 && hour < 11){
+    document.body.classList.add("periodo-manha");
+  }
+  else if(hour >= 11 && hour < 18){
+    document.body.classList.add("periodo-dia");
+  }
+  else if(hour >= 18 && hour < 21){
+    document.body.classList.add("periodo-por");
+  }
+  else{
+    document.body.classList.add("periodo-noite");
+  }
+
+}
 /* ================= OPEN-METEO CODES ================= */
 function isRainCode(code){
   return (code===51||code===53||code===55||code===61||code===63||code===65||code===80||code===81||code===82||code===95||code===96||code===99);
