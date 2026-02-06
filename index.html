@@ -461,45 +461,35 @@ function calcIGCB(tempC, rh, wind, radiation, rain3d, rainYTD){
 
   let thi = calcTHI(tempC, rh);
 
-    let stressHeat = Math.max(0, thi - 68) * 1.8;
+  let stressHeat = Math.max(0, thi - 68) * 1.8;
   let stressSun = radiation * 0.02;
   let benefitWind = wind * 1.5;
 
   // 👉 Stress frio húmido
   let stressCold = 0;
 
-  if(tempC < 8 && rh > 80) stressCold = 15;
-  if(tempC < 4 && rh > 85) stressCold = 25;
+  if(tempC < 5 && rh > 85) stressCold = 25;
+  else if(tempC < 8 && rh > 80) stressCold = 15;
 
-// 👉 Stress lama NÃO linear + saturação estrutural
-let stressMud = 0;
+  // 👉 Stress lama NÃO linear + saturação estrutural
+  let stressMud = 0;
 
-/* lama recente */
-if(rain3d > 60) stressMud = 35;
-else if(rain3d > 40) stressMud = 25;
-else if(rain3d > 20) stressMud = 15;
-else if(rain3d > 10) stressMud = 5;
+  if(rain3d > 60) stressMud = 35;
+  else if(rain3d > 40) stressMud = 25;
+  else if(rain3d > 20) stressMud = 15;
+  else if(rain3d > 10) stressMud = 5;
 
-/* saturação estrutural do solo */
-if(rainYTD > 250) stressMud += 10;
-if(rainYTD > 350) stressMud += 15;
-if(rainYTD > 450) stressMud += 25;
+  if(rainYTD > 250) stressMud += 10;
+  if(rainYTD > 350) stressMud += 15;
+  if(rainYTD > 450) stressMud += 25;
 
-// 👉 Stress frio húmido
-let stressCold = 0;
-
-if(tempC < 5 && rh > 80) stressCold = 20;
-else if(tempC < 10 && rh > 80) stressCold = 10;
-
-
-// 👉 Score final
-let score = 100 - (
-  stressHeat +
-  stressSun +
-  stressMud +
-  stressCold -
-  benefitWind
-);
+  let score = 100 - (
+    stressHeat +
+    stressSun +
+    stressMud +
+    stressCold -
+    benefitWind
+  );
 
   return Math.max(0, Math.min(100, score));
 }
