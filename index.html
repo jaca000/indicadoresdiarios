@@ -454,19 +454,26 @@ function descFrom(code){
 /* ================= THI BOVINO ================= */
 function calcIGCB(tempC, rh, wind, radiation, rain3d){
 
-  var thi = calcTHI(tempC, rh);
+  // 1️⃣ Base térmica real
+  let thi = calcTHI(tempC, rh);
 
-  var windFactor = wind * 0.7;
-  var radFactor = radiation * 0.004;
-  var mudFactor = rain3d * 0.03;
+  // 2️⃣ Penalização por calor
+  let stressHeat = Math.max(0, thi - 68) * 1.8;
 
-  return thi - windFactor + radFactor + mudFactor;
-}
-function thiLevel(thi){
-  if (thi < 68) return { txt:"Conforto", class:"thi-ok" };
-  if (thi < 72) return { txt:"Alerta", class:"thi-alerta" };
-  if (thi < 78) return { txt:"Stress moderado", class:"thi-stress" };
-  return { txt:"Stress severo", class:"thi-severo" };
+  // 3️⃣ Penalização por radiação solar
+  let stressSun = radiation * 0.02;
+
+  // 4️⃣ Benefício do vento (arrefecimento)
+  let benefitWind = wind * 1.5;
+
+  // 5️⃣ Penalização por lama / saturação solo
+  let stressMud = rain3d * 0.25;
+
+  // 6️⃣ Score final
+  let score = 100 - (stressHeat + stressSun + stressMud - benefitWind);
+
+  // 7️⃣ Limites de segurança
+  return Math.max(0, Math.min(100, score));
 }
 function igcbLevel(igcb){
 
