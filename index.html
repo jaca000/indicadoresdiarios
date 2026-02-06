@@ -540,17 +540,7 @@ clearFX();
 addFog();
 
 /* ===== ESTADO VISUAL DO PAINEL ===== */
-document.body.classList.remove("estado-normal","estado-chuva","estado-seca");
-
-if (isRainCode(code)){
-  document.body.classList.add("estado-chuva");
-} 
-else if (temp >= 32){
-  document.body.classList.add("estado-seca");
-} 
-else{
-  document.body.classList.add("estado-normal");
-}
+updatePanelState(code, temp, d);
 
 /* ===== FX DINÂMICO ===== */
 if (isRainCode(code)){
