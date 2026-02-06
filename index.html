@@ -462,7 +462,12 @@ function thiLevel(thi){
   if (thi < 78) return { txt:"Stress moderado", class:"thi-stress" };
   return { txt:"Stress severo", class:"thi-severo" };
 }
-
+function igcbLevel(score){
+  if(score > 80) return { txt:"Excelente", class:"thi-ok" };
+  if(score > 60) return { txt:"Bom", class:"thi-alerta" };
+  if(score > 40) return { txt:"Atenção", class:"thi-stress" };
+  return { txt:"Crítico", class:"thi-severo" };
+}
 /* Garante posição: THI sempre antes do rainKpiCard */
 function upsertTHICard(thi, level){
   var grid = document.getElementById("kpis");
