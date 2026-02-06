@@ -221,12 +221,14 @@ header{
 /* ========= KPIs ========= */
 main{
   padding:22px 28px;
+
   display:grid;
-  grid-template-columns:repeat(3,1fr);
-  grid-auto-rows:1fr;
+  grid-template-columns:repeat(3, 1fr);
+  grid-template-rows:repeat(3, 1fr);
+
   gap:22px;
-  height:100%;
-  align-content:start;
+
+  height:calc(100vh - 90px - 48px - 44px);
 }
 
 .card{
