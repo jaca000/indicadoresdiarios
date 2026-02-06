@@ -480,14 +480,14 @@ if(tempC < 5 && rh > 85) stressCold = 30;
   // 👉 Stress lama NÃO linear + saturação estrutural
   let stressMud = 0;
 
-  if(rain3d > 60) stressMud = 45;
-else if(rain3d > 40) stressMud = 25;
-else if(rain3d > 20) stressMud = 15;
+  if(rain3d > 60) stressMud = 30;
+else if(rain3d > 40) stressMud = 20;
+else if(rain3d > 20) stressMud = 12;
 else if(rain3d > 10) stressMud = 5;
 
-if(rainYTD > 200) stressMud += 10;
-if(rainYTD > 280) stressMud += 20;
-if(rainYTD > 350) stressMud += 35;
+if(rainYTD > 200) stressMud += 5;
+if(rainYTD > 280) stressMud += 10;
+if(rainYTD > 350) stressMud += 15;
 
   let score = 100 - (
     stressHeat +
