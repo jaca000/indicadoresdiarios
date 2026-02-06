@@ -467,10 +467,12 @@ function calcIGCB(tempC, rh, wind, radiation, rain3d, rainYTD){
   let benefitWind = wind * 1.5;
 
   // 👉 Stress frio húmido
-  let stressCold = 0;
+let stressCold = 0;
 
-if(tempC < 5 && rh > 85) stressCold = 25;
-else if(tempC < 8 && rh > 80) stressCold = 15;
+// frio húmido mais realista
+if(tempC < 12 && rh > 85) stressCold = 12;
+if(tempC < 8 && rh > 85) stressCold = 20;
+if(tempC < 5 && rh > 85) stressCold = 30;
 
   // 👉 Stress lama NÃO linear + saturação estrutural
   let stressMud = 0;
