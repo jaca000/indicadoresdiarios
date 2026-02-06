@@ -639,9 +639,21 @@ function updateWeather(){
       // THI: guarda e desenha já (mesmo que ainda não exista rainKpiCard)
 var thi = calcTHI(temp, rh);
 
+// 👉 vento atual
+var wind = 0;
+if (d.hourly && d.hourly.windspeed_10m && d.hourly.windspeed_10m[0] !== undefined){
+  wind = Number(d.hourly.windspeed_10m[0]) || 0;
+}
+
+// 👉 radiação solar atual
+var radiation = 0;
+if (d.hourly && d.hourly.shortwave_radiation && d.hourly.shortwave_radiation[0] !== undefined){
+  radiation = Number(d.hourly.shortwave_radiation[0]) || 0;
+}
+
 getRainLast3Days().then(function(rain3d){
 
-  var igcb = calcIGCB(temp, rh, thi, rain3d);
+  var igcb = calcIGCB(temp, rh, wind, radiation, rain3d);
   var level = igcbLevel(igcb);
 
   LAST_THI = igcb;
@@ -650,9 +662,6 @@ getRainLast3Days().then(function(rain3d){
   upsertTHICard(igcb, level);
 
 });
-    })
-    .catch(function(){});
-}
 
 /* ================= CSV PARSER ================= */
 function parseCSV(text){
