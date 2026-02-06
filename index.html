@@ -332,6 +332,23 @@ footer{
   from{ transform:translateX(0); }
   to{ transform:translateX(-100%); }
 }
+
+/* ===== ESTADOS DINÂMICOS DO PAINEL ===== */
+
+body.estado-normal{
+  transition: filter 1.5s ease;
+}
+
+body.estado-chuva{
+  filter: saturate(1.08) hue-rotate(-8deg);
+  transition: filter 1.5s ease;
+}
+
+body.estado-seca{
+  filter: brightness(.95) contrast(1.05);
+  transition: filter 1.5s ease;
+}
+
 </style>
 </head>
 
