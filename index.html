@@ -484,29 +484,7 @@ function igcbLevel(igcb){
   return { txt:"Stress crítico", class:"thi-severo" };
 }
 
-function calcIGCB(temp, rh, thi, rain3d){
 
-  let stressHeat = 0;
-  let stressCold = 0;
-  let stressMud = 0;
-
-  /* Stress calor */
-  if(thi >= 78) stressHeat = 40;
-  else if(thi >= 72) stressHeat = 25;
-  else if(thi >= 68) stressHeat = 10;
-
-  /* Stress frio húmido */
-  if(temp < 5 && rh > 80) stressCold = 20;
-  else if(temp < 10 && rh > 80) stressCold = 10;
-
-  /* Stress lama */
-  if(rain3d > 50) stressMud = 25;
-  else if(rain3d > 20) stressMud = 10;
-
-  let score = 100 - (stressHeat + stressCold + stressMud);
-
-  return Math.max(0, score);
-}
 /* Garante posição: THI sempre antes do rainKpiCard */
 function upsertTHICard(thi, level){
   var grid = document.getElementById("kpis");
