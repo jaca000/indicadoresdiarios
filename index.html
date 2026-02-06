@@ -468,11 +468,13 @@ function thiLevel(thi){
   if (thi < 78) return { txt:"Stress moderado", class:"thi-stress" };
   return { txt:"Stress severo", class:"thi-severo" };
 }
-function igcbLevel(score){
-  if(score > 80) return { txt:"Excelente", class:"thi-ok" };
-  if(score > 60) return { txt:"Bom", class:"thi-alerta" };
-  if(score > 40) return { txt:"Atenção", class:"thi-stress" };
-  return { txt:"Crítico", class:"thi-severo" };
+function igcbLevel(igcb){
+
+  if (igcb < 68) return { txt:"Conforto", class:"thi-ok" };
+  if (igcb < 72) return { txt:"Alerta térmico", class:"thi-alerta" };
+  if (igcb < 78) return { txt:"Stress ambiental", class:"thi-stress" };
+
+  return { txt:"Stress crítico", class:"thi-severo" };
 }
 
 function calcIGCB(temp, rh, thi, rain3d){
