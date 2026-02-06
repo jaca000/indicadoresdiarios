@@ -584,6 +584,18 @@ function igcbActionPlan(igcb, rain3d, tempC){
   LAST_THI = igcb;
   LAST_THI_LEVEL = level;
 
+  upsertTHICard(igcb, level);
+
+  IGCB_HISTORY.unshift(igcb);
+  if(IGCB_HISTORY.length > 5) IGCB_HISTORY.pop();
+
+  var isa = calcISA();
+  if(isa !== null){
+    var isaLvl = isaLevel(isa);
+    upsertISACard(isa, isaLvl);
+  }
+}
+
   
 function upsertTHICard(valor, level){
 
