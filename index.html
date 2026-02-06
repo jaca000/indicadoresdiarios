@@ -464,6 +464,10 @@ function addRainDrops(count){
 }
 function updatePanelState(code, temp, d){
 
+  /* limpa FX e cria base atmosférica */
+  clearFX();
+  addFog();
+
   document.body.classList.remove("estado-normal","estado-chuva","estado-seca");
 
   if (isRainCode(code)){
@@ -482,7 +486,7 @@ function updatePanelState(code, temp, d){
 
     var prec = 0;
 
-    if (d.hourly && d.hourly.precipitation && d.hourly.precipitation[0]!==undefined){
+    if (d.hourly && d.hourly.precipitation && d.hourly.precipitation[0] !== undefined){
       prec = Number(d.hourly.precipitation[0]) || 0;
     }
 
@@ -499,7 +503,6 @@ function updatePanelState(code, temp, d){
   else if (code === 0){
     addSun();
   }
-
 }
 /* ================= WEATHER (widgets + FX) ================= */
 function updateWeather(){
