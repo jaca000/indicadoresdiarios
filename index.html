@@ -1040,7 +1040,8 @@ function loadKPIs(){
           } else if (r.type === "number"){
             body = "<div class='kpi'>"+(escapeHTML(r.value)||"--")+" <span>"+escapeHTML(r.unit||"")+"</span></div>";
           } else if (r.type === "text"){
-            var texto = escapeHTML(r.value||"").replace(/\n/g,"<br>");
+            var raw = (r.value||"").replace(/^"|"$/g,"");
+var texto = escapeHTML(raw).replace(/\n/g,"<br>");
 body = "<div class='kpi'>"+texto+"</div>";
           } else {
             body = "<div class='kpi-sub'>Tipo não suportado: "+escapeHTML(r.type)+"</div>";
