@@ -677,7 +677,15 @@ function upsertISACard(valor, level){
     plano+
   "</div>";
 
+  var igcbCard = document.getElementById("thiCard");
+
+if(igcbCard && igcbCard.nextSibling){
+  grid.insertBefore(card, igcbCard.nextSibling);
+} else if(igcbCard){
   grid.appendChild(card);
+} else {
+  grid.prepend(card);
+}
 
   refreshCardsAndRotation();
 }
