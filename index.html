@@ -934,32 +934,51 @@ getRainLast3Days().then(function(rain3d){
 
 /* ================= CSV PARSER ================= */
 function parseCSV(text){
-  text = (text||"").replace(/\r/g,"").trim();
-  if (!text) return [];
-  var lines = text.split("\n");
-  var headers = lines.shift().split(",");
-  for (var i=0;i<headers.length;i++) headers[i] = (headers[i]||"").trim();
-  var out = [];
-  for (var l=0;l<lines.length;l++){
-    if (!lines[l]) continue;
-    var cols = lines[l].split(",");
-    var row = {};
-    for (var c=0;c<headers.length;c++){
-      row[headers[c]] = (cols[c]||"").trim();
+  var rows = [];
+  var row = [];
+  var field = "";
+  var insideQuotes = false;
+
+  for (var i = 0; i < text.length; i++) {
+    var char = text[i];
+    var nextChar = text[i + 1];
+
+    if (char === '"' ) {
+      if (insideQuotes && nextChar === '"') {
+        field += '"';
+        i++;
+      } else {
+        insideQuotes = !insideQuotes;
+      }
     }
-    out.push(row);
+    else if (char === ',' && !insideQuotes) {
+      row.push(field);
+      field = "";
+    }
+    else if (char === '\n' && !insideQuotes) {
+      row.push(field);
+      rows.push(row);
+      row = [];
+      field = "";
+    }
+    else {
+      field += char;
+    }
   }
-  return out;
-}
-function asBool(v){
-  v = (v||"").toString().trim().toLowerCase();
-  return (v==="true"||v==="1"||v==="sim"||v==="yes");
-}
-function asNum(v){
-  if (v===undefined || v===null) return NaN;
-  v = (""+v).trim().replace(",",".");
-  var n = Number(v);
-  return (isFinite(n) ? n : NaN);
+
+  if (field.length > 0) {
+    row.push(field);
+    rows.push(row);
+  }
+
+  var headers = rows.shift();
+  return rows.map(function(r){
+    var obj = {};
+    for (var i=0; i<headers.length; i++){
+      obj[headers[i].trim()] = (r[i] || "").trim();
+    }
+    return obj;
+  });
 }
 
 /* ================= KPI ROTATION ================= */
