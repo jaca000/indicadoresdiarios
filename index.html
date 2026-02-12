@@ -671,7 +671,11 @@ function upsertISACard(valor, level){
   card.innerHTML =
   "<h3>📊 Índice Stress Acumulado (ISA-5)</h3>"+
 
-  "<div class='kpi'>"+Number(valor).toFixed(1)+"</div>"+
+"<div style='margin-bottom:10px;font-size:15px;color:var(--t2);font-weight:500;line-height:1.4'>"+
+"Índice de stress acumulado dos animais com base nas condições dos últimos dias."+
+"</div>"+
+
+"<div class='kpi'>"+Number(valor).toFixed(1)+"</div>"+
 
   "<div class='kpi-sub'>"+
     level.txt+
