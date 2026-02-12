@@ -854,7 +854,7 @@ function updateWeather(){
         }
         daysEl.innerHTML +=
           "<div class='pill'>"+
-            "<div class='icon "+iconClass(cc)+"'></div>"+
+            "<div class='icon'>"+getWeatherIconSVG(cc)+"</div>"+
             "<div>"+
               "<div class='big'>"+tmax+"°/"+tmin+"°</div>"+
               "<div class='sub'>"+wd+"</div>"+
