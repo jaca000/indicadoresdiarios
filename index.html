@@ -689,10 +689,20 @@ if (igcbCard) {
     grid.appendChild(card);
   }
 } else {
-  grid.prepend(card);
+var firstCard = grid.firstChild;
+if (firstCard) {
+  grid.insertBefore(card, firstCard);
+} else {
+  grid.appendChild(card);
+}
 }
 } else {
-  grid.prepend(card);
+var firstCard = grid.firstChild;
+if (firstCard) {
+  grid.insertBefore(card, firstCard);
+} else {
+  grid.appendChild(card);
+}
 }
 
   refreshCardsAndRotation();
