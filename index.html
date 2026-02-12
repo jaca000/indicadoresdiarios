@@ -443,47 +443,77 @@ function isRainCode(code){
 }
 function getWeatherIconSVG(code){
 
+  // 🌧️ CHUVA
   if(isRainCode(code)){
     return `
     <svg viewBox="0 0 64 64">
-      <defs>
-        <linearGradient id="rainGrad" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stop-color="#4FC3F7"/>
-          <stop offset="100%" stop-color="#0288D1"/>
-        </linearGradient>
-      </defs>
+      <!-- Sol escondido -->
+      <circle cx="22" cy="20" r="10" fill="#FFC107" opacity="0.9"/>
 
-      <!-- cloud -->
-      <ellipse cx="32" cy="30" rx="18" ry="12" fill="#ECEFF1"/>
-      <ellipse cx="22" cy="28" rx="10" ry="8" fill="#CFD8DC"/>
-      <ellipse cx="42" cy="28" rx="10" ry="8" fill="#CFD8DC"/>
+      <!-- Nuvem -->
+      <g>
+        <ellipse cx="36" cy="34" rx="18" ry="12" fill="#2E9DB0">
+          <animateTransform attributeName="transform"
+            type="translate"
+            values="0 0;2 0;0 0"
+            dur="4s"
+            repeatCount="indefinite"/>
+        </ellipse>
+        <ellipse cx="26" cy="32" rx="12" ry="10" fill="#39A3B6"/>
+        <ellipse cx="48" cy="34" rx="10" ry="9" fill="#2B8FA1"/>
+      </g>
 
-      <!-- rain drops -->
-      <g fill="url(#rainGrad)">
-        <circle cx="22" cy="48" r="3">
-          <animate attributeName="cy" values="44;52" dur="0.8s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values="1;0" dur="0.8s" repeatCount="indefinite"/>
+      <!-- Gotas animadas -->
+      <g fill="#1CA3EC">
+        <circle cx="24" cy="48" r="3">
+          <animate attributeName="cy"
+                   values="44;54"
+                   dur="0.8s"
+                   repeatCount="indefinite"/>
+          <animate attributeName="opacity"
+                   values="1;0"
+                   dur="0.8s"
+                   repeatCount="indefinite"/>
         </circle>
-        <circle cx="32" cy="48" r="3">
-          <animate attributeName="cy" values="46;54" dur="0.9s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values="1;0" dur="0.9s" repeatCount="indefinite"/>
+
+        <circle cx="36" cy="50" r="3">
+          <animate attributeName="cy"
+                   values="46;56"
+                   dur="1s"
+                   repeatCount="indefinite"/>
+          <animate attributeName="opacity"
+                   values="1;0"
+                   dur="1s"
+                   repeatCount="indefinite"/>
         </circle>
-        <circle cx="42" cy="48" r="3">
-          <animate attributeName="cy" values="44;52" dur="0.7s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values="1;0" dur="0.7s" repeatCount="indefinite"/>
+
+        <circle cx="46" cy="48" r="3">
+          <animate attributeName="cy"
+                   values="44;54"
+                   dur="0.9s"
+                   repeatCount="indefinite"/>
+          <animate attributeName="opacity"
+                   values="1;0"
+                   dur="0.9s"
+                   repeatCount="indefinite"/>
         </circle>
       </g>
     </svg>
     `;
   }
 
+  // ☀️ SOL
   if(code === 0){
     return `
     <svg viewBox="0 0 64 64">
-      <circle cx="32" cy="32" r="14" fill="#FFD54F">
-        <animate attributeName="r" values="13;15;13" dur="3s" repeatCount="indefinite"/>
+      <circle cx="32" cy="32" r="14" fill="#FFC107">
+        <animate attributeName="r"
+                 values="13;15;13"
+                 dur="3s"
+                 repeatCount="indefinite"/>
       </circle>
-      <g stroke="#FF9800" stroke-width="3">
+
+      <g stroke="#FF9800" stroke-width="4" stroke-linecap="round">
         <line x1="32" y1="6" x2="32" y2="16"/>
         <line x1="32" y1="48" x2="32" y2="58"/>
         <line x1="6" y1="32" x2="16" y2="32"/>
@@ -497,20 +527,22 @@ function getWeatherIconSVG(code){
     `;
   }
 
+  // ☁️ NUBLADO
   return `
   <svg viewBox="0 0 64 64">
-    <ellipse cx="32" cy="32" rx="18" ry="12" fill="#ECEFF1">
-      <animate attributeName="cx" values="30;34;30" dur="4s" repeatCount="indefinite"/>
-    </ellipse>
-    <ellipse cx="22" cy="30" rx="10" ry="8" fill="#CFD8DC"/>
-    <ellipse cx="42" cy="30" rx="10" ry="8" fill="#CFD8DC"/>
+    <g>
+      <ellipse cx="36" cy="36" rx="18" ry="12" fill="#2E9DB0">
+        <animateTransform attributeName="transform"
+          type="translate"
+          values="0 0;3 0;0 0"
+          dur="5s"
+          repeatCount="indefinite"/>
+      </ellipse>
+      <ellipse cx="26" cy="34" rx="12" ry="10" fill="#39A3B6"/>
+      <ellipse cx="48" cy="36" rx="10" ry="9" fill="#2B8FA1"/>
+    </g>
   </svg>
   `;
-}
-function descFrom(code){
-  if (isRainCode(code)) return "Chuva";
-  if (code===0) return "Sol";
-  return "Nublado";
 }
 
 /* ================= THI + IGCB ================= */
