@@ -562,16 +562,16 @@ function igcbActionPlan(igcb, rain3d, tempC){
   card.innerHTML =
   "<h3>🐄 Índice Global Conforto Bovino (IGCB)</h3>"+
 
+  "<div style='margin-bottom:10px;font-size:15px;color:var(--t2);font-weight:500;line-height:1.4'>"+
+  "Avalia o conforto dos animais com base na temperatura, humidade, lama, vento e radiação solar."+
+  "</div>"+
+
   "<div class='kpi'>"+Number(valor).toFixed(1)+"</div>"+
 
   "<div class='kpi-sub'>"+
     level.txt+
     "<span class='thi-indicator "+level.class+"'></span>"+
   "</div>"+
-
-  "<div style='margin-top:10px;font-size:16px;color:#c5e3d3;font-weight:500;line-height:1.4'>"+
-  "Indicador composto que avalia temperatura, humidade, lama, vento e radiação solar."+
-"</div>"+
 
   "<div class='kpi-sub' style='margin-top:10px;font-size:15px;color:var(--t3)'>"+
     action+
