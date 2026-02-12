@@ -16,8 +16,8 @@ html,body{height:100%;margin:0}
   --g2:#4f7f63;
   --b1:#7b6445;
 
---glass:rgba(0,0,0,.28);
---glass2:rgba(0,0,0,.40);
+  --glass:rgba(255,255,255,.20);
+  --glass2:rgba(0,0,0,.12);
   --stroke:rgba(255,255,255,.25);
 
   --t1:#f4f6f3;
@@ -44,7 +44,7 @@ body{
   position:fixed;
   inset:0;
   pointer-events:none;
-  z-index:2;
+  z-index:2; /* acima do fundo */
 }
 
 .drop{
@@ -82,7 +82,7 @@ body{
 /* ========= APP ========= */
 .app{
   position:relative;
-  z-index:3;
+  z-index:3; /* acima dos FX */
   height:100vh;
   display:grid;
   grid-template-rows:90px 1fr 48px;
@@ -129,7 +129,7 @@ header{
   align-items:center;
   justify-content:center;
   gap:14px;
-  min-width:0;
+  min-width:0; /* evita esmagar o relógio */
 }
 
 .group{
@@ -155,6 +155,7 @@ header{
 
 .pills{display:flex;gap:10px}
 
+/* micro movimento só para “vida” */
 .pill{
   display:flex;
   align-items:center;
@@ -174,6 +175,7 @@ header{
 .pill .big{font-size:15px;font-weight:900;line-height:1}
 .pill .sub{font-size:11px;color:var(--t3);margin-top:2px}
 
+/* 🔥 relógio garantido */
 .clock{
   flex:0 0 auto;
   flex-shrink:0;
@@ -185,32 +187,46 @@ header{
   text-shadow:0 10px 18px rgba(0,0,0,.18);
 }
 
-/* ========= Weather icons SVG ========= */
-
+/* ========= Weather icons (CSS puro) ========= */
 .icon{
-  width:40px;
-  height:40px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  width:26px;height:26px;position:relative;flex:0 0 26px;
+  filter:drop-shadow(0 8px 14px rgba(0,0,0,.18));
 }
-
-.icon svg{
-  width:100%;
-  height:100%;
+.icon.sun:before{
+  content:"";position:absolute;inset:6px;border-radius:50%;
+  background:radial-gradient(circle,#ffe6b4,#ffc36e);
+}
+.icon.cloud:before{
+  content:"";position:absolute;left:3px;right:3px;bottom:7px;height:12px;
+  background:#fff;border-radius:999px;opacity:.95;
+}
+.icon.cloud:after{
+  content:"";position:absolute;left:6px;bottom:11px;width:12px;height:12px;
+  background:#fff;border-radius:50%;
+  box-shadow:10px -2px 0 #fff;
+}
+.icon.rain:before{
+  content:"";position:absolute;left:3px;right:3px;bottom:11px;height:12px;
+  background:#fff;border-radius:999px;
+}
+.icon.rain:after{
+  content:"";position:absolute;left:9px;top:16px;width:10px;height:10px;
+  background:
+    radial-gradient(circle, rgba(170,230,255,.95) 2px, transparent 3px),
+    radial-gradient(circle, rgba(170,230,255,.85) 2px, transparent 3px),
+    radial-gradient(circle, rgba(170,230,255,.75) 2px, transparent 3px);
+  background-position:0 0, 8px 2px, 4px 8px;
+  background-size:10px 10px;
+  background-repeat:no-repeat;
 }
 
 /* ========= KPIs ========= */
 main{
   padding:22px 28px;
-
   display:grid;
-  grid-template-columns:repeat(3, 1fr);
-  grid-template-rows:repeat(3, 1fr);
-
+  grid-template-columns:repeat(3,1fr);
   gap:22px;
-
-  height:calc(100vh - 90px - 48px - 44px);
+  align-items:start;
 }
 
 .card{
@@ -220,59 +236,32 @@ main{
   padding:18px 20px;
   backdrop-filter: blur(10px);
   transition:opacity .4s, transform .4s;
-
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-
-  min-height:140px;
-  height:100%;
-
-  box-shadow:0 18px 40px rgba(0,0,0,.45);
+  align-self:start;
 }
 
 .card.hidden{
-  display:none;
+  opacity:0;
+  transform:translateY(10px);
+  pointer-events:none;
 }
 
 .card h3{
-  margin:0 0 14px;
-  font-size:18px;
+  margin:0 0 10px;
+  font-size:13px;
   text-transform:uppercase;
-  font-weight:800;
-  letter-spacing:1px;
-  color:#ffd54f; /* dourado técnico */
-  text-shadow:0 2px 6px rgba(0,0,0,.6);
+  color:var(--t2);
+  letter-spacing:.6px;
 }
 
 .kpi{
-  font-size: clamp(22px, 3.5vw, 46px);
+  font-size:56px;
   font-weight:900;
-  line-height:1.1;
-  letter-spacing:.5px;
-  color:#ffffff;
-  text-shadow:0 6px 16px rgba(0,0,0,.7);
+  line-height:1;
 }
 .kpi span{font-size:18px;color:var(--t2)}
-.kpi-sub{
-  margin-top:10px;
-  font-size:18px;
-  color:#e0f2e8;
-  font-weight:600;
-}
-.thi-indicator{
-  display:inline-block;
-  width:18px;
-  height:18px;
-  border-radius:50%;
-  margin-left:10px;
-  box-shadow:0 0 12px rgba(0,0,0,.35);
-}
 
-.thi-ok{ background:#2ecc71; }
-.thi-alerta{ background:#f1c40f; }
-.thi-stress{ background:#e67e22; }
-.thi-severo{ background:#e74c3c; }
+.kpi-sub{margin-top:8px;font-size:18px;color:var(--t2)}
+
 .kpi-image img{
   width:100%;
   max-height:300px;
@@ -290,37 +279,38 @@ footer{
   font-size:14px;
 }
 
-/* ========= ERVA ========= */
+/* ========= ERVA (NOVO) ========= */
 .footer-field{
   position:fixed;
   left:0; right:0; bottom:0;
   height:120px;
-  z-index:4;
+  z-index:4;               /* abaixo da news-bar */
   pointer-events:none;
   background:
     linear-gradient(to top, rgba(0,0,0,.35), rgba(0,0,0,0) 70%),
     url("assets/grass.png") repeat-x bottom;
   background-size:auto 120px;
-  transition:filter 2.5s ease;
+  transition:filter 2.5s ease;  /* mudança suave */
 }
 .footer-field.dry{filter:saturate(.6) brightness(.9)}
 .footer-field.normal{filter:saturate(1) brightness(1)}
 .footer-field.wet{filter:saturate(1.35) brightness(1.05)}
 
-/* ========= NEWS ========= */
+/* ========= NEWS TICKER (TV SIZE) ========= */
 .news-bar{
   position:fixed;
   left:0; right:0; bottom:0;
   height:68px;
-  z-index:5;
+  z-index:5; /* acima de tudo */
   display:flex;
   align-items:center;
   overflow:hidden;
   background:linear-gradient(180deg, rgba(0,0,0,.40), rgba(0,0,0,.65));
   border-top:1px solid rgba(255,255,255,.28);
   backdrop-filter: blur(10px);
-  pointer-events:none;
+  pointer-events:none; /* TV-safe */
 }
+
 .news-track{
   display:inline-block;
   white-space:nowrap;
@@ -332,19 +322,16 @@ footer{
   color:var(--t1);
   text-shadow:0 10px 18px rgba(0,0,0,.35);
 }
-.news-item{display:inline-block;margin-right:100px}
-@keyframes news-scroll{from{transform:translateX(0)}to{transform:translateX(-100%)}}
 
-/* ===== ESTADOS DINÂMICOS DO PAINEL ===== */
-body.estado-normal{}
-body.estado-chuva{}
-body.estado-seca{}
+.news-item{
+  display:inline-block;
+  margin-right:100px;
+}
 
-/* ===== CICLO DO DIA ===== */
-body.periodo-manha{filter:brightness(1.05) saturate(1.05);transition:filter 2s ease}
-body.periodo-dia{filter:brightness(1.1);transition:filter 2s ease}
-body.periodo-por{filter:sepia(.18) saturate(1.2);transition:filter 2s ease}
-body.periodo-noite{filter:brightness(.75) saturate(.85) hue-rotate(-8deg);transition:filter 2s ease}
+@keyframes news-scroll{
+  from{ transform:translateX(0); }
+  to{ transform:translateX(-100%); }
+}
 </style>
 </head>
 
@@ -382,8 +369,10 @@ body.periodo-noite{filter:brightness(.75) saturate(.85) hue-rotate(-8deg);transi
   <footer>Informação interna · Monte do Pasto</footer>
 </div>
 
+<!-- ERVA -->
 <div class="footer-field" aria-hidden="true"></div>
 
+<!-- NEWS BAR -->
 <div class="news-bar">
   <div class="news-track" id="newsTrack"></div>
 </div>
@@ -392,27 +381,21 @@ body.periodo-noite{filter:brightness(.75) saturate(.85) hue-rotate(-8deg);transi
 /* ================= CONFIG ================= */
 var LAT = 38.219, LON = -7.887;
 
-var MAX_VISIBLE = 9;
+var MAX_VISIBLE = 6;
 var ROTATE_MS = 15000;
 
 var SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRcoOLTXvKf6K_4aejdyA7ZK6PObIzqyiLBBOPSehdSkKlxj9_ms0EqJOjT7u2lN11j5DaYIAkcqoy7/pub?output=csv";
+
+/* Sheet de Notícias (CSV) */
 var NEWS_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgtnmWS6XFXm8V80ZzxQ1n4QwGxncyWqw4LnljjBu2kG5xWIRBoMLM_ya7cyg9B_Jyi9N2gqjSvVfS/pub?gid=0&single=true&output=csv";
 
 var WEATHER_URL =
   "https://api.open-meteo.com/v1/forecast?latitude="+LAT+"&longitude="+LON+
   "&current_weather=true"+
-  "&hourly=temperature_2m,relativehumidity_2m,precipitation,weathercode,windspeed_10m,shortwave_radiation"+
+  "&hourly=temperature_2m,precipitation,weathercode"+
   "&daily=temperature_2m_max,temperature_2m_min,weathercode"+
   "&timezone=auto";
 
-/* ================= ESTADO THI (memória) ================= */
-var LAST_THI = null;
-var LAST_THI_LEVEL = null;
-var LAST_RAIN_YTD = 0;
-
-var LAST_RAIN_3D = null;
-var LAST_TEMP = 0;
-var IGCB_HISTORY = [];
 /* ================= CLOCK ================= */
 function tick(){
   var d = new Date();
@@ -423,360 +406,21 @@ function tick(){
 tick();
 setInterval(tick, 30000);
 
-/* ===== CICLO DO DIA ===== */
-function updateDayPeriod(){
-  var hour = new Date().getHours();
-  document.body.classList.remove("periodo-manha","periodo-dia","periodo-por","periodo-noite");
-  if(hour >= 6 && hour < 11) document.body.classList.add("periodo-manha");
-  else if(hour >= 11 && hour < 18) document.body.classList.add("periodo-dia");
-  else if(hour >= 18 && hour < 21) document.body.classList.add("periodo-por");
-  else document.body.classList.add("periodo-noite");
-}
-
 /* ================= OPEN-METEO CODES ================= */
 function isRainCode(code){
   return (code===51||code===53||code===55||code===61||code===63||code===65||code===80||code===81||code===82||code===95||code===96||code===99);
 }
-  function descFrom(code){
+function iconClass(code){
+  if (isRainCode(code)) return "rain";
+  if (code===0) return "sun";
+  return "cloud";
+}
+function descFrom(code){
   if (isRainCode(code)) return "Chuva";
-  if (code === 0) return "Sol";
+  if (code===0) return "Sol";
   return "Nublado";
 }
-function getWeatherIconSVG(code){
 
-  // 🌧️ CHUVA
-  if(isRainCode(code)){
-    return `
-    <svg viewBox="0 0 64 64">
-      <!-- Sol escondido -->
-      <circle cx="22" cy="20" r="10" fill="#FFC107" opacity="0.9"/>
-
-      <!-- Nuvem -->
-      <g>
-        <ellipse cx="36" cy="34" rx="18" ry="12" fill="#2E9DB0">
-          <animateTransform attributeName="transform"
-            type="translate"
-            values="0 0;2 0;0 0"
-            dur="4s"
-            repeatCount="indefinite"/>
-        </ellipse>
-        <ellipse cx="26" cy="32" rx="12" ry="10" fill="#39A3B6"/>
-        <ellipse cx="48" cy="34" rx="10" ry="9" fill="#2B8FA1"/>
-      </g>
-
-      <!-- Gotas animadas -->
-      <g fill="#1CA3EC">
-        <circle cx="24" cy="48" r="3">
-          <animate attributeName="cy"
-                   values="44;54"
-                   dur="0.8s"
-                   repeatCount="indefinite"/>
-          <animate attributeName="opacity"
-                   values="1;0"
-                   dur="0.8s"
-                   repeatCount="indefinite"/>
-        </circle>
-
-        <circle cx="36" cy="50" r="3">
-          <animate attributeName="cy"
-                   values="46;56"
-                   dur="1s"
-                   repeatCount="indefinite"/>
-          <animate attributeName="opacity"
-                   values="1;0"
-                   dur="1s"
-                   repeatCount="indefinite"/>
-        </circle>
-
-        <circle cx="46" cy="48" r="3">
-          <animate attributeName="cy"
-                   values="44;54"
-                   dur="0.9s"
-                   repeatCount="indefinite"/>
-          <animate attributeName="opacity"
-                   values="1;0"
-                   dur="0.9s"
-                   repeatCount="indefinite"/>
-        </circle>
-      </g>
-    </svg>
-    `;
-  }
-
-  // ☀️ SOL
-  if(code === 0){
-    return `
-    <svg viewBox="0 0 64 64">
-      <circle cx="32" cy="32" r="14" fill="#FFC107">
-        <animate attributeName="r"
-                 values="13;15;13"
-                 dur="3s"
-                 repeatCount="indefinite"/>
-      </circle>
-
-      <g stroke="#FF9800" stroke-width="4" stroke-linecap="round">
-        <line x1="32" y1="6" x2="32" y2="16"/>
-        <line x1="32" y1="48" x2="32" y2="58"/>
-        <line x1="6" y1="32" x2="16" y2="32"/>
-        <line x1="48" y1="32" x2="58" y2="32"/>
-        <line x1="12" y1="12" x2="18" y2="18"/>
-        <line x1="46" y1="46" x2="52" y2="52"/>
-        <line x1="46" y1="18" x2="52" y2="12"/>
-        <line x1="12" y1="52" x2="18" y2="46"/>
-      </g>
-    </svg>
-    `;
-  }
-
-  // ☁️ NUBLADO
-  return `
-  <svg viewBox="0 0 64 64">
-    <g>
-      <ellipse cx="36" cy="36" rx="18" ry="12" fill="#2E9DB0">
-        <animateTransform attributeName="transform"
-          type="translate"
-          values="0 0;3 0;0 0"
-          dur="5s"
-          repeatCount="indefinite"/>
-      </ellipse>
-      <ellipse cx="26" cy="34" rx="12" ry="10" fill="#39A3B6"/>
-      <ellipse cx="48" cy="36" rx="10" ry="9" fill="#2B8FA1"/>
-    </g>
-  </svg>
-  `;
-}
-
-/* ================= THI + IGCB ================= */
-
-function calcTHI(tempC, rh){
-  return tempC - ((0.55 - 0.0055 * rh) * (tempC - 14.5));
-}
-
-function calcIGCB(tempC, rh, wind, radiation, rain3d, rainYTD){
-
-  let thi = calcTHI(tempC, rh);
-
-  let stressHeat = Math.max(0, thi - 68) * 1.8;
-  let stressSun = radiation * 0.02;
-  let benefitWind = wind * (rain3d > 20 ? 0.6 : 1.5);
-
-  // 👉 Stress frio húmido
-let stressCold = 0;
-
-// frio húmido mais realista
-if(tempC < 12 && rh > 85) stressCold = 12;
-if(tempC < 8 && rh > 85) stressCold = 20;
-if(tempC < 5 && rh > 85) stressCold = 30;
-
-  // 👉 Stress lama NÃO linear + saturação estrutural
-  let stressMud = 0;
-
-  if(rain3d > 60) stressMud = 30;
-else if(rain3d > 40) stressMud = 20;
-else if(rain3d > 20) stressMud = 12;
-else if(rain3d > 10) stressMud = 5;
-
-if(rainYTD > 200) stressMud += 5;
-if(rainYTD > 280) stressMud += 10;
-if(rainYTD > 350) stressMud += 15;
-
-  let score = 100 - (
-    stressHeat +
-    stressSun +
-    stressMud +
-    stressCold -
-    benefitWind
-  );
-
-  return Math.max(0, Math.min(100, score));
-}
-function igcbLevel(igcb){
-
-  if (igcb >= 85) return { txt:"Conforto ótimo", class:"thi-ok" };
-  if (igcb >= 70) return { txt:"Conforto aceitável", class:"thi-alerta" };
-  if (igcb >= 55) return { txt:"Stress ambiental", class:"thi-stress" };
-
-  return { txt:"Stress crítico", class:"thi-severo" };
-}
-function igcbActionPlan(igcb, rain3d, tempC){
-
-  if(igcb >= 85){
-    return "Condições ótimas. Maneio normal.";
-  }
-
-  if(igcb >= 70){
-    return "Monitorizar parques mais húmidos e zonas de sombra.";
-  }
-
-  if(igcb >= 55){
-    if(rain3d > 30){
-      return "⚠️ Avaliar redistribuição de animais para parques mais secos.";
-    }
-    return "⚠️ Reforçar vigilância sanitária e ingestão alimentar.";
-  }
-
-  if(rain3d > 40){
-    return "🚨 Alto risco de lama. Considerar movimentação urgente e reforço energético.";
-  }
-
-  if(tempC < 5){
-    return "🚨 Stress por frio húmido. Aumentar energia da dieta.";
-  }
-
-  return "🚨 Stress elevado. Avaliar intervenção imediata.";
-}
-  function upsertTHICard(valor, level){
-
-  var grid = document.getElementById("kpis");
-  if(!grid) return;
-
-  var old = document.getElementById("thiCard");
-  if(old) old.remove();
-
-  var action = igcbActionPlan(valor, LAST_RAIN_3D, LAST_TEMP);
-
-  var card = document.createElement("div");
-  card.className = "card kpi-card";
-  card.id = "thiCard";
-
-  card.innerHTML =
-  "<h3>🐄 Índice Global Conforto Bovino (IGCB)</h3>"+
-
-  "<div style='margin-bottom:10px;font-size:15px;color:var(--t2);font-weight:500;line-height:1.4'>"+
-  "Avalia o conforto dos animais com base na temperatura, humidade, lama, vento e radiação solar."+
-  "</div>"+
-
-  "<div class='kpi'>"+Number(valor).toFixed(1)+"</div>"+
-
-  "<div class='kpi-sub'>"+
-    level.txt+
-    "<span class='thi-indicator "+level.class+"'></span>"+
-  "</div>"+
-
-  "<div class='kpi-sub' style='margin-top:10px;font-size:15px;color:var(--t3)'>"+
-    action+
-  "</div>";
-
-grid.insertBefore(card, grid.firstChild);
-
-  refreshCardsAndRotation();
-}
-  function calculateAndRenderIGCB(temp, rh, wind, radiation){
-
-  if(LAST_RAIN_3D === null) return;
-  if(LAST_RAIN_YTD === null) return;
-
-  var igcb = calcIGCB(
-    temp,
-    rh,
-    wind,
-    radiation,
-    LAST_RAIN_3D,
-    LAST_RAIN_YTD
-  );
-
-  var level = igcbLevel(igcb);
-
-  LAST_THI = igcb;
-  LAST_THI_LEVEL = level;
-
-  upsertTHICard(igcb, level);
-
-  IGCB_HISTORY.unshift(igcb);
-  if(IGCB_HISTORY.length > 5) IGCB_HISTORY.pop();
-
-  var isa = calcISA();
-  if(isa !== null){
-    var isaLvl = isaLevel(isa);
-    upsertISACard(isa, isaLvl);
-  }
-}
-
-  
-
-  function calcISA(){
-
-  if(IGCB_HISTORY.length === 0) return null;
-
-  let pesos = [0.40, 0.25, 0.15, 0.10, 0.10];
-
-  let total = 0;
-  let pesoTotal = 0;
-
-  for(let i=0;i<IGCB_HISTORY.length;i++){
-    total += IGCB_HISTORY[i] * pesos[i];
-    pesoTotal += pesos[i];
-  }
-
-  return total / pesoTotal;
-}
-
-function isaLevel(isa){
-
-  if (isa >= 80) return { txt:"Recuperação total", class:"thi-ok" };
-  if (isa >= 65) return { txt:"Stress ligeiro acumulado", class:"thi-alerta" };
-  if (isa >= 50) return { txt:"Stress moderado acumulado", class:"thi-stress" };
-
-  return { txt:"Stress crítico acumulado", class:"thi-severo" };
-}
-
-function isaActionPlan(isa){
-
-  if(isa >= 80)
-    return "Animais totalmente recuperados.";
-
-  if(isa >= 65)
-    return "Monitorizar ingestão e zonas húmidas.";
-
-  if(isa >= 50)
-    return "Reforçar palha e avaliar redistribuição de lotes.";
-
-  return "Intervenção urgente recomendada.";
-}
-
-function upsertISACard(valor, level){
-
-  var grid = document.getElementById("kpis");
-  if(!grid) return;
-
-  var old = document.getElementById("isaCard");
-  if(old) old.remove();
-
-  var plano = isaActionPlan(valor);
-
-  var card = document.createElement("div");
-  card.className = "card kpi-card";
-  card.id = "isaCard";
-
-  card.innerHTML =
-  "<h3>📊 Índice Stress Acumulado (ISA-5)</h3>"+
-
-"<div style='margin-bottom:10px;font-size:15px;color:var(--t2);font-weight:500;line-height:1.4'>"+
-"Stress acumulado dos animais com base nas condições dos últimos dias (temperatura, humidade, lama e exposição ambiental)."+
-"</div>"+
-
-"<div class='kpi'>"+Number(valor).toFixed(1)+"</div>"+
-
-  "<div class='kpi-sub'>"+
-    level.txt+
-    "<span class='thi-indicator "+level.class+"'></span>"+
-  "</div>"+
-
-
-  "<div class='kpi-sub' style='margin-top:10px;font-size:15px;color:var(--t3)'>"+
-    plano+
-  "</div>";
-
-  var igcbCard = document.getElementById("thiCard");
-
-if (igcbCard) {
-  grid.insertBefore(card, igcbCard.nextSibling);
-} else {
-  grid.insertBefore(card, grid.firstChild);
-}
-
-  refreshCardsAndRotation();
-}
 /* ================= FX HELPERS ================= */
 function clearFX(){ document.getElementById("fx").innerHTML = ""; }
 function addFog(){
@@ -802,32 +446,7 @@ function addRainDrops(count){
   }
 }
 
-function updatePanelState(code, temp, d){
-  clearFX();
-  addFog();
-
-  document.body.classList.remove("estado-normal","estado-chuva","estado-seca");
-
-  if (isRainCode(code)) document.body.classList.add("estado-chuva");
-  else if (temp >= 32) document.body.classList.add("estado-seca");
-  else document.body.classList.add("estado-normal");
-
-  if (isRainCode(code)){
-    var prec = 0;
-    if (d.hourly && d.hourly.precipitation && d.hourly.precipitation[0] !== undefined){
-      prec = Number(d.hourly.precipitation[0]) || 0;
-    }
-    var intensity = prec / 4;
-    if (intensity < 0.20) intensity = 0.20;
-    if (intensity > 1) intensity = 1;
-    var drops = Math.floor(120 + intensity * 320);
-    addRainDrops(drops);
-  } else if (code === 0){
-    addSun();
-  }
-}
-
-/* ================= WEATHER ================= */
+/* ================= WEATHER (widgets + FX) ================= */
 function updateWeather(){
   fetch(WEATHER_URL)
     .then(function(r){ return r.json(); })
@@ -836,15 +455,11 @@ function updateWeather(){
       var temp = Math.round(cw.temperature || 0);
       var code = (cw.weathercode!==undefined ? cw.weathercode : 3);
 
-      var rh = 0;
-      if (d.hourly && d.hourly.relativehumidity_2m && d.hourly.relativehumidity_2m[0] !== undefined){
-        rh = Number(d.hourly.relativehumidity_2m[0]) || 0;
-      }
-
       document.getElementById("nowTemp").textContent = temp+"°C";
       document.getElementById("nowDesc").textContent = descFrom(code);
-      document.getElementById("nowIcon").innerHTML = getWeatherIconSVG(code);
+      document.getElementById("nowIcon").className = "icon " + iconClass(code);
 
+      /* próximas 4 horas */
       var hoursEl = document.getElementById("hours");
       hoursEl.innerHTML = "";
 
@@ -860,9 +475,10 @@ function updateWeather(){
           var dt = new Date(hTimes[i]);
           hh = ("0"+dt.getHours()).slice(-2) + "h";
         }
+
         hoursEl.innerHTML +=
           "<div class='pill'>"+
-            "<div class='icon'>"+getWeatherIconSVG(c)+"</div>"+
+            "<div class='icon "+iconClass(c)+"'></div>"+
             "<div>"+
               "<div class='big'>"+t+"°</div>"+
               "<div class='sub'>"+hh+"</div>"+
@@ -870,6 +486,7 @@ function updateWeather(){
           "</div>";
       }
 
+      /* próximos 4 dias */
       var daysEl = document.getElementById("days");
       daysEl.innerHTML = "";
 
@@ -884,14 +501,16 @@ function updateWeather(){
         var tmax = Math.round(dMax[j] || 0);
         var tmin = Math.round(dMin[j] || 0);
         var cc = (dCode[j]!==undefined ? dCode[j] : 3);
+
         var wd = "---";
         if (dTime[j]){
           var dd = new Date(dTime[j]);
           wd = dias[dd.getDay()];
         }
+
         daysEl.innerHTML +=
           "<div class='pill'>"+
-            "<div class='icon'>"+getWeatherIconSVG(cc)+"</div>"+
+            "<div class='icon "+iconClass(cc)+"'></div>"+
             "<div>"+
               "<div class='big'>"+tmax+"°/"+tmin+"°</div>"+
               "<div class='sub'>"+wd+"</div>"+
@@ -899,87 +518,55 @@ function updateWeather(){
           "</div>";
       }
 
-      updatePanelState(code, temp, d);
+      /* FX: fog sempre; chuva depende de precipitação; sol se limpo */
+      clearFX();
+      addFog();
 
-      // THI: guarda e desenha já (mesmo que ainda não exista rainKpiCard)
-var thi = calcTHI(temp, rh);
-
-// 👉 vento atual
-var wind = 0;
-if (d.hourly && d.hourly.windspeed_10m && d.hourly.windspeed_10m[0] !== undefined){
-  wind = Number(d.hourly.windspeed_10m[0]) || 0;
-}
-
-// 👉 radiação solar atual
-var radiation = 0;
-if (d.hourly && d.hourly.shortwave_radiation && d.hourly.shortwave_radiation[0] !== undefined){
-  radiation = Number(d.hourly.shortwave_radiation[0]) || 0;
-}
-
-getRainLast3Days().then(function(rain3d){
-
-  LAST_RAIN_3D = rain3d;
-  LAST_TEMP = temp;
-
-  calculateAndRenderIGCB(temp, rh, wind, radiation);
-
-})
-.catch(function(){});
-
-})  // 👈 FECHA O .then(function(d){
-
-.catch(function(){});
-
-}   // 👈 FECHA updateWeather
-
-/* ================= CSV PARSER ================= */
-function parseCSV(text){
-  var rows = [];
-  var row = [];
-  var field = "";
-  var insideQuotes = false;
-
-  for (var i = 0; i < text.length; i++) {
-    var char = text[i];
-    var nextChar = text[i + 1];
-
-    if (char === '"') {
-      if (insideQuotes && nextChar === '"') {
-        field += '"';
-        i++;
-      } else {
-        insideQuotes = !insideQuotes;
+      if (isRainCode(code)){
+        var prec = 0;
+        if (d.hourly && d.hourly.precipitation && d.hourly.precipitation[0]!==undefined){
+          prec = Number(d.hourly.precipitation[0]) || 0; // mm/h
+        }
+        var intensity = prec / 4;
+        if (intensity < 0.20) intensity = 0.20;
+        if (intensity > 1) intensity = 1;
+        var drops = Math.floor(120 + intensity * 320);
+        addRainDrops(drops);
+      } else if (code === 0){
+        addSun();
       }
+    })
+    .catch(function(){});
+}
+
+/* ================= CSV PARSER (TV-safe) ================= */
+function parseCSV(text){
+  text = (text||"").replace(/\r/g,"").trim();
+  if (!text) return [];
+  var lines = text.split("\n");
+  var headers = lines.shift().split(",");
+  for (var i=0;i<headers.length;i++) headers[i] = (headers[i]||"").trim();
+  var out = [];
+  for (var l=0;l<lines.length;l++){
+    if (!lines[l]) continue;
+    var cols = lines[l].split(",");
+    var row = {};
+    for (var c=0;c<headers.length;c++){
+      row[headers[c]] = (cols[c]||"").trim();
     }
-    else if (char === ',' && !insideQuotes) {
-      row.push(field);
-      field = "";
-    }
-    else if (char === '\n' && !insideQuotes) {
-      row.push(field);
-      rows.push(row);
-      row = [];
-      field = "";
-    }
-    else {
-      field += char;
-    }
+    out.push(row);
   }
-
-  if (field.length > 0) {
-    row.push(field);
-    rows.push(row);
-  }
-
-  var headers = rows.shift();
-
-  return rows.map(function(r){
-    var obj = {};
-    for (var i=0; i<headers.length; i++){
-      obj[headers[i].trim()] = (r[i] || "").trim();
-    }
-    return obj;
-  });
+  return out;
+}
+function asBool(v){
+  v = (v||"").toString().trim().toLowerCase();
+  return (v==="true"||v==="1"||v==="sim"||v==="yes");
+}
+function asNum(v){
+  if (v===undefined || v===null) return NaN;
+  v = (""+v).trim().replace(",",".");
+  var n = Number(v);
+  return (isFinite(n) ? n : NaN);
 }
 
 /* ================= KPI ROTATION ================= */
@@ -991,6 +578,7 @@ function refreshCardsAndRotation(){
   cards = Array.prototype.slice.call(document.querySelectorAll(".kpi-card"));
   startRotation();
 }
+
 function rotate(){
   if (!cards.length) return;
   var start = page * MAX_VISIBLE;
@@ -1021,13 +609,15 @@ function loadKPIs(){
     .then(function(t){
       var rows = parseCSV(t).map(function(r){
         return {
+          id: (r.id||"").trim(),
           active: asBool(r.active),
           type: (r.type||"").trim().toLowerCase(),
           title: (r.title||"").trim(),
           value: (r.value||"").trim(),
           unit: (r.unit||"").trim(),
           imageUrl: (r.imageUrl||"").trim(),
-          order: asNum(r.order)
+          order: asNum(r.order),
+          extra: (r.extra||"").trim()
         };
       }).filter(function(r){
         return r.active && r.type && r.title;
@@ -1040,12 +630,7 @@ function loadKPIs(){
       });
 
       var grid = document.getElementById("kpis");
-
-// remove apenas cards que vêm do sheets
-var sheetCards = grid.querySelectorAll(".sheet-card");
-sheetCards.forEach(function(c){
-  c.remove();
-});
+      grid.innerHTML = "";
 
       if (!rows.length){
         grid.innerHTML =
@@ -1059,15 +644,15 @@ sheetCards.forEach(function(c){
           var body = "";
 
           if (r.type === "image"){
-            body = r.imageUrl
-              ? "<div class='kpi-image'><img src='"+r.imageUrl+"' alt=''></div>"
-              : "<div class='kpi-sub'>Sem imageUrl</div>";
+            if (r.imageUrl){
+              body = "<div class='kpi-image'><img src='"+r.imageUrl+"' alt=''></div>";
+            } else {
+              body = "<div class='kpi-sub'>Sem imageUrl</div>";
+            }
           } else if (r.type === "number"){
             body = "<div class='kpi'>"+(escapeHTML(r.value)||"--")+" <span>"+escapeHTML(r.unit||"")+"</span></div>";
           } else if (r.type === "text"){
-            var raw = (r.value||"").replace(/^"|"$/g,"");
-var texto = escapeHTML(raw).replace(/\n/g,"<br>");
-body = "<div class='kpi'>"+texto+"</div>";
+            body = "<div class='kpi-sub'>"+escapeHTML(r.value||"")+"</div>";
           } else {
             body = "<div class='kpi-sub'>Tipo não suportado: "+escapeHTML(r.type)+"</div>";
           }
@@ -1080,15 +665,18 @@ body = "<div class='kpi'>"+texto+"</div>";
         }
       }
 
-      refreshCardsAndRotation();
+      cards = Array.prototype.slice.call(document.querySelectorAll(".kpi-card"));
+      startRotation();
 
-      // Recria chuva e volta a “encaixar” THI antes dela
+      // como o grid foi limpo, volta a inserir o KPI de chuva (e aplica estado à erva)
       loadRainKPI();
     })
     .catch(function(){});
 }
 
-/* ================= NEWS ================= */
+/* ================= NEWS (Google Sheet) =================
+   Sheet colunas: active, order, text
+*/
 function loadNews(){
   if (!NEWS_SHEET_URL || NEWS_SHEET_URL.indexOf("http") !== 0){
     document.getElementById("newsTrack").innerHTML =
@@ -1100,8 +688,14 @@ function loadNews(){
     .then(function(r){ return r.text(); })
     .then(function(t){
       var rows = parseCSV(t).map(function(r){
-        return { active: asBool(r.active), order: asNum(r.order), text: (r.text||"").trim() };
-      }).filter(function(r){ return r.active && r.text; });
+        return {
+          active: asBool(r.active),
+          order: asNum(r.order),
+          text: (r.text||"").trim()
+        };
+      }).filter(function(r){
+        return r.active && r.text;
+      });
 
       rows.sort(function(a,b){
         var ao = isFinite(a.order) ? a.order : 999999;
@@ -1110,9 +704,15 @@ function loadNews(){
       });
 
       var track = document.getElementById("newsTrack");
-      track.innerHTML = rows.length
-        ? rows.map(function(x){ return "<span class='news-item'>"+escapeHTML(x.text)+"</span>"; }).join("")
-        : "<span class='news-item'>Sem comunicações ativas</span>";
+      track.innerHTML = "";
+
+      if (!rows.length){
+        track.innerHTML = "<span class='news-item'>Sem comunicações ativas</span>";
+      } else {
+        for (var i=0;i<rows.length;i++){
+          track.innerHTML += "<span class='news-item'>"+escapeHTML(rows[i].text)+"</span>";
+        }
+      }
 
       track.style.animation = "none";
       track.offsetHeight;
@@ -1131,18 +731,26 @@ function escapeHTML(s){
     .replace(/'/g,"&#039;");
 }
 
-/* ================= ERVA COM VIDA ================= */
+/* ================= ERVA COM VIDA (NOVO) ================= */
 function updateGrassByRain(rainNow){
   var grass = document.querySelector(".footer-field");
   if (!grass) return;
 
   grass.classList.remove("dry","normal","wet");
-  if (rainNow < 200) grass.classList.add("dry");
-  else if (rainNow < 400) grass.classList.add("normal");
-  else grass.classList.add("wet");
+
+  // Ajusta estes thresholds se quiseres (valores em L/m²)
+  if (rainNow < 200){
+    grass.classList.add("dry");
+  } else if (rainNow < 400){
+    grass.classList.add("normal");
+  } else {
+    grass.classList.add("wet");
+  }
 }
 
-/* ================= CHUVA YTD ================= */
+/* ================= CHUVA YTD (L/m²) vs ano anterior =================
+   1 mm = 1 L/m², portanto apresentamos em L/m²
+*/
 function buildRainURL(start, end){
   return "https://archive-api.open-meteo.com/v1/archive"
     + "?latitude=" + LAT
@@ -1152,6 +760,7 @@ function buildRainURL(start, end){
     + "&daily=precipitation_sum"
     + "&timezone=auto";
 }
+
 function getRainSum(startDate, endDate){
   return fetch(buildRainURL(startDate, endDate))
     .then(function(r){ return r.json(); })
@@ -1161,16 +770,7 @@ function getRainSum(startDate, endDate){
     })
     .catch(function(){ return 0; });
 }
-function getRainLast3Days(){
-  var end = new Date();
-  var start = new Date();
-  start.setDate(end.getDate() - 3);
 
-  return getRainSum(
-    start.toISOString().slice(0,10),
-    end.toISOString().slice(0,10)
-  );
-}
 function loadRainKPI(){
   var now = new Date();
   var year = now.getFullYear();
@@ -1184,13 +784,11 @@ function loadRainKPI(){
     getRainSum(startThisYear, today),
     getRainSum(startLastYear, sameDayLastYear)
   ]).then(function(values){
-var rainNow = Math.round(values[0]);
+    var rainNow = Math.round(values[0]);   // L/m²
+    var rainLast = Math.round(values[1]);  // L/m²
+    var diff = rainNow - rainLast;
 
-LAST_RAIN_YTD = rainNow;
-calculateAndRenderIGCB(LAST_TEMP, 0, 0, 0);
-var rainLast = Math.round(values[1]);
-var diff = rainNow - rainLast;
-
+    // ✅ aplica "vida" à erva
     updateGrassByRain(rainNow);
 
     var diffTxt =
@@ -1201,6 +799,7 @@ var diff = rainNow - rainLast;
     var grid = document.getElementById("kpis");
     if (!grid) return;
 
+    // remove o card anterior se existir (para não duplicar)
     var old = document.getElementById("rainKpiCard");
     if (old && old.parentNode) old.parentNode.removeChild(old);
 
@@ -1212,27 +811,15 @@ var diff = rainNow - rainLast;
       "<div class='kpi'>"+rainNow+" <span>L/m²</span></div>" +
       "<div class='kpi-sub'>"+diffTxt+"</div>";
 
-    var isaCard = document.getElementById("isaCard");
-var igcbCard = document.getElementById("thiCard");
+    // mete no topo do grid
+    grid.prepend(card);
 
-if (isaCard) {
-  grid.insertBefore(card, isaCard.nextSibling);
-} else if (igcbCard) {
-  grid.insertBefore(card, igcbCard.nextSibling);
-} else {
-  grid.insertBefore(card, grid.firstChild);
-}
-
-    // Agora que rain existe, volta a “encaixar” THI antes dele (se já temos THI calculado)
-    if (LAST_THI !== null && LAST_THI_LEVEL){
-      upsertTHICard(LAST_THI, LAST_THI_LEVEL);
-    } else {
-      refreshCardsAndRotation();
-    }
+    // atualiza rotação com o novo card incluído
+    refreshCardsAndRotation();
   });
 }
 
-/* ================= SCHEDULE ================= */
+/* ================= HOURLY REFRESH (alinhado) ================= */
 function scheduleHourly(fn){
   fn();
   var now = new Date();
@@ -1247,12 +834,18 @@ function scheduleHourly(fn){
 }
 
 /* ================= INIT ================= */
-updateDayPeriod();
-setInterval(updateDayPeriod, 5*60*1000);
+updateWeather();
+loadKPIs();   // loadKPIs chama loadRainKPI no fim (porque limpa o grid)
+loadNews();
 
+/* refresh alinhado à hora */
 scheduleHourly(updateWeather);
 scheduleHourly(loadKPIs);
 scheduleHourly(loadNews);
+scheduleHourly(loadRainKPI);
+
+
+
 </script>
 
 <audio id="radioPlayer" preload="auto" autoplay loop muted>
@@ -1260,14 +853,18 @@ scheduleHourly(loadNews);
 </audio>
 
 <script>
+
 /* ================= RADIO AUTO INVISÍVEL ================= */
+
 (function(){
+
   const radio = document.getElementById("radioPlayer");
   if(!radio) return;
 
   let started = false;
 
   function startRadio(){
+
     if(started) return;
     started = true;
 
@@ -1275,9 +872,13 @@ scheduleHourly(loadNews);
     radio.volume = 0;
 
     radio.play().then(() => {
+
       let v = 0;
+
       const fade = setInterval(() => {
+
         v += 0.02;
+
         if(v >= 0.25){
           radio.volume = 0.25;
           radio.muted = false;
@@ -1285,17 +886,22 @@ scheduleHourly(loadNews);
         } else {
           radio.volume = v;
         }
+
       }, 200);
+
     }).catch(() => {
       started = false;
     });
+
   }
 
   window.addEventListener("load", startRadio);
   document.addEventListener("click", startRadio);
   document.addEventListener("touchstart", startRadio);
+
 })();
 </script>
 
 </body>
 </html>
+
