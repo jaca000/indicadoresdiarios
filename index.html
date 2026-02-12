@@ -604,28 +604,21 @@ function igcbActionPlan(igcb, rain3d, tempC){
 }
 
   
-function upsertTHICard(valor, level){
-
-  var grid = document.getElementById("kpis");
-  if(!grid) return;
-
-  var old = document.getElementById("thiCard");
-  if(old) old.remove();
-
-  var card = document.createElement("div");
-  card.className = "card kpi-card";
-  card.id = "thiCard";
-
-var action = igcbActionPlan(valor, LAST_RAIN_3D, LAST_TEMP);
-
 card.innerHTML =
   "<h3>🐄 Índice Global Conforto Bovino (IGCB)</h3>"+
+
   "<div class='kpi'>"+Number(valor).toFixed(1)+"</div>"+
+
   "<div class='kpi-sub'>"+
     level.txt+
     "<span class='thi-indicator "+level.class+"'></span>"+
   "</div>"+
-  "<div class='kpi-sub' style='margin-top:12px;font-size:15px;color:var(--t3)'>"+
+
+  "<div class='kpi-sub' style='margin-top:8px;font-size:14px;color:var(--t3)'>"+
+    "Indicador que combina temperatura, humidade, vento, radiação solar e saturação do solo."+
+  "</div>"+
+
+  "<div class='kpi-sub' style='margin-top:10px;font-size:15px;color:var(--t3)'>"+
     action+
   "</div>";
 
