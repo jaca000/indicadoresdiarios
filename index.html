@@ -566,7 +566,7 @@ function igcbActionPlan(igcb, rain3d, tempC){
     action+
   "</div>";
 
-grid.prepend(card);
+grid.insertBefore(card, grid.firstChild);
 
   refreshCardsAndRotation();
 }
@@ -677,32 +677,10 @@ function upsertISACard(valor, level){
 
   var igcbCard = document.getElementById("thiCard");
 
-if(igcbCard && igcbCard.nextSibling){
-  grid.insertBefore(card, igcbCard.nextSibling);
-} else if(igcbCard){
-var igcbCard = document.getElementById("thiCard");
-
 if (igcbCard) {
-  if (igcbCard.nextSibling) {
-    grid.insertBefore(card, igcbCard.nextSibling);
-  } else {
-    grid.appendChild(card);
-  }
+  grid.insertBefore(card, igcbCard.nextSibling);
 } else {
-var firstCard = grid.firstChild;
-if (firstCard) {
-  grid.insertBefore(card, firstCard);
-} else {
-  grid.appendChild(card);
-}
-}
-} else {
-var firstCard = grid.firstChild;
-if (firstCard) {
-  grid.insertBefore(card, firstCard);
-} else {
-  grid.appendChild(card);
-}
+  grid.insertBefore(card, grid.firstChild);
 }
 
   refreshCardsAndRotation();
