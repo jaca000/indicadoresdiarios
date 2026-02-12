@@ -1039,7 +1039,12 @@ function loadKPIs(){
       });
 
       var grid = document.getElementById("kpis");
-      grid.innerHTML = "";
+
+// remove apenas cards que vêm do sheets
+var sheetCards = grid.querySelectorAll(".sheet-card");
+sheetCards.forEach(function(c){
+  c.remove();
+});
 
       if (!rows.length){
         grid.innerHTML =
