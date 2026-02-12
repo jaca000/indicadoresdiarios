@@ -825,7 +825,7 @@ function updateWeather(){
         }
         hoursEl.innerHTML +=
           "<div class='pill'>"+
-            "<div class='icon "+iconClass(c)+"'></div>"+
+            "<div class='icon'>"+getWeatherIconSVG(c)+"</div>"+
             "<div>"+
               "<div class='big'>"+t+"°</div>"+
               "<div class='sub'>"+hh+"</div>"+
