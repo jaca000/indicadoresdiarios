@@ -934,29 +934,52 @@ getRainLast3Days().then(function(rain3d){
 
 /* ================= CSV PARSER ================= */
 function parseCSV(text){
-   ...
-   return rows.map(function(r){
-      var obj = {};
-      for (var i=0; i<headers.length; i++){
-        obj[headers[i].trim()] = (r[i] || "").trim();
+  var rows = [];
+  var row = [];
+  var field = "";
+  var insideQuotes = false;
+
+  for (var i = 0; i < text.length; i++) {
+    var char = text[i];
+    var nextChar = text[i + 1];
+
+    if (char === '"') {
+      if (insideQuotes && nextChar === '"') {
+        field += '"';
+        i++;
+      } else {
+        insideQuotes = !insideQuotes;
       }
-      return obj;
-   });
-}
+    }
+    else if (char === ',' && !insideQuotes) {
+      row.push(field);
+      field = "";
+    }
+    else if (char === '\n' && !insideQuotes) {
+      row.push(field);
+      rows.push(row);
+      row = [];
+      field = "";
+    }
+    else {
+      field += char;
+    }
+  }
 
-/* 👇 COLOCAR AQUI 👇 */
+  if (field.length > 0) {
+    row.push(field);
+    rows.push(row);
+  }
 
-function asBool(v){
-  if(!v) return false;
-  v = v.toString().trim().toLowerCase();
-  return (v === "true" || v === "1" || v === "sim" || v === "yes");
-}
+  var headers = rows.shift();
 
-function asNum(v){
-  if(!v) return NaN;
-  v = v.toString().trim().replace(",", ".");
-  var n = Number(v);
-  return isFinite(n) ? n : NaN;
+  return rows.map(function(r){
+    var obj = {};
+    for (var i=0; i<headers.length; i++){
+      obj[headers[i].trim()] = (r[i] || "").trim();
+    }
+    return obj;
+  });
 }
 
 /* ================= KPI ROTATION ================= */
