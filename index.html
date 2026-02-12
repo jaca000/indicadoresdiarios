@@ -806,7 +806,7 @@ function updateWeather(){
 
       document.getElementById("nowTemp").textContent = temp+"°C";
       document.getElementById("nowDesc").textContent = descFrom(code);
-      document.getElementById("nowIcon").className = "icon " + iconClass(code);
+      document.getElementById("nowIcon").innerHTML = getWeatherIconSVG(code);
 
       var hoursEl = document.getElementById("hours");
       hoursEl.innerHTML = "";
