@@ -1093,7 +1093,16 @@ var diff = rainNow - rainLast;
       "<div class='kpi'>"+rainNow+" <span>L/m²</span></div>" +
       "<div class='kpi-sub'>"+diffTxt+"</div>";
 
-    grid.prepend(card);
+    var isaCard = document.getElementById("isaCard");
+var igcbCard = document.getElementById("thiCard");
+
+if (isaCard) {
+  grid.insertBefore(card, isaCard.nextSibling);
+} else if (igcbCard) {
+  grid.insertBefore(card, igcbCard.nextSibling);
+} else {
+  grid.insertBefore(card, grid.firstChild);
+}
 
     // Agora que rain existe, volta a “encaixar” THI antes dele (se já temos THI calculado)
     if (LAST_THI !== null && LAST_THI_LEVEL){
