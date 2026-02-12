@@ -437,6 +437,11 @@ function updateDayPeriod(){
 function isRainCode(code){
   return (code===51||code===53||code===55||code===61||code===63||code===65||code===80||code===81||code===82||code===95||code===96||code===99);
 }
+  function descFrom(code){
+  if (isRainCode(code)) return "Chuva";
+  if (code === 0) return "Sol";
+  return "Nublado";
+}
 function getWeatherIconSVG(code){
 
   // 🌧️ CHUVA
