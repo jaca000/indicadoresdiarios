@@ -1236,10 +1236,11 @@ if (isaCard) {
 
     // Agora que rain existe, volta a “encaixar” THI antes dele (se já temos THI calculado)
     if (LAST_THI !== null && LAST_THI_LEVEL){
-      upsertTHICard(LAST_THI, LAST_THI_LEVEL);
-    } else {
-      refreshCardsAndRotation();
-    }
+  upsertTHICard(LAST_THI, LAST_THI_LEVEL);
+}
+
+// força sempre recalcular rotação depois de tudo criado
+setTimeout(refreshCardsAndRotation, 50);
   });
 }
 
