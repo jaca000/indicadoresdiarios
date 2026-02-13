@@ -690,7 +690,7 @@ grid.insertBefore(card, grid.firstChild);
 
   var level = igcbLevel(igcb);
 
-var previousIGCB = IGCB_HISTORY[0];
+var previousIGCB = IGCB_HISTORY.length > 0 ? IGCB_HISTORY[0] : null;
 
 LAST_THI = igcb;
 LAST_THI_LEVEL = level;
