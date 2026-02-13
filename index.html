@@ -1060,7 +1060,7 @@ sheetCards.forEach(function(c){
 
       if (!rows.length){
         grid.innerHTML =
-          "<div class='card kpi-card'>"+
+          "<div class='card kpi-card sheet-card'>"+
             "<h3>Sem KPIs ativos</h3>"+
             "<div class='kpi-sub'>Liga KPIs na Google Sheet (active=TRUE).</div>"+
           "</div>";
@@ -1084,7 +1084,7 @@ body = "<div class='kpi'>"+texto+"</div>";
           }
 
           grid.innerHTML +=
-            "<div class='card kpi-card'>"+
+            "<div class='card kpi-card sheet-card'>"+
               "<h3>"+escapeHTML(r.title)+"</h3>"+
               body+
             "</div>";
