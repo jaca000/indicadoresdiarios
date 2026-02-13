@@ -659,6 +659,7 @@ function igcbActionPlan(igcb, rain3d, tempC){
 
 grid.insertBefore(card, grid.firstChild);
 
+  refreshCardsAndRotation();
 }
   function calculateAndRenderIGCB(temp, rh, wind, radiation){
 
@@ -774,6 +775,7 @@ if (igcbCard) {
   grid.insertBefore(card, grid.firstChild);
 }
 
+  refreshCardsAndRotation();
 }
 /* ================= FX HELPERS ================= */
 function clearFX(){ document.getElementById("fx").innerHTML = ""; }
@@ -1002,36 +1004,25 @@ function refreshCardsAndRotation(){
 }
 function rotate(){
   if (!cards.length) return;
-
   var start = page * MAX_VISIBLE;
   var end = start + MAX_VISIBLE;
 
-  for (var i = 0; i < cards.length; i++) {
-    if (i >= start && i < end) {
-      cards[i].classList.remove("hidden");
-    } else {
-      cards[i].classList.add("hidden");
-    }
+  for (var i=0;i<cards.length;i++){
+    var show = (i>=start && i<end);
+    if (show) cards[i].classList.remove("hidden");
+    else cards[i].classList.add("hidden");
   }
 
   var totalPages = Math.ceil(cards.length / MAX_VISIBLE);
   page = (page + 1) % (totalPages || 1);
 }
-
 function startRotation(){
   if (rotateTimer) clearInterval(rotateTimer);
-
-  cards = Array.prototype.slice.call(
-    document.querySelectorAll(".kpi-card")
-  );
-
   page = 0;
   rotate();
-
   if (cards.length > MAX_VISIBLE){
     rotateTimer = setInterval(rotate, ROTATE_MS);
   }
-}
 }
 
 /* ================= KPIs (Google Sheet) ================= */
@@ -1069,7 +1060,7 @@ sheetCards.forEach(function(c){
 
       if (!rows.length){
         grid.innerHTML =
-          "<div class='card kpi-card sheet-card'>"+
+          "<div class='card kpi-card'>"+
             "<h3>Sem KPIs ativos</h3>"+
             "<div class='kpi-sub'>Liga KPIs na Google Sheet (active=TRUE).</div>"+
           "</div>";
@@ -1092,13 +1083,11 @@ body = "<div class='kpi'>"+texto+"</div>";
             body = "<div class='kpi-sub'>Tipo não suportado: "+escapeHTML(r.type)+"</div>";
           }
 
-          var card = document.createElement("div");
-card.className = "card kpi-card sheet-card";
-card.innerHTML =
-  "<h3>"+escapeHTML(r.title)+"</h3>"+
-  body;
-
-grid.appendChild(card);
+          grid.innerHTML +=
+            "<div class='card kpi-card'>"+
+              "<h3>"+escapeHTML(r.title)+"</h3>"+
+              body+
+            "</div>";
         }
       }
 
@@ -1247,11 +1236,10 @@ if (isaCard) {
 
     // Agora que rain existe, volta a “encaixar” THI antes dele (se já temos THI calculado)
     if (LAST_THI !== null && LAST_THI_LEVEL){
-  upsertTHICard(LAST_THI, LAST_THI_LEVEL);
-}
-
-// só aqui, depois de tudo criado
-setTimeout(refreshCardsAndRotation, 100);
+      upsertTHICard(LAST_THI, LAST_THI_LEVEL);
+    } else {
+      refreshCardsAndRotation();
+    }
   });
 }
 
