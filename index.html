@@ -752,12 +752,13 @@ function isaActionPlan(isa){
 }
 function getTrend(current, previous){
 
-  if(previous === null) return "→ estável";
+  if(previous === null || previous === undefined)
+    return "→ estável";
 
   var diff = current - previous;
 
-  if(diff > 1) return "↑ a melhorar";
-  if(diff < -1) return "↓ a degradar";
+  if(diff > 0.5) return "↑ a melhorar";
+  if(diff < -0.5) return "↓ a degradar";
 
   return "→ estável";
 }
