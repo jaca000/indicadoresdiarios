@@ -703,10 +703,15 @@ if(IGCB_HISTORY.length > 5) IGCB_HISTORY.pop();
 upsertTHICard(igcb, level, trend);
 
   var isa = calcISA();
-  if(isa !== null){
-    var isaLvl = isaLevel(isa);
-    upsertISACard(isa, isaLvl);
-  }
+if(isa !== null){
+
+  var isaLvl = isaLevel(isa);
+
+  var previousISA = IGCB_HISTORY.length > 1 ? IGCB_HISTORY[1] : null;
+  var isaTrend = getTrend(isa, previousISA);
+
+  upsertISACard(isa, isaLvl, isaTrend);
+}
 }
 
   
@@ -762,7 +767,7 @@ function getTrend(current, previous){
 
   return "→ estável";
 }
-function upsertISACard(valor, level){
+function upsertISACard(valor, level, trend){
 
   var grid = document.getElementById("kpis");
   if(!grid) return;
@@ -786,9 +791,10 @@ function upsertISACard(valor, level){
   "<div class='kpi'>"+Number(valor).toFixed(1)+"</div>"+
 
   "<div class='kpi-sub'>"+
-    level.txt+
-    "<span class='thi-indicator "+level.class+"'></span>"+
-  "</div>"+
+  level.txt+
+  "<span class='thi-indicator "+level.class+"'></span>"+
+  (trend ? " — "+trend : "")+
+"</div>"+
 
   "<div class='kpi-sub' style='margin-top:10px;font-size:15px;color:var(--t3)'>"+
     plano+
