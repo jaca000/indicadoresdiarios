@@ -785,9 +785,10 @@ function upsertISACard(valor, level){
 "<div class='kpi'>"+Number(valor).toFixed(1)+"</div>"+
 
   "<div class='kpi-sub'>"+
-    level.txt+
-    "<span class='thi-indicator "+level.class+"'></span>"+
-  "</div>"+
+  level.txt+
+  "<span class='thi-indicator "+level.class+"'></span>"+
+  (trend ? " — "+trend : "")+
+"</div>"+
 
 
   "<div class='kpi-sub' style='margin-top:10px;font-size:15px;color:var(--t3)'>"+
