@@ -1024,21 +1024,7 @@ function startRotation(){
     rotateTimer = setInterval(rotate, ROTATE_MS);
   }
 }
-function renderCurrentPage(){
-  var grid = document.getElementById("kpis");
-  if (!grid) return;
 
-  var start = page * MAX_VISIBLE;
-  var end = start + MAX_VISIBLE;
-
-  var visibleCards = cards.slice(start, end);
-
-  grid.innerHTML = "";
-
-  visibleCards.forEach(function(card){
-    grid.appendChild(card);
-  });
-}
 /* ================= KPIs (Google Sheet) ================= */
 function loadKPIs(){
   fetch(SHEET_URL, { cache: "no-store" })
