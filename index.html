@@ -1026,11 +1026,12 @@ function startRotation(){
   );
 
   page = 0;
-  renderCurrentPage();
+  rotate();
 
   if (cards.length > MAX_VISIBLE){
     rotateTimer = setInterval(rotate, ROTATE_MS);
   }
+}
 }
 
 /* ================= KPIs (Google Sheet) ================= */
