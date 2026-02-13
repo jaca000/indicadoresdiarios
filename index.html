@@ -1002,22 +1002,24 @@ function refreshCardsAndRotation(){
 }
 function rotate(){
   if (!cards.length) return;
-  var start = page * MAX_VISIBLE;
-  var end = start + MAX_VISIBLE;
-
-  for (var i=0;i<cards.length;i++){
-    var show = (i>=start && i<end);
-    if (show) cards[i].classList.remove("hidden");
-    else cards[i].classList.add("hidden");
-  }
 
   var totalPages = Math.ceil(cards.length / MAX_VISIBLE);
-  page = (page + 1) % (totalPages || 1);
+  if (totalPages <= 1) return;
+
+  page = (page + 1) % totalPages;
+  renderCurrentPage();
 }
+
 function startRotation(){
   if (rotateTimer) clearInterval(rotateTimer);
+
+  cards = Array.prototype.slice.call(
+    document.querySelectorAll(".kpi-card")
+  );
+
   page = 0;
-  rotate();
+  renderCurrentPage();
+
   if (cards.length > MAX_VISIBLE){
     rotateTimer = setInterval(rotate, ROTATE_MS);
   }
