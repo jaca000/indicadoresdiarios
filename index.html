@@ -637,7 +637,7 @@ function igcbActionPlan(igcb, rain3d, tempC){
 
   return "🚨 Stress elevado. Avaliar intervenção imediata.";
 }
-  function upsertTHICard(valor, level){
+  function upsertTHICard(valor, level, trend){
 
   var grid = document.getElementById("kpis");
   if(!grid) return;
