@@ -1003,11 +1003,19 @@ function refreshCardsAndRotation(){
 function rotate(){
   if (!cards.length) return;
 
-  var totalPages = Math.ceil(cards.length / MAX_VISIBLE);
-  if (totalPages <= 1) return;
+  var start = page * MAX_VISIBLE;
+  var end = start + MAX_VISIBLE;
 
-  page = (page + 1) % totalPages;
-  renderCurrentPage();
+  for (var i = 0; i < cards.length; i++) {
+    if (i >= start && i < end) {
+      cards[i].classList.remove("hidden");
+    } else {
+      cards[i].classList.add("hidden");
+    }
+  }
+
+  var totalPages = Math.ceil(cards.length / MAX_VISIBLE);
+  page = (page + 1) % (totalPages || 1);
 }
 
 function startRotation(){
