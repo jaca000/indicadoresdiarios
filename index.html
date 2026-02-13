@@ -745,7 +745,17 @@ function isaActionPlan(isa){
 
   return "Intervenção urgente recomendada.";
 }
+function getTrend(current, previous){
 
+  if(previous === undefined || previous === null) return "";
+
+  var diff = current - previous;
+
+  if(diff > 1) return "↑ a melhorar";
+  if(diff < -1) return "↓ a degradar";
+
+  return "→ estável";
+}
 function upsertISACard(valor, level){
 
   var grid = document.getElementById("kpis");
