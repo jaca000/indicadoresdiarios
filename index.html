@@ -1079,6 +1079,10 @@ sheetCards.forEach(function(c){
           } else if (r.type === "number"){
             body = "<div class='kpi'>"+(escapeHTML(r.value)||"--")+" <span>"+escapeHTML(r.unit||"")+"</span></div>";
           } else if (r.type === "text"){
+  var raw = (r.value||"").replace(/^"|"$/g,"");
+  var texto = escapeHTML(raw).replace(/\n/g,"<br>");
+  body = "<div class='kpi kpi-multiline'>"+texto+"</div>";
+}
             var raw = (r.value||"").replace(/^"|"$/g,"");
 var texto = escapeHTML(raw).replace(/\n/g,"<br>");
 body = "<div class='kpi'>"+texto+"</div>";
