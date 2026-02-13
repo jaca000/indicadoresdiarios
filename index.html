@@ -1083,11 +1083,13 @@ body = "<div class='kpi'>"+texto+"</div>";
             body = "<div class='kpi-sub'>Tipo não suportado: "+escapeHTML(r.type)+"</div>";
           }
 
-          grid.innerHTML +=
-            "<div class='card kpi-card sheet-card'>"+
-              "<h3>"+escapeHTML(r.title)+"</h3>"+
-              body+
-            "</div>";
+          var card = document.createElement("div");
+card.className = "card kpi-card sheet-card";
+card.innerHTML =
+  "<h3>"+escapeHTML(r.title)+"</h3>"+
+  body;
+
+grid.appendChild(card);
         }
       }
 
