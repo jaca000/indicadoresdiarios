@@ -1091,10 +1091,7 @@ sheetCards.forEach(function(c){
   var raw = (r.value||"").replace(/^"|"$/g,"");
   var texto = escapeHTML(raw).replace(/\n/g,"<br>");
   body = "<div class='kpi kpi-multiline'>"+texto+"</div>";
-}
-            var raw = (r.value||"").replace(/^"|"$/g,"");
-var texto = escapeHTML(raw).replace(/\n/g,"<br>");
-body = "<div class='kpi'>"+texto+"</div>";
+
           } else {
             body = "<div class='kpi-sub'>Tipo não suportado: "+escapeHTML(r.type)+"</div>";
           }
