@@ -592,13 +592,15 @@ if(rainYTD > 200) stressMud += 5;
 if(rainYTD > 280) stressMud += 10;
 if(rainYTD > 350) stressMud += 15;
 
-  let score = 100 - (
-    stressHeat +
-    stressSun +
-    stressMud +
-    stressCold -
-    benefitWind
-  );
+  let base = 92;
+
+let score = base - (
+  stressHeat +
+  stressSun +
+  stressMud +
+  stressCold -
+  benefitWind
+);
 
   return Math.max(0, Math.min(100, score));
 }
