@@ -762,8 +762,8 @@ function getTrend(current, previous){
 
   var diff = current - previous;
 
-  if(diff > 0.5) return "↑ a melhorar";
-  if(diff < -0.5) return "↓ a degradar";
+  if(diff > 0.2) return "↑ a melhorar";
+  if(diff < -0.2) return "↓ a degradar";
 
   return "→ estável";
 }
@@ -1232,7 +1232,6 @@ function loadRainKPI(){
 var rainNow = Math.round(values[0]);
 
 LAST_RAIN_YTD = rainNow;
-calculateAndRenderIGCB(LAST_TEMP, 0, 0, 0);
 var rainLast = Math.round(values[1]);
 var diff = rainNow - rainLast;
 
