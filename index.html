@@ -714,11 +714,24 @@ LAST_THI_LEVEL = level;
 
 var trend = getTrend(igcb, previousIGCB);
 
-IGCB_HISTORY.unshift(igcb);
-if(IGCB_HISTORY.length > 5) IGCB_HISTORY.pop();
-try{
-  localStorage.setItem("IGCB_HISTORY", JSON.stringify(IGCB_HISTORY));
-}catch(e){}
+var today = new Date().toISOString().slice(0,10);
+
+// Só guarda 1 valor por dia
+if(LAST_HISTORY_DAY !== today){
+
+  IGCB_HISTORY.unshift(igcb);
+
+  if(IGCB_HISTORY.length > 5){
+    IGCB_HISTORY.pop();
+  }
+
+  LAST_HISTORY_DAY = today;
+
+  try{
+    localStorage.setItem("IGCB_HISTORY", JSON.stringify(IGCB_HISTORY));
+    localStorage.setItem("IGCB_HISTORY_DAY", today);
+  }catch(e){}
+}
 upsertTHICard(igcb, level, trend);
 
   var isa = calcISA();
