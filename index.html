@@ -738,9 +738,19 @@ if(isa !== null){
   let pesoTotal = 0;
 
   for(let i=0;i<IGCB_HISTORY.length;i++){
-    total += IGCB_HISTORY[i] * pesos[i];
+
+    // converte conforto em carga de stress
+    let stress = 100 - IGCB_HISTORY[i];
+
+    total += stress * pesos[i];
     pesoTotal += pesos[i];
   }
+
+  let stressMedio = total / pesoTotal;
+
+  // converte novamente para escala tipo conforto
+  return 100 - stressMedio;
+}
 
   return total / pesoTotal;
 }
