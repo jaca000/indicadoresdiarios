@@ -570,7 +570,7 @@ function calcIGCB(tempC, rh, wind, radiation, rain3d, rainYTD){
 
   let stressHeat = Math.max(0, thi - 68) * 1.8;
   let stressSun = radiation * 0.02;
-  let benefitWind = wind * (rain3d > 20 ? 0.6 : 1.5);
+  let benefitWind = Math.min(wind * 0.4, 6); // máximo 6 pontos de benefício
 
   // 👉 Stress frio húmido
 let stressCold = 0;
