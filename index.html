@@ -426,10 +426,16 @@ var LAST_RAIN_3D = null;
 var LAST_TEMP = 0;
 var IGCB_HISTORY = [];
 var LAST_HISTORY_DAY = null;
-  try{
+
+try{
   var savedHistory = localStorage.getItem("IGCB_HISTORY");
   if(savedHistory){
     IGCB_HISTORY = JSON.parse(savedHistory);
+  }
+
+  var savedDay = localStorage.getItem("IGCB_HISTORY_DAY");
+  if(savedDay){
+    LAST_HISTORY_DAY = savedDay;
   }
 }catch(e){}
 /* ================= CLOCK ================= */
