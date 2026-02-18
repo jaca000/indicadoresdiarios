@@ -591,7 +591,9 @@ else if(rain3d > 10) stressMud = 5;
 if(rainYTD > 200) stressMud += 5;
 if(rainYTD > 280) stressMud += 10;
 if(rainYTD > 350) stressMud += 15;
-
+// inércia do solo: mesmo sem chuva recente, pode haver lama residual
+if (rainYTD > 300 && rain3d < 10) stressMud += 5;
+if (rainYTD > 380 && rain3d < 10) stressMud += 3; // extra em anos muito húmidos
   let base = 92;
 
 let score = base - (
