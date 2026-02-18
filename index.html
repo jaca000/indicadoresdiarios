@@ -425,6 +425,12 @@ var LAST_RAIN_YTD = 0;
 var LAST_RAIN_3D = null;
 var LAST_TEMP = 0;
 var IGCB_HISTORY = [];
+  try{
+  var savedHistory = localStorage.getItem("IGCB_HISTORY");
+  if(savedHistory){
+    IGCB_HISTORY = JSON.parse(savedHistory);
+  }
+}catch(e){}
 /* ================= CLOCK ================= */
 function tick(){
   var d = new Date();
