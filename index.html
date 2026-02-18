@@ -709,7 +709,9 @@ var trend = getTrend(igcb, previousIGCB);
 
 IGCB_HISTORY.unshift(igcb);
 if(IGCB_HISTORY.length > 5) IGCB_HISTORY.pop();
-
+try{
+  localStorage.setItem("IGCB_HISTORY", JSON.stringify(IGCB_HISTORY));
+}catch(e){}
 upsertTHICard(igcb, level, trend);
 
   var isa = calcISA();
