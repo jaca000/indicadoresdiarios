@@ -785,15 +785,20 @@ if(IGCB_HISTORY.length > 1){
 
   let stressMedio = total / pesoTotal;
 
-// penaliza recuperação demasiado rápida
+// penaliza recuperação demasiado rápida (baseado no IGCB recente)
 if(IGCB_HISTORY.length > 1){
   var delta = IGCB_HISTORY[0] - IGCB_HISTORY[1];
-  if(delta > 10){
+
+  if(delta > 8){
+    stressMedio += 3;
+  }
+
+  if(delta > 15){
     stressMedio += 5;
   }
 }
 
-return 100 - stressMedio;
+return Math.max(0, Math.min(100, 100 - stressMedio));
 
 
 function isaLevel(isa){
