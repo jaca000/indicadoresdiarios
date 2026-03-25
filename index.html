@@ -749,10 +749,16 @@ if(isa !== null){
   
 
   function calcISA(){
-
+// penaliza recuperação demasiado rápida (inércia fisiológica)
+if(IGCB_HISTORY.length > 1){
+  var delta = IGCB_HISTORY[0] - IGCB_HISTORY[1];
+  if(delta > 10){
+    stressMedio += 5;
+  }
+}
   if(IGCB_HISTORY.length === 0) return null;
 
-  let pesos = [0.25, 0.25, 0.20, 0.15, 0.15];
+  let pesos = [0.10, 0.15, 0.20, 0.25, 0.30];
 
   let total = 0;
   let pesoTotal = 0;
