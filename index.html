@@ -740,8 +740,19 @@ if(isa !== null){
 
   var isaLvl = isaLevel(isa);
 
-  var previousISA = IGCB_HISTORY.length > 1 ? IGCB_HISTORY[1] : null;
+  var previousISA = ISA_HISTORY.length > 0 ? ISA_HISTORY[0] : null;
+
   var isaTrend = getTrend(isa, previousISA);
+
+  // 👉 guardar histórico ISA (1 por dia)
+  if(LAST_HISTORY_DAY === today){
+    // já guardaste IGCB hoje → também guarda ISA
+    ISA_HISTORY.unshift(isa);
+
+    if(ISA_HISTORY.length > 7){
+      ISA_HISTORY.pop();
+    }
+  }
 
   upsertISACard(isa, isaLvl, isaTrend);
 }
