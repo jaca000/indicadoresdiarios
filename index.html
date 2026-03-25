@@ -204,9 +204,9 @@ header{
 main{
   padding:22px 28px;
 
-  display:grid;
-  grid-template-columns:repeat(3, 1fr);
-  grid-template-rows:repeat(3, 1fr);
+    display:flex;
+  align-items:center;
+  justify-content:center;
 
   gap:22px;
 
@@ -404,8 +404,8 @@ body.periodo-noite{filter:brightness(.75) saturate(.85) hue-rotate(-8deg);transi
 /* ================= CONFIG ================= */
 var LAT = 38.219, LON = -7.887;
 
-var MAX_VISIBLE = 9;
-var ROTATE_MS = 15000;
+var MAX_VISIBLE = 1;
+var ROTATE_MS = 7000;
 
 var SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRcoOLTXvKf6K_4aejdyA7ZK6PObIzqyiLBBOPSehdSkKlxj9_ms0EqJOjT7u2lN11j5DaYIAkcqoy7/pub?output=csv";
 var NEWS_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgtnmWS6XFXm8V80ZzxQ1n4QwGxncyWqw4LnljjBu2kG5xWIRBoMLM_ya7cyg9B_Jyi9N2gqjSvVfS/pub?gid=0&single=true&output=csv";
