@@ -764,8 +764,7 @@ if(isa !== null){
 // penaliza recuperação demasiado rápida (inércia fisiológica)
 if(IGCB_HISTORY.length > 1){
   var delta = IGCB_HISTORY[0] - IGCB_HISTORY[1];
-  if(delta > 10){
-    stressMedio += 5;
+ 
   }
 }
   if(IGCB_HISTORY.length === 0) return null;
@@ -786,9 +785,15 @@ if(IGCB_HISTORY.length > 1){
 
   let stressMedio = total / pesoTotal;
 
-  // converte novamente para escala tipo conforto
-  return 100 - stressMedio;
+// penaliza recuperação demasiado rápida
+if(IGCB_HISTORY.length > 1){
+  var delta = IGCB_HISTORY[0] - IGCB_HISTORY[1];
+  if(delta > 10){
+    stressMedio += 5;
+  }
 }
+
+return 100 - stressMedio;
 
 
 function isaLevel(isa){
