@@ -761,12 +761,7 @@ if(isa !== null){
   
 
   function calcISA(){
-// penaliza recuperação demasiado rápida (inércia fisiológica)
-if(IGCB_HISTORY.length > 1){
-  var delta = IGCB_HISTORY[0] - IGCB_HISTORY[1];
- 
-  }
-}
+
   if(IGCB_HISTORY.length === 0) return null;
 
   let pesos = [0.10, 0.15, 0.20, 0.25, 0.30];
@@ -776,7 +771,6 @@ if(IGCB_HISTORY.length > 1){
 
   for(let i=0;i<IGCB_HISTORY.length;i++){
 
-    // converte conforto em carga de stress
     let stress = 100 - IGCB_HISTORY[i];
 
     total += stress * pesos[i];
@@ -785,20 +779,21 @@ if(IGCB_HISTORY.length > 1){
 
   let stressMedio = total / pesoTotal;
 
-// penaliza recuperação demasiado rápida (baseado no IGCB recente)
-if(IGCB_HISTORY.length > 1){
-  var delta = IGCB_HISTORY[0] - IGCB_HISTORY[1];
+  // penaliza recuperação demasiado rápida
+  if(IGCB_HISTORY.length > 1){
+    var delta = IGCB_HISTORY[0] - IGCB_HISTORY[1];
 
-  if(delta > 8){
-    stressMedio += 3;
+    if(delta > 8){
+      stressMedio += 3;
+    }
+
+    if(delta > 15){
+      stressMedio += 5;
+    }
   }
 
-  if(delta > 15){
-    stressMedio += 5;
-  }
+  return Math.max(0, Math.min(100, 100 - stressMedio));
 }
-
-return Math.max(0, Math.min(100, 100 - stressMedio));
 
 
 function isaLevel(isa){
